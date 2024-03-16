@@ -1,5 +1,5 @@
 ﻿namespace TileMapEngine;
 
-public class Class1
+public class TileMap
 {
 }

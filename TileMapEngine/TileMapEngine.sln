@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TileMapEngine", "TileMapEngine\TileMapEngine.csproj", "{DA44A9A4-2F03-44F6-8D33-1D85EF2936E1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChessGame", "..\ChessGame\ChessGame\ChessGame.csproj", "{81269FC9-DD79-4A94-A807-5CA9AE1C923E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{DA44A9A4-2F03-44F6-8D33-1D85EF2936E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DA44A9A4-2F03-44F6-8D33-1D85EF2936E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DA44A9A4-2F03-44F6-8D33-1D85EF2936E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{81269FC9-DD79-4A94-A807-5CA9AE1C923E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81269FC9-DD79-4A94-A807-5CA9AE1C923E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81269FC9-DD79-4A94-A807-5CA9AE1C923E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81269FC9-DD79-4A94-A807-5CA9AE1C923E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
