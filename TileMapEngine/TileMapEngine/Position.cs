@@ -7,6 +7,7 @@ public readonly struct Position2D
 
     public Position2D(int value) : this(value, value)
     {
+        Console.WriteLine();
     }
 
     public Position2D(int x, int y)
