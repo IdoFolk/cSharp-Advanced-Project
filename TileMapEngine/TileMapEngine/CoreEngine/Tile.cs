@@ -6,6 +6,9 @@ public class Tile : IComparable<Tile>
     public TileObject CurrentTileObject { get; private set; }
 
     public Tile(Position2D position) => Position = position;
+
+    public Tile(int x,int y) => Position = new Position2D(x,y);
+
     public int CompareTo(Tile other)
     {
         if (Position.Y > other.Position.Y) return 1;
@@ -17,4 +20,7 @@ public class Tile : IComparable<Tile>
             else return 0;
         }
     }
+
+    public override string ToString() => $"[{Position.ToString()}]";
+
 }
