@@ -25,7 +25,10 @@ public class TileMap : IEnumerable<Tile>
 
     #region Public Methods
 
-
+    public void SetTileObjects()
+    {
+        
+    }
     
     #endregion
     
