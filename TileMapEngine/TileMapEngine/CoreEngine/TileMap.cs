@@ -23,6 +23,15 @@ public class TileMap : IEnumerable<Tile>
 
     #endregion
 
+    #region Public Methods
+
+    public void SetTileObjects()
+    {
+        
+    }
+    
+    #endregion
+    
     #region Indexers
 
     public Tile this[int index]
