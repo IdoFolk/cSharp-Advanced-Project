@@ -1,4 +1,4 @@
-namespace TileMapEngine.CoreEngine.Rendering.Console;
+namespace TileMapEngine.CoreEngine.Rendering.ConsoleRenderer;
 
 public class ConsoleTileRenderer : ITileRenderer
 {
@@ -13,14 +13,16 @@ public class ConsoleTileRenderer : ITileRenderer
 
     public void Draw()
     {
-        if (_drawable is not ConsoleStringDrawableObject drawableChar)
+        var originalColor = Console.ForegroundColor;
+        if (_drawable is not ConsoleCharDrawableObject drawableChar)
         {
             throw new Exception($"drawable on {this} is not ConsoleCharObject! Aborting.");
         }
 
-        System.Console.SetCursorPosition(_position2D.X * 3, _position2D.Y);
-        System.Console.ForegroundColor = drawableChar.ConsoleColor;
-        System.Console.Write($"[{drawableChar.ConsoleString}]");
+        Console.SetCursorPosition(_position2D.X * 3, _position2D.Y);
+        Console.ForegroundColor = drawableChar.ConsoleColor;
+        Console.Write($"[{drawableChar.ConsoleChar}]");
+        Console.ForegroundColor = originalColor;
     }
 
     public ITileRenderer Clone()

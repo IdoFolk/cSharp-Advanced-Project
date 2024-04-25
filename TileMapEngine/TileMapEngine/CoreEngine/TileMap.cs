@@ -1,13 +1,13 @@
 ﻿using System.Collections;
 using TileMapEngine.CoreEngine.Rendering;
-using TileMapEngine.CoreEngine.Rendering.Console;
+using TileMapEngine.CoreEngine.Rendering.ConsoleRenderer;
 
 namespace TileMapEngine.CoreEngine;
 
 public class TileMap : IEnumerable<Tile>
 {
     public readonly Tile[,] Tiles;
-
+    
     #region Constructors
 
     public TileMap(int columns, int rows,ISceneRenderer sceneRenderer, ITileRenderer tileRenderer)
@@ -19,7 +19,7 @@ public class TileMap : IEnumerable<Tile>
             for (int j = 0; j < columns; j++)
             {
                 var renderer = tileRenderer.Clone();
-                var emptyChar = new ConsoleStringDrawableObject(" ", ConsoleColor.White);
+                var emptyChar = new ConsoleCharDrawableObject(' ', ConsoleColor.White);
                 renderer.Init(emptyChar, new Position2D(j, i));
                 Tiles[j,i] = new Tile(j,i, renderer);
             }
