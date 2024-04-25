@@ -21,6 +21,8 @@ public class ConsoleGameRenderer : IGameRenderer<ConsoleColor>
         {
             mapTile.DrawTile();
         }
+        
+        Console.WriteLine("\n");
     }
 
     public void AssignCheckersPattern(TileMap tileMap, ConsoleColor oddColor, ConsoleColor evenColor)
