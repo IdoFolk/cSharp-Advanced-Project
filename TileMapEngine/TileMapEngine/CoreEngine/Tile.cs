@@ -41,13 +41,11 @@ public class Tile : IComparable<Tile>
 
     public void DrawTile()
     {
-        if (CurrentTileObject == null && TileRenderer != null)
+        if (CurrentTileObject != null)
         {
-            TileRenderer.Draw();
-            return;
+            CurrentTileObject.DrawTileObject();
         }
-        
-        CurrentTileObject.DrawTileObject();
+        TileRenderer.Draw();
     }
 
     public override string ToString() => $"[{Position.ToString()}]";

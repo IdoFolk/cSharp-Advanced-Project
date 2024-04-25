@@ -7,7 +7,7 @@ public class ConsoleGameRenderer : IGameRenderer<ConsoleColor>
         var sceneRenderer = new ConsoleSceneRenderer();
         sceneRenderer.Initialize();
 
-        var tileDrawable = new ConsoleCharDrawableObject(' ', ConsoleColor.White);
+        var tileDrawable = new ConsoleDrawableString("[ ]", ConsoleColor.White);
         var tileRenderer = new ConsoleTileRenderer();
         tileMap.AssignRendererToTiles(tileRenderer, tileDrawable);
         
@@ -27,7 +27,6 @@ public class ConsoleGameRenderer : IGameRenderer<ConsoleColor>
     {
         foreach (var tile in tileMap)
         {
-            // Console.WriteLine($"tile.Position.X: {tile.Position.X} | tile.Position.Y: {tile.Position.Y} | X + Y {tile.Position.X + tile.Position.Y}");
             if ((tile.Position.X + tile.Position.Y) % 2 == 0)
             {
                 tile.TileRenderer.ChangeColor(evenColor);

@@ -22,7 +22,7 @@ public class TileObject : ICloneable
         Movement = new ObjectMovement(this, movePatterns);
     }
 
-    public void DrawTileObject() => TileRenderer.Draw();
+    public void DrawTileObject() => TileRenderer.Draw(true);
 
     public object Clone()
     {

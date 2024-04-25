@@ -2,13 +2,13 @@ namespace TileMapEngine.CoreEngine.Rendering.ConsoleRenderer;
 
 public class ConsoleTileRenderer : ITileRenderer
 {
-    private ConsoleCharDrawableObject _drawable;
+    private ConsoleDrawableString _drawable;
     private Position2D _position2D;
 
     public void Init(IDrawable drawable, Position2D position2D)
     {
         // _drawable = (ConsoleCharDrawableObject)drawable;
-        if (drawable is not ConsoleCharDrawableObject drawableChar)
+        if (drawable is not ConsoleDrawableString drawableChar)
         {
             throw new Exception($"drawable on {this} is not ConsoleCharObject! Aborting.");
         }
@@ -17,13 +17,18 @@ public class ConsoleTileRenderer : ITileRenderer
         _position2D = position2D;
     }
 
-    public void Draw()
+    public void Draw(bool isTileObject = false)
     {
         var originalColor = Console.ForegroundColor;
 
-        Console.SetCursorPosition(_position2D.X * 3, _position2D.Y);
         Console.ForegroundColor = _drawable.ConsoleColor;
-        Console.Write($"[{_drawable.ConsoleChar}]");
+        
+        var objectDeviation = isTileObject ? -2 : 0;
+        
+        Console.SetCursorPosition(_position2D.X * 3 + objectDeviation, _position2D.Y);
+        
+        Console.Write($"{_drawable.ConsoleString}");
+        
         Console.ForegroundColor = originalColor;
     }
 
