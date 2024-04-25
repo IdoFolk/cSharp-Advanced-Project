@@ -7,7 +7,6 @@ public class ConsoleTileRenderer : ITileRenderer
 
     public void Init(IDrawable drawable, Position2D position2D)
     {
-        // _drawable = (ConsoleCharDrawableObject)drawable;
         if (drawable is not ConsoleDrawableString drawableChar)
         {
             throw new Exception($"drawable on {this} is not ConsoleCharObject! Aborting.");
