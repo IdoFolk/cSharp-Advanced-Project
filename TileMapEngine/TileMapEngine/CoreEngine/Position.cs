@@ -1,4 +1,4 @@
-namespace TileMapEngine;
+namespace TileMapEngine.CoreEngine;
 
 public readonly struct Position2D 
 {

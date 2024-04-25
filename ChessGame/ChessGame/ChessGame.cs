@@ -1,5 +1,5 @@
 using System.Drawing;
-using TileMapEngine.Engine;
+using TileMapEngine.CoreEngine;
 
 namespace ChessGame;
 

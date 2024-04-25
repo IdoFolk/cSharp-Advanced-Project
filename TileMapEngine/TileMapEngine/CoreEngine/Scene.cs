@@ -1,6 +1,6 @@
 using System.Drawing;
 
-namespace TileMapEngine.Engine;
+namespace TileMapEngine.CoreEngine;
 
 public class Scene
 {
