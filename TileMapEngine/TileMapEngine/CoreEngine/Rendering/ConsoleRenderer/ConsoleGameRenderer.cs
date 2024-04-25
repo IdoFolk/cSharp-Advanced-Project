@@ -2,6 +2,8 @@ namespace TileMapEngine.CoreEngine.Rendering.ConsoleRenderer;
 
 public class ConsoleGameRenderer : IGameRenderer<ConsoleColor>
 {
+    private RenderingUpdatesHandler _renderingUpdatesHandler;
+    
     public void InitGameRenderer(TileMap tileMap)
     {
         var sceneRenderer = new ConsoleSceneRenderer();
@@ -10,8 +12,10 @@ public class ConsoleGameRenderer : IGameRenderer<ConsoleColor>
         var tileDrawable = new ConsoleDrawableString("[ ]", ConsoleColor.White);
         var tileRenderer = new ConsoleTileRenderer();
         tileMap.AssignRendererToTiles(tileRenderer, tileDrawable);
-        
-        
+
+        _renderingUpdatesHandler = new RenderingUpdatesHandler();
+        _renderingUpdatesHandler.Init(this, tileMap);
+
         RefreshTileMapDraw(tileMap);
     }
 

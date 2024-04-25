@@ -15,7 +15,7 @@ public class ConsoleCommandsManager
         var select = new ConsoleCommand("select",
             "Select a tile object at position (x,y). example: /select 3,5",
             true,
-            args => Console.WriteLine($"Selecting tile object at {args}"));
+            args => HandleSelectCommand(args));
         AddCommand(select);
         
         var deselect = new ConsoleCommand("deselect",
@@ -29,11 +29,17 @@ public class ConsoleCommandsManager
             true,
             args => Console.WriteLine($"Moving selected tile object to {args}"));
         AddCommand(move);
+        
+        var quit = new ConsoleCommand("quit",
+            "Closes the game's application. example: /quit",
+            true,
+            _ => ConsoleGameLoopManager.StopGameLoop());
+        AddCommand(quit);
     }
-    
+
     public void AddCommand(ConsoleCommand command) => _availableCommands.Add(command);
 
-    public void PrintAllCommands()
+    private void PrintAllCommands()
     {
         foreach (var command in _availableCommands)
         {
@@ -43,20 +49,26 @@ public class ConsoleCommandsManager
 
     public void WaitForInput()
     {
+        Console.WriteLine();
+        Console.Write("Waiting for command: ");
         var input = Console.ReadLine();
-        var firstWordInInput = input?.Split(' ')[0];
-
-        Console.WriteLine(firstWordInInput);
+        var splitInput = input?.Split(' ');
+        
+        var firstWordInInput = splitInput?[0];
+        var args = "";
+        
+        if (splitInput?.Length > 1)
+        {
+            args = splitInput[1];
+        }
         foreach (var command in _availableCommands.Where(command => $"/{command.Command}" == $"{firstWordInInput}"))
         {
-            HandleCommandInput(command, input);
+            HandleCommandInput(command, args);
         }
     }
 
-    private void HandleCommandInput(ConsoleCommand command, string? input)
+    private void HandleCommandInput(ConsoleCommand command, string args)
     {
-        var args = input.Split(' ')[1];
-        
         if (command.HasArgument)
         {
             command.Execute(args);
@@ -64,5 +76,10 @@ public class ConsoleCommandsManager
         }
         
         command.Execute();
+    }
+    
+    private void HandleSelectCommand(string args)
+    {
+        
     }
 }

@@ -7,22 +7,22 @@ namespace ChessGame;
 public class ChessGame
 {
     private TileMap _tileMap;
-    private ConsoleCommandsManager _consoleCommandsManager;
 
     public void RunChessGame()
     {
+        ConsoleGameLoopManager.Init();
+        
         ConfigTileMap();
 
+        ConfigGameConsoleCommands();
 
         ConfigGameRules();
 
         ConfigPlayers();
         
-        ConfigConsoleCommands();
-
         StartGame();
     }
-    
+
     private void ConfigTileMap()
     {
         _tileMap = new TileMap(8, 8);
@@ -31,10 +31,14 @@ public class ChessGame
         gameRenderer.AssignCheckersPattern(_tileMap, ConsoleColor.White, ConsoleColor.Black);
     }
     
-    private void ConfigConsoleCommands()
+    private void ConfigGameConsoleCommands()
     {
-        _consoleCommandsManager = new ConsoleCommandsManager();
-        _consoleCommandsManager.Init();
+        var commandsManager = ConsoleGameLoopManager.GetConsoleCommandsManager();
+        var moves = new ConsoleCommand("moves",
+            "Shows the possible moves of the selected unit (if possible). example: /moves",
+            false,
+            _ => Console.WriteLine($"Showing possible moves of selected unit"));
+        commandsManager.AddCommand(moves);
     }
 
     private void ConfigGameRules()
@@ -56,6 +60,6 @@ public class ChessGame
 
     private void StartGame()
     {
-        _consoleCommandsManager.WaitForInput();
+        ConsoleGameLoopManager.StartGameLoop();
     }
 }
