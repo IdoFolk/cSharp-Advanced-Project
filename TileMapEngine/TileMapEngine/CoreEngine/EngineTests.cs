@@ -25,15 +25,11 @@ public class EngineTests
         var consoleString3 = new ConsoleCharDrawableObject('%', ConsoleColor.Green);
         renderer3.Init(consoleString3, new Position2D(2,4));
         map[2, 4].PlaceTileObject(new TileObject(renderer3,map[2,4]));
-        
-        for (int i = 0; i < map.Tiles.GetLength(0); i++)
-        {
-            for (int j = 0; j < map.Tiles.GetLength(1); j++)
-            {
-                map[j,i].DrawTile();
-            }
 
-            Console.WriteLine();
+
+        foreach (var mapTile in map)
+        {
+            mapTile.DrawTile();
         }
     }
 }

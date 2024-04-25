@@ -6,14 +6,15 @@ namespace TileMapEngine.CoreEngine;
 
 public class TileMap : IEnumerable<Tile>
 {
-    public readonly Tile[,] Tiles;
+    private readonly Tile[,] _tiles;
+    public int Size => _tiles.Length;
     
     #region Constructors
 
     public TileMap(int columns, int rows,ISceneRenderer sceneRenderer, ITileRenderer tileRenderer)
     {
         sceneRenderer.Initialize(columns, rows);
-        Tiles = new Tile[rows,columns];
+        _tiles = new Tile[rows,columns];
         for (int i = 0; i < rows; i++)
         {
             for (int j = 0; j < columns; j++)
@@ -21,11 +22,11 @@ public class TileMap : IEnumerable<Tile>
                 var renderer = tileRenderer.Clone();
                 var emptyChar = new ConsoleCharDrawableObject(' ', ConsoleColor.White);
                 renderer.Init(emptyChar, new Position2D(j, i));
-                Tiles[j,i] = new Tile(j,i, renderer);
+                _tiles[j,i] = new Tile(j,i, renderer);
             }
         }
     }
-    public TileMap(Tile[,] tileMatrix) => Tiles = tileMatrix;
+    public TileMap(Tile[,] tileMatrix) => _tiles = tileMatrix;
 
     #endregion
 
@@ -44,26 +45,26 @@ public class TileMap : IEnumerable<Tile>
     {
         get
         {
-            if (index < 0 || index >= Tiles.Length)
+            if (index < 0 || index >= _tiles.Length)
                 throw new IndexOutOfRangeException();
-            var x = index / Tiles.GetLength(0);
-            var y = index % Tiles.GetLength(0);
-            return Tiles[y,x];
+            var x = index / _tiles.GetLength(0);
+            var y = index % _tiles.GetLength(0);
+            return _tiles[x,y];
         }
         set
         {
-            if (index < 0 || index >= Tiles.Length)
+            if (index < 0 || index >= _tiles.Length)
                 throw new IndexOutOfRangeException();
-            var x = index / Tiles.GetLength(0);
-            var y = index % Tiles.GetLength(0);
-            Tiles[y,x] = value;
+            var x = index / _tiles.GetLength(0);
+            var y = index % _tiles.GetLength(0);
+            _tiles[x,y] = value;
         }
     }
 
     public Tile this[int x,int y]
     {
-        get => Tiles[y,x];
-        set => Tiles[y,x] = value;
+        get => _tiles[x,y];
+        set => _tiles[x,y] = value;
     }
 
     #endregion
@@ -87,7 +88,7 @@ internal struct TileMapEnumerator : IEnumerator<Tile>
 {
     private readonly TileMap _tileMap;
     private int _index;
-    private bool _indexInRange => _index >= 0 && _index < _tileMap.Tiles.Length;
+    private bool _indexInRange => _index >= 0 && _index < _tileMap.Size;
     public Tile Current => _indexInRange ? _tileMap[_index] : null;
     object IEnumerator.Current => Current;
     public TileMapEnumerator(TileMap tileMap)

@@ -5,7 +5,7 @@ public class ConsoleSceneRenderer : ISceneRenderer
     public void Initialize(int width, int height)
     {
         Console.Clear();
-        Console.SetWindowSize(width * 10, height * 10);
+        //Console.SetWindowSize(width * 10, height * 10);
         Console.CursorVisible = false;
     }
 
