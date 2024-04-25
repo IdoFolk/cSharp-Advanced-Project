@@ -1,4 +1,5 @@
 using TileMapEngine.CoreEngine;
+using TileMapEngine.CoreEngine.ConsoleCommands;
 using TileMapEngine.CoreEngine.Rendering;
 
 namespace ChessGame;
@@ -9,12 +10,16 @@ public class ChessGame
 
     public void RunChessGame()
     {
+        ConsoleGameLoopManager.Init();
+        
         ConfigTileMap();
+
+        ConfigGameConsoleCommands();
 
         ConfigGameRules();
 
         ConfigPlayers();
-
+        
         StartGame();
     }
 
@@ -24,6 +29,16 @@ public class ChessGame
         var gameRenderer = GameRendererManager.GetGameRenderer<ConsoleColor>(RendererType.Console);
         gameRenderer.InitGameRenderer(_tileMap);
         gameRenderer.AssignCheckersPattern(_tileMap, ConsoleColor.White, ConsoleColor.Black);
+    }
+    
+    private void ConfigGameConsoleCommands()
+    {
+        var commandsManager = ConsoleGameLoopManager.GetConsoleCommandsManager();
+        var moves = new ConsoleCommand("moves",
+            "Shows the possible moves of the selected unit (if possible). example: /moves",
+            false,
+            _ => Console.WriteLine($"Showing possible moves of selected unit"));
+        commandsManager.AddCommand(moves);
     }
 
     private void ConfigGameRules()
@@ -45,6 +60,6 @@ public class ChessGame
 
     private void StartGame()
     {
-        // Start the game
+        ConsoleGameLoopManager.StartGameLoop();
     }
 }

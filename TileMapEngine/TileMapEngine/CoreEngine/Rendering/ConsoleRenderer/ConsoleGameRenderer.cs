@@ -2,16 +2,20 @@ namespace TileMapEngine.CoreEngine.Rendering.ConsoleRenderer;
 
 public class ConsoleGameRenderer : IGameRenderer<ConsoleColor>
 {
+    private RenderingUpdatesHandler _renderingUpdatesHandler;
+    
     public void InitGameRenderer(TileMap tileMap)
     {
         var sceneRenderer = new ConsoleSceneRenderer();
         sceneRenderer.Initialize();
 
-        var tileDrawable = new ConsoleCharDrawableObject(' ', ConsoleColor.White);
+        var tileDrawable = new ConsoleDrawableString("[ ]", ConsoleColor.White);
         var tileRenderer = new ConsoleTileRenderer();
         tileMap.AssignRendererToTiles(tileRenderer, tileDrawable);
-        
-        
+
+        _renderingUpdatesHandler = new RenderingUpdatesHandler();
+        _renderingUpdatesHandler.Init(this, tileMap);
+
         RefreshTileMapDraw(tileMap);
     }
 
@@ -21,13 +25,14 @@ public class ConsoleGameRenderer : IGameRenderer<ConsoleColor>
         {
             mapTile.DrawTile();
         }
+        
+        Console.WriteLine("\n");
     }
 
     public void AssignCheckersPattern(TileMap tileMap, ConsoleColor oddColor, ConsoleColor evenColor)
     {
         foreach (var tile in tileMap)
         {
-            // Console.WriteLine($"tile.Position.X: {tile.Position.X} | tile.Position.Y: {tile.Position.Y} | X + Y {tile.Position.X + tile.Position.Y}");
             if ((tile.Position.X + tile.Position.Y) % 2 == 0)
             {
                 tile.TileRenderer.ChangeColor(evenColor);
