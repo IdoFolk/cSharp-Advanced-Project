@@ -1,27 +1,29 @@
-namespace TileMapEngine;
+using TileMapEngine.CoreEngine.Rendering;
+
+namespace TileMapEngine.CoreEngine;
 
 public class TileObject : ICloneable
 {
     public ObjectMovement Movement { get; private set; }
     public Tile CurrentTile { get; private set; }
     public Position2D Position => CurrentTile.Position;
-    public char Render { get; } //temp need to replace this with a render class/struct
+    public ITileRenderer TileRenderer { get; }
 
-    public TileObject(char render, Tile currentTile)
+    public TileObject(ITileRenderer tileRenderer, Tile currentTile)
     {
-        Render = render;
+        TileRenderer = tileRenderer;
         CurrentTile = currentTile;
         Movement = new ObjectMovement(this);
     }
-    public TileObject(char render, Tile currentTile, List<MovePattern> movePatterns)
+    public TileObject(ITileRenderer tileRenderer, Tile currentTile, List<MovePattern> movePatterns)
     {
-        Render = render;
+        TileRenderer = tileRenderer;
         CurrentTile = currentTile;
         Movement = new ObjectMovement(this, movePatterns);
     }
 
     public object Clone()
     {
-        return new TileObject(Render,CurrentTile,new List<MovePattern>(Movement.MovePatterns));
+        return new TileObject(TileRenderer,CurrentTile,new List<MovePattern>(Movement.MovePatterns));
     }
 }

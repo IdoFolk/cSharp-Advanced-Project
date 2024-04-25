@@ -1,5 +1,5 @@
 using System.Drawing;
-using TileMapEngine.Engine;
+using TileMapEngine.CoreEngine;
 
 namespace ChessGame;
 
@@ -21,20 +21,22 @@ public class ChessGame
         // Config the scene of the game:
         // Create a new scene
         var gameScene = new Scene("gameScene");
-        
-        // config the visuals of the board (cell size, color palette, etc.)
+
+        // config the size (8*8) and visuals of the board (cell size, color palette, etc.)
         var boardConfig = new SquareBoardConfig
         {
+            FaceSize = 8,
             CellSize = 4,
             OddCellsColor = Color.White,
             EvenCellsColor = Color.Black
         };
-        
+
         // create a new 8*8 board with the black and white pattern
         gameScene.AddSquareBoard(boardConfig);
 
         return gameScene;
     }
+
     private void ConfigGameRules(Scene gameScene)
     {
         // Config the game rules:
@@ -43,6 +45,7 @@ public class ChessGame
         // determine the game's win condition
         // determine the game's flow (turns and their logic)
     }
+
     private void ConfigPlayers(Scene gameScene)
     {
         // Config the players
@@ -50,7 +53,7 @@ public class ChessGame
         // determine a name and color to each player
         // add to each players their 16 pieces
     }
-    
+
     private void StartGame(Scene gameScene)
     {
         // Start the game

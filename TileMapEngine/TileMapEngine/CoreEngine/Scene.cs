@@ -1,6 +1,6 @@
 using System.Drawing;
 
-namespace TileMapEngine.Engine;
+namespace TileMapEngine.CoreEngine;
 
 public class Scene
 {
@@ -29,6 +29,7 @@ public class Scene
 
 public struct SquareBoardConfig
 {
+    public int FaceSize;
     public int CellSize;
     public Color OddCellsColor;
     public Color EvenCellsColor;

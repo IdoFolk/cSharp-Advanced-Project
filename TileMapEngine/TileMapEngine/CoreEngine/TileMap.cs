@@ -1,6 +1,8 @@
 ﻿using System.Collections;
+using TileMapEngine.CoreEngine.Rendering;
+using TileMapEngine.CoreEngine.Rendering.Console;
 
-namespace TileMapEngine;
+namespace TileMapEngine.CoreEngine;
 
 public class TileMap : IEnumerable<Tile>
 {
@@ -8,14 +10,18 @@ public class TileMap : IEnumerable<Tile>
 
     #region Constructors
 
-    public TileMap(int columns, int rows)
+    public TileMap(int columns, int rows,ISceneRenderer sceneRenderer, ITileRenderer tileRenderer)
     {
+        sceneRenderer.Initialize(columns, rows);
         Tiles = new Tile[rows,columns];
         for (int i = 0; i < rows; i++)
         {
             for (int j = 0; j < columns; j++)
             {
-                Tiles[j,i] = new Tile(j,i);
+                var renderer = tileRenderer.Clone();
+                var emptyChar = new ConsoleStringDrawableObject(" ", ConsoleColor.White);
+                renderer.Init(emptyChar, new Position2D(j, i));
+                Tiles[j,i] = new Tile(j,i, renderer);
             }
         }
     }
