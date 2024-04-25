@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using TileMapEngine.CoreEngine.Rendering;
-using TileMapEngine.CoreEngine.Rendering.ConsoleRenderer;
 
 namespace TileMapEngine.CoreEngine;
 
@@ -11,18 +10,14 @@ public class TileMap : IEnumerable<Tile>
     
     #region Constructors
 
-    public TileMap(int columns, int rows,ISceneRenderer sceneRenderer, ITileRenderer tileRenderer)
+    public TileMap(int columns, int rows)
     {
-        sceneRenderer.Initialize(columns, rows);
         _tiles = new Tile[rows,columns];
-        for (int i = 0; i < rows; i++)
+        for (var i = 0; i < rows; i++)
         {
-            for (int j = 0; j < columns; j++)
+            for (var j = 0; j < columns; j++)
             {
-                var renderer = tileRenderer.Clone();
-                var emptyChar = new ConsoleCharDrawableObject(' ', ConsoleColor.White);
-                renderer.Init(emptyChar, new Position2D(j, i));
-                _tiles[j,i] = new Tile(j,i, renderer);
+                _tiles[j,i] = new Tile(j,i);
             }
         }
     }
@@ -31,6 +26,16 @@ public class TileMap : IEnumerable<Tile>
     #endregion
 
     #region Public Methods
+
+    public void AssignRendererToTiles(ITileRenderer tileRenderer, IDrawable drawable)
+    {
+        foreach (var tile in _tiles)
+        {
+            var renderer = tileRenderer.Clone();
+            renderer.Init(drawable, tile.Position);
+            tile.AssignRenderer(renderer);
+        }
+    }
 
     public void SetTileObjects()
     {

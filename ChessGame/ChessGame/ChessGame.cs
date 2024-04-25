@@ -1,43 +1,32 @@
-using System.Drawing;
 using TileMapEngine.CoreEngine;
+using TileMapEngine.CoreEngine.Rendering;
 
 namespace ChessGame;
 
 public class ChessGame
 {
+    private TileMap _tileMap;
+
     public void RunChessGame()
     {
-        var gameScene = ConfigScene();
+        ConfigTileMap();
 
-        ConfigGameRules(gameScene);
+        ConfigGameRules();
 
-        ConfigPlayers(gameScene);
+        ConfigPlayers();
 
-        StartGame(gameScene);
+        StartGame();
     }
 
-    private Scene ConfigScene()
+    private void ConfigTileMap()
     {
-        // Config the scene of the game:
-        // Create a new scene
-        var gameScene = new Scene("gameScene");
-
-        // config the size (8*8) and visuals of the board (cell size, color palette, etc.)
-        var boardConfig = new SquareBoardConfig
-        {
-            FaceSize = 8,
-            CellSize = 4,
-            OddCellsColor = Color.White,
-            EvenCellsColor = Color.Black
-        };
-
-        // create a new 8*8 board with the black and white pattern
-        gameScene.AddSquareBoard(boardConfig);
-
-        return gameScene;
+        _tileMap = new TileMap(8, 8);
+        var gameRenderer = GameRendererManager.GetGameRenderer<ConsoleColor>(RendererType.Console);
+        gameRenderer.InitGameRenderer(_tileMap);
+        gameRenderer.AssignCheckersPattern(_tileMap, ConsoleColor.White, ConsoleColor.Black);
     }
 
-    private void ConfigGameRules(Scene gameScene)
+    private void ConfigGameRules()
     {
         // Config the game rules:
         // Create the different chess pieces types
@@ -46,7 +35,7 @@ public class ChessGame
         // determine the game's flow (turns and their logic)
     }
 
-    private void ConfigPlayers(Scene gameScene)
+    private void ConfigPlayers()
     {
         // Config the players
         // create 2 players
@@ -54,9 +43,8 @@ public class ChessGame
         // add to each players their 16 pieces
     }
 
-    private void StartGame(Scene gameScene)
+    private void StartGame()
     {
         // Start the game
-        gameScene.Play();
     }
 }

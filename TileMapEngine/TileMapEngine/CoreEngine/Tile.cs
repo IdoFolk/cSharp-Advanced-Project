@@ -7,19 +7,19 @@ public class Tile : IComparable<Tile>
     public event Action<TileObject> OnTileObjectLand;
     public Position2D Position { get; }
     public TileObject CurrentTileObject { get; private set; }
-    public ITileRenderer TileRenderer { get; }
+    public ITileRenderer TileRenderer { get; private set; }
 
-    public Tile(Position2D position, ITileRenderer tileRenderer)
+    public Tile(Position2D position)
     {
         Position = position;
-        TileRenderer = tileRenderer;
     }
 
-    public Tile(int x,int y, ITileRenderer tileRenderer)
+    public Tile(int x,int y)
     {
         Position = new Position2D(x, y);
-        TileRenderer = tileRenderer;
     }
+
+    public void AssignRenderer(ITileRenderer renderer) => TileRenderer = renderer;
 
     public void PlaceTileObject(TileObject tileObject)
     {
@@ -41,7 +41,7 @@ public class Tile : IComparable<Tile>
 
     public void DrawTile()
     {
-        if (CurrentTileObject == null)
+        if (CurrentTileObject == null && TileRenderer != null)
         {
             TileRenderer.Draw();
             return;
