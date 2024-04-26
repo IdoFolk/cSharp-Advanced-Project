@@ -43,7 +43,7 @@ public class ConsoleCommandsManager
     {
         foreach (var command in _availableCommands)
         {
-            Console.WriteLine(command);
+            Console.WriteLine($"- {command}");
         }
     }
 

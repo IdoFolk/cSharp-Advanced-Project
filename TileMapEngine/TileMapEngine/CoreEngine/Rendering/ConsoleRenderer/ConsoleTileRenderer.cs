@@ -18,9 +18,11 @@ public class ConsoleTileRenderer : ITileRenderer
 
     public void Draw(bool isTileObject = false)
     {
-        var originalColor = Console.ForegroundColor;
+        var fgOriginalColor = Console.ForegroundColor;
+        var bgOriginalColor = Console.BackgroundColor;
 
-        Console.ForegroundColor = _drawable.ConsoleColor;
+        Console.ForegroundColor = _drawable.FgConsoleColor;
+        Console.BackgroundColor = _drawable.BgConsoleColor;
         
         var objectDeviation = isTileObject ? -2 : 0;
         
@@ -28,7 +30,8 @@ public class ConsoleTileRenderer : ITileRenderer
         
         Console.Write($"{_drawable.ConsoleString}");
         
-        Console.ForegroundColor = originalColor;
+        Console.ForegroundColor = fgOriginalColor;
+        Console.BackgroundColor = bgOriginalColor;
     }
 
     public ITileRenderer Clone()
@@ -38,13 +41,19 @@ public class ConsoleTileRenderer : ITileRenderer
         return clone;
     }
 
-    public void ChangeColor(object color)
+    public void ChangeColor(object fgColor, object? bgColor = default)
     {
-        if (color is not ConsoleColor consoleColor)
+        if (fgColor is not ConsoleColor fgConsoleColor)
         {
-            throw new Exception($"color: {color} is not a ConsoleColor! Aborting.");
+            throw new Exception($"fgColor: {fgColor} is not a ConsoleColor! Aborting.");
+        }
+        
+        if (bgColor is not ConsoleColor bgConsoleColor)
+        {
+            bgConsoleColor = ConsoleColor.Black; // Changing to console's default background color
         }
 
-        _drawable.ConsoleColor = consoleColor;
+        _drawable.FgConsoleColor = fgConsoleColor;
+        _drawable.BgConsoleColor = bgConsoleColor;
     }
 }
