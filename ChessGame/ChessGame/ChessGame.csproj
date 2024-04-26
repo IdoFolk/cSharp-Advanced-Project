@@ -8,6 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\TileMapEngine\ConsoleRenderer\ConsoleRenderer.csproj" />
       <ProjectReference Include="..\..\TileMapEngine\TileMapEngine\TileMapEngine.csproj" />
     </ItemGroup>
 

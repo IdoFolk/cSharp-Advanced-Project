@@ -1,5 +1,6 @@
 ﻿using System.Collections;
-using TileMapEngine.CoreEngine.Rendering;
+using System.Numerics;
+using Renderer.Rendering;
 
 namespace TileMapEngine.CoreEngine;
 
@@ -32,7 +33,7 @@ public class TileMap : IEnumerable<Tile>
         foreach (var tile in _tiles)
         {
             var renderer = tileRenderer.Clone();
-            renderer.Init(drawable, tile.Position);
+            renderer.Init(drawable, new Vector2(tile.Position.X,tile.Position.Y));
             tile.AssignRenderer(renderer);
         }
     }

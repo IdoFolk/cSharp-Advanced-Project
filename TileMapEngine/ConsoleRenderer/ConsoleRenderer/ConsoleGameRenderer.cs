@@ -1,26 +1,27 @@
-namespace TileMapEngine.CoreEngine.Rendering.ConsoleRenderer;
+using Renderer.Rendering;
+using TileMapEngine.CoreEngine;
 
-public class ConsoleGameRenderer : IGameRenderer<ConsoleColor>
+namespace ConsoleRenderer.ConsoleRenderer;
+
+public class ConsoleGameRenderer : IGameRenderer<TileMap,ConsoleColor>
 {
-    private RenderingUpdatesHandler? _renderingUpdatesHandler;
 
     public void InitGameRenderer(TileMap tileMap)
     {
-        var sceneRenderer = new ConsoleSceneRenderer();
-        sceneRenderer.Initialize();
-
         var tileDrawable = new ConsoleDrawableString("[ ]", ConsoleColor.White);
         var tileRenderer = new ConsoleTileRenderer();
         tileMap.AssignRendererToTiles(tileRenderer, tileDrawable);
 
-        _renderingUpdatesHandler = new RenderingUpdatesHandler();
-        _renderingUpdatesHandler.Init(this, tileMap);
+        Console.Clear();
+        //Console.SetWindowSize(width * 10, height * 10);Vector2
+        Console.CursorVisible = false;
 
         RefreshTileMapDraw(tileMap);
     }
 
     public void RefreshTileMapDraw(TileMap tileMap)
     {
+        
         foreach (var mapTile in tileMap)
         {
             mapTile.DrawTile();

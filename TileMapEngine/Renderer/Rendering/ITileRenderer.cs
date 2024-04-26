@@ -1,8 +1,10 @@
-namespace TileMapEngine.CoreEngine.Rendering;
+using System.Numerics;
+
+namespace Renderer.Rendering;
 
 public interface ITileRenderer
 {
-    public void Init(IDrawable drawable, Position2D position2D);
+    public void Init(IDrawable drawable, Vector2 position2D);
     public void Draw(bool isTileObject = false);
     public ITileRenderer Clone();
     void ChangeColor(object fgColor, object? bgColor = default);

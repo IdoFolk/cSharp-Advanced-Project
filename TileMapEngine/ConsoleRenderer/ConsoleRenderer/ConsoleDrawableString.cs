@@ -1,4 +1,6 @@
-namespace TileMapEngine.CoreEngine.Rendering.ConsoleRenderer;
+using Renderer.Rendering;
+
+namespace ConsoleRenderer.ConsoleRenderer;
 
 public struct ConsoleDrawableString(string str, ConsoleColor fgConsoleColor, ConsoleColor bgConsoleColor = ConsoleColor.Black) : IDrawable
 {

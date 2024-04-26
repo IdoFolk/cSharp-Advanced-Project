@@ -1,7 +1,7 @@
+using System.Numerics;
+using ConsoleRenderer.ConsoleRenderer;
 using TileMapEngine.CoreEngine;
 using TileMapEngine.CoreEngine.ConsoleCommands;
-using TileMapEngine.CoreEngine.Rendering;
-using TileMapEngine.CoreEngine.Rendering.ConsoleRenderer;
 
 namespace ChessGame;
 
@@ -27,7 +27,7 @@ public class ChessGame
     private void ConfigTileMap()
     {
         _tileMap = new TileMap(8, 8);
-        var gameRenderer = GameRendererManager.GetGameRenderer<ConsoleColor>(RendererType.Console);
+        var gameRenderer = new ConsoleGameRenderer();
         gameRenderer.InitGameRenderer(_tileMap);
         gameRenderer.AssignCheckersPattern(_tileMap, 
             ConsoleColor.White,
@@ -36,17 +36,17 @@ public class ChessGame
         // TODO remove below, just for testing
         var renderer1 = new ConsoleTileRenderer();
         var consoleString1 = new ConsoleDrawableString("$", ConsoleColor.Yellow);
-        renderer1.Init(consoleString1, new Position2D(1, 2));
+        renderer1.Init(consoleString1, new Vector2(1, 2));
         _tileMap[1, 2].PlaceTileObject(new TileObject(renderer1, _tileMap[1, 2]));
 
         var renderer2 = new ConsoleTileRenderer();
         var consoleString2 = new ConsoleDrawableString("#", ConsoleColor.Red);
-        renderer2.Init(consoleString2, new Position2D(5, 3));
+        renderer2.Init(consoleString2, new Vector2(5, 3));
         _tileMap[5, 3].PlaceTileObject(new TileObject(renderer2, _tileMap[5, 3]));
 
         var renderer3 = new ConsoleTileRenderer();
         var consoleString3 = new ConsoleDrawableString("%", ConsoleColor.Green);
-        renderer3.Init(consoleString3, new Position2D(2, 4));
+        renderer3.Init(consoleString3, new Vector2(2, 4));
         _tileMap[2, 4].PlaceTileObject(new TileObject(renderer3, _tileMap[2, 4]));
         
         gameRenderer.RefreshTileMapDraw(_tileMap);

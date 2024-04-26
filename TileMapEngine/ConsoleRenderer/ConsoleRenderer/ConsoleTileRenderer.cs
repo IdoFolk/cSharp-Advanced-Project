@@ -1,11 +1,14 @@
-namespace TileMapEngine.CoreEngine.Rendering.ConsoleRenderer;
+using System.Numerics;
+using Renderer.Rendering;
+
+namespace ConsoleRenderer.ConsoleRenderer;
 
 public class ConsoleTileRenderer : ITileRenderer
 {
     private ConsoleDrawableString _drawable;
-    private Position2D _position2D;
+    private Vector2 _position2D;
 
-    public void Init(IDrawable drawable, Position2D position2D)
+    public void Init(IDrawable drawable, Vector2 position)
     {
         if (drawable is not ConsoleDrawableString drawableChar)
         {
@@ -13,7 +16,7 @@ public class ConsoleTileRenderer : ITileRenderer
         }
 
         _drawable = drawableChar;
-        _position2D = position2D;
+        _position2D = position;
     }
 
     public void Draw(bool isTileObject = false)
@@ -26,7 +29,7 @@ public class ConsoleTileRenderer : ITileRenderer
         
         var objectDeviation = isTileObject ? -2 : 0;
         
-        Console.SetCursorPosition(_position2D.X * 3 + objectDeviation, _position2D.Y);
+        Console.SetCursorPosition((int)_position2D.X * 3 + objectDeviation, (int)_position2D.Y);
         
         Console.Write($"{_drawable.ConsoleString}");
         
