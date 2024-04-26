@@ -5,7 +5,7 @@ public interface ITileRenderer
     public void Init(IDrawable drawable, Position2D position2D);
     public void Draw(bool isTileObject = false);
     public ITileRenderer Clone();
-    void ChangeColor(object color);
+    void ChangeColor(object fgColor, object? bgColor = default);
 }
 
 public interface IDrawable
