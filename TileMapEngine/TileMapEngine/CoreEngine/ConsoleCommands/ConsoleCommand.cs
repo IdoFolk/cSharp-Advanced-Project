@@ -1,28 +1,17 @@
 namespace TileMapEngine.CoreEngine.ConsoleCommands;
 
-public struct ConsoleCommand
+public readonly struct ConsoleCommand(string command, string description, bool hasArgument, Action<string> callback)
 {
-    public string Command;
-    public string Description;
-    public bool HasArgument;
-    
-    private Action<string> _callback;
-    
-    public ConsoleCommand(string command, string description, bool hasArgument, Action<string> callback)
-    {
-        Command = command;
-        Description = description;
-        HasArgument = hasArgument;
-        _callback = callback;
-    }
-    
+    public readonly string Command = command;
+    public readonly bool HasArgument = hasArgument;
+
     public override string ToString()
     {
-        return $"{Command}\t{Description}";
+        return $"{Command}\t{description}";
     }
 
     public void Execute(string arg = "")
     {
-        _callback(arg); // Execute the callback with the argument
+        callback(arg); // Execute the callback with the argument
     }
 }

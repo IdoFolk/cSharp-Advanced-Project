@@ -22,7 +22,7 @@ public static class ConsoleGameLoopManager
 
         while (_isRunning)
         {
-            _consoleCommandsManager.WaitForInput();
+            _consoleCommandsManager.HandleUserInput();
         }
     }
 
