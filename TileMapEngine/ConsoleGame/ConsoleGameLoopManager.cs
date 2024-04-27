@@ -43,8 +43,9 @@ public static class ConsoleGameLoopManager
 
     public static ConsoleCommandsManager GetConsoleCommandsManager() => _consoleCommandsManager;
 
-    public static void RefreshGame()
+    public static void RefreshGameViewport()
     {
+        Console.Clear();
         _gameRenderer.RefreshTileMapDraw(GameManager.TileMap);
     }
 

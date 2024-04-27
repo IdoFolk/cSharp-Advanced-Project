@@ -8,20 +8,21 @@ public class TileMap : IEnumerable<Tile>
 {
     private readonly Tile[,] _tiles;
     public int Size => _tiles.Length;
-    
+
     #region Constructors
 
     public TileMap(int columns, int rows)
     {
-        _tiles = new Tile[rows,columns];
+        _tiles = new Tile[rows, columns];
         for (var i = 0; i < rows; i++)
         {
             for (var j = 0; j < columns; j++)
             {
-                _tiles[j,i] = new Tile(j,i);
+                _tiles[j, i] = new Tile(j, i);
             }
         }
     }
+
     public TileMap(Tile[,] tileMatrix) => _tiles = tileMatrix;
 
     #endregion
@@ -30,16 +31,13 @@ public class TileMap : IEnumerable<Tile>
 
     public bool CheckTileExistsInPosition(Position2D position)
     {
-        return this[position] != null;
+        return position.X < _tiles.GetLength(0) &&
+               position.Y < _tiles.GetLength(1);
     }
 
     public bool CheckTileObjectInPosition(Position2D position)
     {
-        if (this[position] != null)
-        {
-            if (this[position].CurrentTileObject != null) return true;
-        }
-        return false;
+        return CheckTileExistsInPosition(position) && this[position].CurrentTileObject != null;
     }
 
     public void AssignRendererToTiles(ITileRenderer tileRenderer, IDrawable drawable)
@@ -47,18 +45,17 @@ public class TileMap : IEnumerable<Tile>
         foreach (var tile in _tiles)
         {
             var renderer = tileRenderer.Clone();
-            renderer.Init(drawable, new Vector2(tile.Position.X,tile.Position.Y));
+            renderer.Init(drawable, new Vector2(tile.Position.X, tile.Position.Y));
             tile.AssignRenderer(renderer);
         }
     }
 
     public void SetTileObjects()
     {
-        
     }
-    
+
     #endregion
-    
+
     #region Indexers
 
     public Tile? this[int index]
@@ -69,7 +66,7 @@ public class TileMap : IEnumerable<Tile>
                 throw new IndexOutOfRangeException();
             var x = index / _tiles.GetLength(0);
             var y = index % _tiles.GetLength(0);
-            return _tiles[x,y];
+            return _tiles[x, y];
         }
         set
         {
@@ -77,19 +74,20 @@ public class TileMap : IEnumerable<Tile>
                 throw new IndexOutOfRangeException();
             var x = index / _tiles.GetLength(0);
             var y = index % _tiles.GetLength(0);
-            _tiles[x,y] = value;
+            _tiles[x, y] = value;
         }
     }
 
-    public Tile? this[int x,int y]
+    public Tile? this[int x, int y]
     {
-        get => _tiles[x,y];
-        set => _tiles[x,y] = value;
+        get => _tiles[x, y];
+        set => _tiles[x, y] = value;
     }
+
     public Tile? this[Position2D position]
     {
-        get => _tiles[position.X,position.Y];
-        set => _tiles[position.X,position.Y] = value;
+        get => _tiles[position.X, position.Y];
+        set => _tiles[position.X, position.Y] = value;
     }
 
     #endregion
@@ -116,14 +114,15 @@ internal struct TileMapEnumerator : IEnumerator<Tile>
     private bool _indexInRange => _index >= 0 && _index < _tileMap.Size;
     public Tile Current => _indexInRange ? _tileMap[_index] : null;
     object IEnumerator.Current => Current;
+
     public TileMapEnumerator(TileMap tileMap)
     {
         _tileMap = tileMap;
         _index = -1;
     }
+
     public void Dispose()
     {
-        
     }
 
     public bool MoveNext()
@@ -136,6 +135,4 @@ internal struct TileMapEnumerator : IEnumerator<Tile>
     {
         throw new NotSupportedException();
     }
-
-    
 }

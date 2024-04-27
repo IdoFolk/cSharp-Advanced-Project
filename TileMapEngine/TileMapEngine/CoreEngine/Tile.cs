@@ -24,7 +24,7 @@ public class Tile : IComparable<Tile>
     public void PlaceTileObject(TileObject.TileObject tileObject)
     {
         CurrentTileObject = tileObject;
-        CurrentTileObject.OnMove += RemoveTileObject;
+        // CurrentTileObject.OnMove += RemoveTileObject;
         OnTileObjectLand?.Invoke(tileObject);
     }
 
@@ -48,11 +48,12 @@ public class Tile : IComparable<Tile>
 
     public void DrawTile()
     {
+        TileRenderer.Draw();
+        
         if (CurrentTileObject != null)
         {
             CurrentTileObject.DrawTileObject();
         }
-        TileRenderer.Draw();
     }
 
     public void HighlightTile(object color)
