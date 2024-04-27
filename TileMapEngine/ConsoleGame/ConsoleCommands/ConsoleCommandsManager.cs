@@ -1,4 +1,7 @@
-namespace TileMapEngine.CoreEngine.ConsoleCommands;
+using TileMapEngine;
+using TileMapEngine.CoreEngine;
+
+namespace ConsoleRenderer.ConsoleCommands;
 
 public class ConsoleCommandsManager
 {
@@ -91,21 +94,48 @@ public class ConsoleCommandsManager
 
     private void HandleSelectCommand(string args)
     {
-        if (!TryGetPositionFromArgumentAndHandleError(args, out var position2D)) { return; }
+        if (!TryGetPositionFromArgumentAndHandleError(args, out var position2D))
+        {
+            return;
+        }
 
-        Console.WriteLine($"Selecting tile object at {position2D.X},{position2D.Y}"); // TODO change
+        if (GameManager.TrySelect(position2D))
+        {
+            Console.WriteLine($"Selecting tile object at {position2D.X},{position2D.Y}");
+        }
+        else
+        {
+            HandleHelpCommand();
+        }
     }
 
     private void HandleDeselectCommand()
     {
-        Console.WriteLine("Deselecting current tile object"); // TODO change
+        if (GameManager.TryDeselect())
+        {
+            Console.WriteLine("Deselecting current tile object");
+        }
+        else
+        {
+            HandleHelpCommand();
+        }
     }
 
     private void HandleMoveCommand(string args)
     {
-        if (!TryGetPositionFromArgumentAndHandleError(args, out var position2D)) { return; }
+        if (!TryGetPositionFromArgumentAndHandleError(args, out var position2D))
+        {
+            return;
+        }
 
-        Console.WriteLine($"Moving the selected tile object to {position2D.X},{position2D.Y}"); // TODO change
+        if (GameManager.TryMove(position2D))
+        {
+            Console.WriteLine($"Moving the selected tile object to {position2D.X},{position2D.Y}");
+        }
+        else
+        {
+            HandleHelpCommand();
+        }
     }
 
     private bool TryGetPositionFromArgumentAndHandleError(string? args, out Position2D position2D)

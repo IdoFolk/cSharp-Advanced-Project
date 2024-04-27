@@ -1,19 +1,22 @@
 using System.Numerics;
+using ConsoleRenderer;
+using ConsoleRenderer.ConsoleCommands;
 using ConsoleRenderer.ConsoleRenderer;
+using TileMapEngine;
 using TileMapEngine.CoreEngine;
-using TileMapEngine.CoreEngine.ConsoleCommands;
+using TileMapEngine.CoreEngine.TileObject;
 
 namespace ChessGame;
 
 public class ChessGame
 {
-    private TileMap _tileMap;
-
     public void RunChessGame()
     {
         ConsoleGameLoopManager.Init();
+        
+        ConsoleGameLoopManager.ConfigTileMap(new TileMap(8,8),ConsoleColor.White,ConsoleColor.Black);
 
-        ConfigTileMap();
+        PlaceTileObjects();
 
         ConfigGameConsoleCommands();
 
@@ -24,32 +27,26 @@ public class ChessGame
         StartGame();
     }
 
-    private void ConfigTileMap()
+    private void PlaceTileObjects()
     {
-        _tileMap = new TileMap(8, 8);
-        var gameRenderer = new ConsoleGameRenderer();
-        gameRenderer.InitGameRenderer(_tileMap);
-        gameRenderer.AssignCheckersPattern(_tileMap, 
-            ConsoleColor.White,
-            ConsoleColor.Black);
-        
+        var tileMap = GameManager.TileMap;
         // TODO remove below, just for testing
         var renderer1 = new ConsoleTileRenderer();
         var consoleString1 = new ConsoleDrawableString("$", ConsoleColor.Yellow);
         renderer1.Init(consoleString1, new Vector2(1, 2));
-        _tileMap[1, 2].PlaceTileObject(new TileObject(renderer1, _tileMap[1, 2]));
+        tileMap[1, 2].PlaceTileObject(new TileObject(renderer1, tileMap[1, 2]));
 
         var renderer2 = new ConsoleTileRenderer();
         var consoleString2 = new ConsoleDrawableString("#", ConsoleColor.Red);
         renderer2.Init(consoleString2, new Vector2(5, 3));
-        _tileMap[5, 3].PlaceTileObject(new TileObject(renderer2, _tileMap[5, 3]));
+        tileMap[5, 3].PlaceTileObject(new TileObject(renderer2, tileMap[5, 3]));
 
         var renderer3 = new ConsoleTileRenderer();
         var consoleString3 = new ConsoleDrawableString("%", ConsoleColor.Green);
         renderer3.Init(consoleString3, new Vector2(2, 4));
-        _tileMap[2, 4].PlaceTileObject(new TileObject(renderer3, _tileMap[2, 4]));
+        tileMap[2, 4].PlaceTileObject(new TileObject(renderer3, tileMap[2, 4]));
         
-        gameRenderer.RefreshTileMapDraw(_tileMap);
+        ConsoleGameLoopManager.RefreshGame();
     }
 
     private void ConfigGameConsoleCommands()

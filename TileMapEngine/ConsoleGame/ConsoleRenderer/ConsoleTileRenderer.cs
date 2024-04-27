@@ -37,6 +37,11 @@ public class ConsoleTileRenderer : ITileRenderer
         Console.BackgroundColor = bgOriginalColor;
     }
 
+    public void Highlight(object color)
+    {
+        
+    }
+
     public ITileRenderer Clone()
     {
         var clone = new ConsoleTileRenderer();

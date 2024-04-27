@@ -21,7 +21,6 @@ public class ConsoleGameRenderer : IGameRenderer<TileMap,ConsoleColor>
 
     public void RefreshTileMapDraw(TileMap tileMap)
     {
-        
         foreach (var mapTile in tileMap)
         {
             mapTile.DrawTile();

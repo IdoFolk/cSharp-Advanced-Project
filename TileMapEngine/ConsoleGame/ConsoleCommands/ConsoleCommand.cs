@@ -1,4 +1,4 @@
-namespace TileMapEngine.CoreEngine.ConsoleCommands;
+namespace ConsoleRenderer.ConsoleCommands;
 
 public readonly struct ConsoleCommand(string command, string description, bool hasArgument, Action<string> callback)
 {

@@ -28,6 +28,20 @@ public class TileMap : IEnumerable<Tile>
 
     #region Public Methods
 
+    public bool CheckTileExistsInPosition(Position2D position)
+    {
+        return this[position] != null;
+    }
+
+    public bool CheckTileObjectInPosition(Position2D position)
+    {
+        if (this[position] != null)
+        {
+            if (this[position].CurrentTileObject != null) return true;
+        }
+        return false;
+    }
+
     public void AssignRendererToTiles(ITileRenderer tileRenderer, IDrawable drawable)
     {
         foreach (var tile in _tiles)
@@ -47,7 +61,7 @@ public class TileMap : IEnumerable<Tile>
     
     #region Indexers
 
-    public Tile this[int index]
+    public Tile? this[int index]
     {
         get
         {
@@ -67,10 +81,15 @@ public class TileMap : IEnumerable<Tile>
         }
     }
 
-    public Tile this[int x,int y]
+    public Tile? this[int x,int y]
     {
         get => _tiles[x,y];
         set => _tiles[x,y] = value;
+    }
+    public Tile? this[Position2D position]
+    {
+        get => _tiles[position.X,position.Y];
+        set => _tiles[position.X,position.Y] = value;
     }
 
     #endregion

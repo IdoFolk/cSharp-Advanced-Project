@@ -1,9 +1,10 @@
 using Renderer.Rendering;
 
-namespace TileMapEngine.CoreEngine;
+namespace TileMapEngine.CoreEngine.TileObject;
 
 public class TileObject : ICloneable
 {
+    public event Action OnMove;
     public ObjectMovement Movement { get; private set; }
     public Tile CurrentTile { get; private set; }
     public Position2D Position => CurrentTile.Position;
@@ -20,6 +21,19 @@ public class TileObject : ICloneable
         TileRenderer = tileRenderer;
         CurrentTile = currentTile;
         Movement = new ObjectMovement(this, movePatterns);
+    }
+
+    public bool TryMove(Tile newTile)
+    {
+        if (Movement.GetPossibleMoves().Contains(newTile.Position))
+        {
+            newTile.PlaceTileObject(this);
+            OnMove?.Invoke();
+
+            return true;
+        }
+
+        return false;
     }
 
     public void DrawTileObject() => TileRenderer.Draw(true);
