@@ -42,6 +42,8 @@ public class ObjectMovement
             {
                 newPosition = MovePositionByMovement(movement, newPosition);
                 availablePositions.Add(newPosition);
+                
+                if (tileMap.CheckTileExistsInPosition(newPosition)) return availablePositions;
             } while (tileMap[newPosition].CurrentTileObject == null);
         }
 

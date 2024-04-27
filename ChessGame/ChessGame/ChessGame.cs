@@ -14,11 +14,11 @@ public class ChessGame
     {
         ConsoleGameLoopManager.Init();
         
-        ConsoleGameLoopManager.ConfigTileMap(new TileMap(8,8),ConsoleColor.White,ConsoleColor.Black);
-
-        PlaceTileObjects();
+        ConfigTileMap();
 
         ConfigGameConsoleCommands();
+
+        ConfigGamePieces();
 
         ConfigGameRules();
 
@@ -27,26 +27,22 @@ public class ChessGame
         StartGame();
     }
 
-    private void PlaceTileObjects()
+    private void ConfigTileMap()
     {
-        var tileMap = GameManager.TileMap;
+        var tileMap = new TileMap(8,8);
+
+        ConsoleGameLoopManager.ConfigTileMap(tileMap,ConsoleColor.White,ConsoleColor.Black);
+        
         // TODO remove below, just for testing
         var renderer1 = new ConsoleTileRenderer();
         var consoleString1 = new ConsoleDrawableString("$", ConsoleColor.Yellow);
-        renderer1.Init(consoleString1, new Vector2(1, 2));
-        tileMap[1, 2].PlaceTileObject(new TileObject(renderer1, tileMap[1, 2]));
-
-        var renderer2 = new ConsoleTileRenderer();
-        var consoleString2 = new ConsoleDrawableString("#", ConsoleColor.Red);
-        renderer2.Init(consoleString2, new Vector2(5, 3));
-        tileMap[5, 3].PlaceTileObject(new TileObject(renderer2, tileMap[5, 3]));
-
-        var renderer3 = new ConsoleTileRenderer();
-        var consoleString3 = new ConsoleDrawableString("%", ConsoleColor.Green);
-        renderer3.Init(consoleString3, new Vector2(2, 4));
-        tileMap[2, 4].PlaceTileObject(new TileObject(renderer3, tileMap[2, 4]));
+        renderer1.Init(consoleString1, new Vector2(2, 2));
+        var movePatterns = new List<MovePattern>();
+        movePatterns.Add(new MovePattern([Movement.Forward], true));
+        tileMap[2, 2].PlaceTileObject(new TileObject(renderer1, tileMap[2, 2], movePatterns));
         
-        ConsoleGameLoopManager.RefreshGame();
+        
+        ConsoleGameLoopManager.RefreshGameViewport();
     }
 
     private void ConfigGameConsoleCommands()
@@ -57,13 +53,23 @@ public class ChessGame
             false,
             _ => Console.WriteLine($"Showing possible moves of selected unit"));
         commandsManager.AddCommand(moves);
+        
+        var refresh = new ConsoleCommand("refresh",
+            "Refresh the game viewport. example: /refresh",
+            false,
+            _ => ConsoleGameLoopManager.RefreshGameViewport());
+        commandsManager.AddCommand(refresh);
     }
 
-    private void ConfigGameRules()
+    private void ConfigGamePieces()
     {
         // Config the game rules:
         // Create the different chess pieces types
         // determine the rules for each piece type
+    }
+    
+    private void ConfigGameRules()
+    {
         // determine the game's win condition
         // determine the game's flow (turns and their logic)
     }

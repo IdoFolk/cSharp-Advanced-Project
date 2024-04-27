@@ -27,7 +27,7 @@ public class ConsoleTileRenderer : ITileRenderer
         Console.ForegroundColor = _drawable.FgConsoleColor;
         Console.BackgroundColor = _drawable.BgConsoleColor;
         
-        var objectDeviation = isTileObject ? -2 : 0;
+        var objectDeviation = isTileObject ? 1 : 0;
         
         Console.SetCursorPosition((int)_position2D.X * 3 + objectDeviation, (int)_position2D.Y);
         
