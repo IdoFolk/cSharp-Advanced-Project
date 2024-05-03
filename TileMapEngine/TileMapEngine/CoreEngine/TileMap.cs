@@ -33,8 +33,8 @@ public class TileMap : IEnumerable<Tile>
 
     public bool CheckTileExistsInPosition(Position2D position)
     {
-        return position.X < _tiles.GetLength(0) &&
-               position.Y < _tiles.GetLength(1);
+        return position.X >= 0 && position.X < _tiles.GetLength(0) &&
+               position.Y >= 0 && position.Y < _tiles.GetLength(1);
     }
 
     public bool CheckTileObjectInPosition(Position2D position)
