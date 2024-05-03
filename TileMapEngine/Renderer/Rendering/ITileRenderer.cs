@@ -9,6 +9,8 @@ public interface ITileRenderer
     public ITileRenderer Clone();
     public void ChangeColor(object fgColor, object? bgColor = default);
     public void UpdatePosition(Vector2 newPosition);
+    public void Highlight(bool redraw = true);
+    public void ResetHighlight(bool redraw = true);
 }
 
 public interface IDrawable

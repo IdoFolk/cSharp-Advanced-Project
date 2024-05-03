@@ -56,11 +56,15 @@ public class Tile : IComparable<Tile>
         }
     }
 
-    public void HighlightTile(object color)
+    public void HighlightTile(bool redraw)
     {
-        TileRenderer.ChangeColor(color);
+        TileRenderer.Highlight(redraw);
     }
 
     public override string ToString() => $"[{Position.ToString()}]";
 
+    public void ResetHighlight(bool redraw)
+    {
+        TileRenderer.ResetHighlight(redraw);
+    }
 }

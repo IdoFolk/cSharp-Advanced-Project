@@ -36,10 +36,10 @@ public class ChessGame
         // TODO remove below, just for testing
         var renderer1 = new ConsoleTileRenderer();
         var consoleString1 = new ConsoleDrawableString("$", ConsoleColor.Yellow);
-        renderer1.Init(consoleString1, new Vector2(2, 2));
+        renderer1.Init(consoleString1, new Vector2(2, 5));
         var movePatterns = new List<MovePattern>();
         movePatterns.Add(new MovePattern([Movement.Forward], true));
-        tileMap[2, 2].PlaceTileObject(new TileObject(renderer1, tileMap[2, 2], movePatterns));
+        tileMap[2, 5].PlaceTileObject(new TileObject(renderer1, tileMap[2, 5], movePatterns));
 
 
         ConsoleGameLoopManager.RefreshGameViewport(true);

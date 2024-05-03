@@ -1,4 +1,3 @@
-using System.ComponentModel.Design;
 using TileMapEngine;
 using TileMapEngine.CoreEngine;
 
@@ -135,7 +134,7 @@ public class ConsoleCommandsManager
 
         if (!GameManager.TryMove(position2D)) return false;
         
-        Console.WriteLine($"Moving the selected tile object to {position2D.X},{position2D.Y}");
+        Console.WriteLine($"Moving the selected tile object to {position2D.X},{position2D.Y} and deselecting the object.");
         return true;
 
     }
