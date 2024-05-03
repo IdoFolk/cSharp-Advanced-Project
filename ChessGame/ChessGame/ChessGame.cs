@@ -2,7 +2,6 @@ using System.Numerics;
 using ConsoleRenderer;
 using ConsoleRenderer.ConsoleCommands;
 using ConsoleRenderer.ConsoleRenderer;
-using TileMapEngine;
 using TileMapEngine.CoreEngine;
 using TileMapEngine.CoreEngine.TileObject;
 
@@ -13,7 +12,7 @@ public class ChessGame
     public void RunChessGame()
     {
         ConsoleGameLoopManager.Init();
-        
+
         ConfigTileMap();
 
         ConfigGameConsoleCommands();
@@ -29,10 +28,11 @@ public class ChessGame
 
     private void ConfigTileMap()
     {
-        var tileMap = new TileMap(8,8);
+        var tileMap = new TileMap(8, 8);
 
-        ConsoleGameLoopManager.ConfigTileMap(tileMap,ConsoleColor.White,ConsoleColor.Black);
-        
+        ConsoleGameLoopManager.ConfigTileMap(tileMap, ConsoleColor.White, ConsoleColor.Black);
+        // ConsoleGameLoopManager.AddTileObject()
+
         // TODO remove below, just for testing
         var renderer1 = new ConsoleTileRenderer();
         var consoleString1 = new ConsoleDrawableString("$", ConsoleColor.Yellow);
@@ -40,8 +40,8 @@ public class ChessGame
         var movePatterns = new List<MovePattern>();
         movePatterns.Add(new MovePattern([Movement.Forward], true));
         tileMap[2, 2].PlaceTileObject(new TileObject(renderer1, tileMap[2, 2], movePatterns));
-        
-        
+
+
         ConsoleGameLoopManager.RefreshGameViewport();
     }
 
@@ -51,13 +51,21 @@ public class ChessGame
         var moves = new ConsoleCommand("moves",
             "Shows the possible moves of the selected unit (if possible). example: /moves",
             false,
-            _ => Console.WriteLine($"Showing possible moves of selected unit"));
+            _ =>
+            {
+                Console.WriteLine($"Showing possible moves of selected unit");
+                return true;
+            });
         commandsManager.AddCommand(moves);
-        
+
         var refresh = new ConsoleCommand("refresh",
             "Refresh the game viewport. example: /refresh",
             false,
-            _ => ConsoleGameLoopManager.RefreshGameViewport());
+            _ =>
+            {
+                ConsoleGameLoopManager.RefreshGameViewport();
+                return true;
+            });
         commandsManager.AddCommand(refresh);
     }
 
@@ -67,7 +75,7 @@ public class ChessGame
         // Create the different chess pieces types
         // determine the rules for each piece type
     }
-    
+
     private void ConfigGameRules()
     {
         // determine the game's win condition
