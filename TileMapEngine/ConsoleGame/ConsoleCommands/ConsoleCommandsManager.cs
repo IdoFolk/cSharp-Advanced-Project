@@ -1,3 +1,4 @@
+using System.ComponentModel.Design;
 using TileMapEngine;
 using TileMapEngine.CoreEngine;
 
@@ -36,10 +37,9 @@ public class ConsoleCommandsManager
         var quit = new ConsoleCommand("quit",
             "Closes the game's application. example: /quit",
             true,
-            _ => ConsoleGameLoopManager.StopGameLoop());
+            _ => HandleOnQuitCommand());
         AddCommand(quit);
     }
-
     public void AddCommand(ConsoleCommand command) => _availableCommands.Add(command);
 
     private void PrintAllCommands()
@@ -74,71 +74,73 @@ public class ConsoleCommandsManager
         HandleHelpCommand();
     }
 
-    private static void HandleCommandInput(ConsoleCommand command, string args)
+    private void HandleCommandInput(ConsoleCommand command, string args)
     {
         if (command.HasArgument)
         {
-            command.Execute(args);
+            if (command.Execute(args)) return;
+            
+            HandleHelpCommand();
             return;
         }
 
-        command.Execute();
+        if (!command.Execute())
+        {
+            HandleHelpCommand();
+        }
     }
 
-    private void HandleHelpCommand()
+    private bool HandleHelpCommand()
     {
         Console.WriteLine($"\nBelow are all the possible commands.\n" +
                           $"Please refer to each command's example to learn how to use it:\n");
         PrintAllCommands();
+        return true;
     }
 
-    private void HandleSelectCommand(string args)
+    private bool HandleSelectCommand(string args)
     {
-        if (!TryGetPositionFromArgumentAndHandleError(args, out var position2D))
+        if (!TryGetPositionFromArgument(args, out var position2D))
         {
-            return;
+            return false;
         }
 
-        if (GameManager.TrySelect(position2D))
-        {
-            Console.WriteLine($"Selecting tile object at {position2D.X},{position2D.Y}");
-        }
-        else
-        {
-            HandleHelpCommand();
-        }
+        if (!GameManager.TrySelect(position2D)) return false;
+        
+        Console.WriteLine($"Selecting tile object at {position2D.X},{position2D.Y}");
+        return true;
     }
 
-    private void HandleDeselectCommand()
+    private bool HandleDeselectCommand()
     {
-        if (GameManager.TryDeselect())
-        {
-            Console.WriteLine("Deselecting current tile object");
-        }
-        else
-        {
-            HandleHelpCommand();
-        }
-    }
+        if (!GameManager.TryDeselect()) return false;
+        
+        Console.WriteLine("Deselecting current tile object");
+        return true;
 
-    private void HandleMoveCommand(string args)
+    }
+    
+    private static bool HandleOnQuitCommand()
     {
-        if (!TryGetPositionFromArgumentAndHandleError(args, out var position2D))
-        {
-            return;
-        }
-
-        if (GameManager.TryMove(position2D))
-        {
-            Console.WriteLine($"Moving the selected tile object to {position2D.X},{position2D.Y}");
-        }
-        else
-        {
-            HandleHelpCommand();
-        }
+        ConsoleGameLoopManager.StopGameLoop();
+        return true;
     }
 
-    private bool TryGetPositionFromArgumentAndHandleError(string? args, out Position2D position2D)
+    private bool HandleMoveCommand(string args)
+    {
+        if (!TryGetPositionFromArgument(args, out var position2D))
+        {
+            return false;
+        }
+
+        if (!GameManager.TryMove(position2D)) return false;
+        
+        Console.WriteLine($"Moving the selected tile object to {position2D.X},{position2D.Y}");
+        return true;
+
+    }
+
+    private bool TryGetPositionFromArgument(string? args, out Position2D position2D)
     {
         var splitArgs = args?.Split(',');
 
@@ -150,7 +152,6 @@ public class ConsoleCommandsManager
             return true;
         }
 
-        HandleHelpCommand();
         position2D = default;
         return false;
     }

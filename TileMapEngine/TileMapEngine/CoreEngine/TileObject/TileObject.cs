@@ -1,3 +1,4 @@
+using System.Numerics;
 using Renderer.Rendering;
 
 namespace TileMapEngine.CoreEngine.TileObject;
@@ -29,6 +30,8 @@ public class TileObject : ICloneable
         {
             OnMove?.Invoke();
             newTile.PlaceTileObject(this);
+            CurrentTile = newTile;
+            TileRenderer.UpdatePosition(new Vector2(Position.X, Position.Y));
 
             return true;
         }
@@ -36,7 +39,7 @@ public class TileObject : ICloneable
         return false;
     }
 
-    public void DrawTileObject() => TileRenderer.Draw(true);
+    public void DrawTileObject(int rowsOffset = 0) => TileRenderer.Draw(rowsOffset,true);
 
     public object Clone()
     {

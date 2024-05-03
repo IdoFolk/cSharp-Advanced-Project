@@ -1,4 +1,5 @@
 namespace TileMapEngine.CoreEngine.TileObject;
+
 public class ObjectMovement
 {
     public MovePattern[] MovePatterns => _movePatterns.ToArray();
@@ -25,7 +26,7 @@ public class ObjectMovement
             if (movePattern.IsDirection)
                 possibleMoves.AddRange(GetMovesByDirection(movePattern));
             else
-                possibleMoves.Add(GetMovesByMovements(movePattern));
+                possibleMoves.Add(GetMovesByMovePattern(movePattern));
         }
 
         return possibleMoves.ToArray();
@@ -42,54 +43,34 @@ public class ObjectMovement
             {
                 newPosition = MovePositionByMovement(movement, newPosition);
                 availablePositions.Add(newPosition);
-                
-                if (tileMap.CheckTileExistsInPosition(newPosition)) return availablePositions;
+
+                if (!tileMap.CheckTileExistsInPosition(newPosition)) return availablePositions;
             } while (tileMap[newPosition].CurrentTileObject == null);
         }
 
         return availablePositions;
     }
 
-    private Position2D GetMovesByMovements(MovePattern movePattern)
+    private Position2D GetMovesByMovePattern(MovePattern movePattern)
     {
-        Position2D newPosition = _owner.Position;
-        foreach (Movement movement in movePattern.Movement)
-        {
-            newPosition = MovePositionByMovement(movement, newPosition);
-        }
-
-        return newPosition;
+        return movePattern.Movement.Aggregate(_owner.Position,
+            (current, movement) => MovePositionByMovement(movement, current));
     }
 
     private static Position2D MovePositionByMovement(Movement movement, Position2D newPosition)
     {
-        switch (movement)
+        newPosition += movement switch
         {
-            case Movement.Left:
-                newPosition += new Position2D(-1, 0);
-                break;
-            case Movement.Right:
-                newPosition += new Position2D(1, 0);
-                break;
-            case Movement.Forward:
-                newPosition += new Position2D(0, -1);
-                break;
-            case Movement.Back:
-                newPosition += new Position2D(0, 1);
-                break;
-            case Movement.Forward_Right:
-                newPosition += new Position2D(1, -1);
-                break;
-            case Movement.Forward_Left:
-                newPosition += new Position2D(-1, -1);
-                break;
-            case Movement.Back_Right:
-                newPosition += new Position2D(1, 1);
-                break;
-            case Movement.Back_Left:
-                newPosition += new Position2D(-1, 1);
-                break;
-        }
+            Movement.Left => new Position2D(-1, 0),
+            Movement.Right => new Position2D(1, 0),
+            Movement.Forward => new Position2D(0, -1),
+            Movement.Back => new Position2D(0, 1),
+            Movement.Forward_Right => new Position2D(1, -1),
+            Movement.Forward_Left => new Position2D(-1, -1),
+            Movement.Back_Right => new Position2D(1, 1),
+            Movement.Back_Left => new Position2D(-1, 1),
+            _ => throw new ArgumentOutOfRangeException(nameof(movement), movement, null)
+        };
 
         return newPosition;
     }

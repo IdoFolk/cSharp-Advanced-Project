@@ -8,25 +8,44 @@ public class ConsoleGameRenderer : IGameRenderer<TileMap,ConsoleColor>
 
     public void InitGameRenderer(TileMap tileMap)
     {
+        // Console.SetWindowSize(1000, 1000);
+        Console.Clear();
+        
         var tileDrawable = new ConsoleDrawableString("[ ]", ConsoleColor.White);
         var tileRenderer = new ConsoleTileRenderer();
         tileMap.AssignRendererToTiles(tileRenderer, tileDrawable);
-
-        Console.Clear();
+        
         //Console.SetWindowSize(width * 10, height * 10);Vector2
         Console.CursorVisible = false;
 
-        RefreshTileMapDraw(tileMap);
-    }
-
-    public void RefreshTileMapDraw(TileMap tileMap)
-    {
         foreach (var mapTile in tileMap)
         {
-            mapTile.DrawTile();
+            mapTile.DrawTile(0);
         }
 
         Console.WriteLine("\n");
+    }
+
+    public void RefreshTileMapDraw(TileMap tileMap, bool clearConsole = false)
+    {
+        if (clearConsole)
+        {
+            Console.Clear();
+        }
+        
+        var rowsOffset = Console.GetCursorPosition().Top;
+
+        if (Console.BufferHeight < rowsOffset + tileMap.GetHeight())
+        {
+            Console.SetBufferSize(Console.BufferWidth, rowsOffset + tileMap.GetHeight());
+        }
+        
+        foreach (var mapTile in tileMap)
+        {
+            mapTile.DrawTile(rowsOffset);
+        }
+
+        Console.WriteLine();
     }
 
     public void AssignCheckersPattern(TileMap tileMap, ConsoleColor oddColor, ConsoleColor evenColor,

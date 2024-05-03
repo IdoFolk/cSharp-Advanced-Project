@@ -43,10 +43,9 @@ public static class ConsoleGameLoopManager
 
     public static ConsoleCommandsManager GetConsoleCommandsManager() => _consoleCommandsManager;
 
-    public static void RefreshGameViewport()
+    public static void RefreshGameViewport(bool clearConsole = false)
     {
-        Console.Clear();
-        _gameRenderer.RefreshTileMapDraw(GameManager.TileMap);
+        _gameRenderer.RefreshTileMapDraw(GameManager.TileMap, clearConsole);
     }
 
     public static void SetSelectedTileObject(TileMapEngine.CoreEngine.TileObject.TileObject tileObject)
@@ -60,4 +59,9 @@ public static class ConsoleGameLoopManager
         _consoleCommandsManager = new ConsoleCommandsManager();
         _consoleCommandsManager.Init();
     }
+}
+
+public struct ConsoleTileObjectConfig
+{
+    
 }
