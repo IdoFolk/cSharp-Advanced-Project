@@ -19,7 +19,7 @@ public class ConsoleTileRenderer : ITileRenderer
         _position2D = position;
     }
 
-    public void Draw(bool isTileObject = false)
+    public void Draw(int rowsOffset, bool isTileObject = false)
     {
         var fgOriginalColor = Console.ForegroundColor;
         var bgOriginalColor = Console.BackgroundColor;
@@ -29,7 +29,7 @@ public class ConsoleTileRenderer : ITileRenderer
         
         var objectDeviation = isTileObject ? 1 : 0;
         
-        Console.SetCursorPosition((int)_position2D.X * 3 + objectDeviation, (int)_position2D.Y);
+        Console.SetCursorPosition((int)_position2D.X * 3 + objectDeviation, (int)_position2D.Y + rowsOffset);
         
         Console.Write($"{_drawable.ConsoleString}");
         
@@ -63,5 +63,10 @@ public class ConsoleTileRenderer : ITileRenderer
 
         _drawable.FgConsoleColor = fgConsoleColor;
         _drawable.BgConsoleColor = bgConsoleColor;
+    }
+
+    public void UpdatePosition(Vector2 newPosition)
+    {
+        _position2D = newPosition;
     }
 }

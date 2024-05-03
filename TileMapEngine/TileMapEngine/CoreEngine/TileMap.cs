@@ -28,6 +28,8 @@ public class TileMap : IEnumerable<Tile>
     #endregion
 
     #region Public Methods
+    
+    public int GetHeight() => _tiles.GetLength(1);
 
     public bool CheckTileExistsInPosition(Position2D position)
     {

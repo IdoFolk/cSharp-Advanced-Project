@@ -46,13 +46,13 @@ public class Tile : IComparable<Tile>
         }
     }
 
-    public void DrawTile()
+    public void DrawTile(int rowsOffset = 0)
     {
-        TileRenderer.Draw();
+        TileRenderer.Draw(rowsOffset);
         
         if (CurrentTileObject != null)
         {
-            CurrentTileObject.DrawTileObject();
+            CurrentTileObject.DrawTileObject(rowsOffset);
         }
     }
 

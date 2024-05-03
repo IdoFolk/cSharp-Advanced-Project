@@ -1,3 +1,4 @@
+using Renderer.Rendering;
 using TileMapEngine.CoreEngine;
 using TileMapEngine.CoreEngine.TileObject;
 
@@ -54,7 +55,7 @@ public static class GameManager
         if (SelectedTileObject != null && SelectedTileObject.TryMove(TileMap[position]))
         {
             OnMoveCommand?.Invoke(SelectedTileObject);
-            // TODO We need to refresh the screen
+            
             return true;
         }
         return false;

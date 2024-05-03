@@ -42,7 +42,7 @@ public class ChessGame
         tileMap[2, 2].PlaceTileObject(new TileObject(renderer1, tileMap[2, 2], movePatterns));
 
 
-        ConsoleGameLoopManager.RefreshGameViewport();
+        ConsoleGameLoopManager.RefreshGameViewport(true);
     }
 
     private void ConfigGameConsoleCommands()
