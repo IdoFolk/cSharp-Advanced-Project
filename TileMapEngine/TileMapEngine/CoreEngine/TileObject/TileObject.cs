@@ -27,8 +27,8 @@ public class TileObject : ICloneable
     {
         if (Movement.GetPossibleMoves().Contains(newTile.Position))
         {
-            newTile.PlaceTileObject(this);
             OnMove?.Invoke();
+            newTile.PlaceTileObject(this);
 
             return true;
         }

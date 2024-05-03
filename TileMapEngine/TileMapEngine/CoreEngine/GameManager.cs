@@ -5,9 +5,9 @@ namespace TileMapEngine;
 
 public static class GameManager
 {
-    public static event Action<TileObject> OnSelect;
-    public static event Action<TileObject> OnDeselect;
-    public static event Action<TileObject> OnMove;
+    public static event Action<TileObject> OnSelectCommand;
+    public static event Action<TileObject> OnDeselectCommand;
+    public static event Action<TileObject> OnMoveCommand;
     public static TileMap TileMap { get; private set; }
     public static TileObject? SelectedTileObject { get; private set; }
 
@@ -21,7 +21,15 @@ public static class GameManager
         if (TileMap.CheckTileObjectInPosition(position))
         {
             SelectedTileObject = TileMap[position]?.CurrentTileObject;
-            OnSelect?.Invoke(SelectedTileObject);
+            foreach (var possibleMove in SelectedTileObject.Movement.GetPossibleMoves())
+            {
+                if (TileMap.CheckTileExistsInPosition(possibleMove))
+                {
+                    TileMap[possibleMove].HighlightTile(ConsoleColor.Cyan);
+                }
+            }
+            OnSelectCommand?.Invoke(SelectedTileObject);
+            // TODO We need to refresh the screen
             return true;
         }
 
@@ -31,8 +39,9 @@ public static class GameManager
     {
         if (SelectedTileObject != null)
         {
-            OnDeselect?.Invoke(SelectedTileObject);
+            OnDeselectCommand?.Invoke(SelectedTileObject);
             SelectedTileObject = null;
+            // TODO We need to refresh the screen
             return true;
         }
 
@@ -44,7 +53,8 @@ public static class GameManager
         
         if (SelectedTileObject != null && SelectedTileObject.TryMove(TileMap[position]))
         {
-            OnMove?.Invoke(SelectedTileObject);
+            OnMoveCommand?.Invoke(SelectedTileObject);
+            // TODO We need to refresh the screen
             return true;
         }
         return false;
