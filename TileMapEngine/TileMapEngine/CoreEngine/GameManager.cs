@@ -1,7 +1,3 @@
-using System.Numerics;
-using Renderer.Rendering;
-using TileMapEngine.CoreEngine.TileObject;
-
 namespace TileMapEngine.CoreEngine;
 
 public static class GameManager
@@ -49,7 +45,6 @@ public static class GameManager
         }
 
         OnSelectCommand?.Invoke(SelectedTileObject);
-        RefreshGameViewport(false);
         return true;
     }
 
@@ -59,7 +54,6 @@ public static class GameManager
 
         OnDeselectCommand?.Invoke(SelectedTileObject);
         ClearSelectedObject();
-        RefreshGameViewport(false);
         return true;
     }
 
@@ -71,7 +65,6 @@ public static class GameManager
 
         ClearSelectedObject();
         OnMoveCommand?.Invoke(SelectedTileObject);
-        RefreshGameViewport(false);
         return true;
     }
 

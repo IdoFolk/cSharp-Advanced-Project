@@ -1,6 +1,5 @@
 using ConsoleRenderer.ConsoleCommands;
 using ConsoleRenderer.ConsoleRenderer;
-using TileMapEngine;
 using TileMapEngine.CoreEngine;
 
 namespace ConsoleRenderer;

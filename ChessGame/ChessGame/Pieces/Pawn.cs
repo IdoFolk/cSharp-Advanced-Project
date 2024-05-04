@@ -7,7 +7,7 @@ namespace ChessGame.Pieces;
 
 public class Pawn : ChessGamePiece
 {
-    private static ConsoleDrawableString _drawableString = new("$", ConsoleColor.White);
+    private static ConsoleDrawableString _drawableString = new("P");
     private static readonly List<MovePattern> MovePatterns = [
         new MovePattern([TileMapEngine.CoreEngine.TileObject.Movement.Forward], false),
     ];

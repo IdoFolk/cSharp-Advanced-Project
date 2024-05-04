@@ -1,4 +1,3 @@
-using TileMapEngine;
 using TileMapEngine.CoreEngine;
 
 namespace ConsoleRenderer.ConsoleCommands;
@@ -39,6 +38,7 @@ public class ConsoleCommandsManager
             _ => HandleOnQuitCommand());
         AddCommand(quit);
     }
+
     public void AddCommand(ConsoleCommand command) => _availableCommands.Add(command);
 
     private void PrintAllCommands()
@@ -78,7 +78,7 @@ public class ConsoleCommandsManager
         if (command.HasArgument)
         {
             if (command.Execute(args)) return;
-            
+
             HandleHelpCommand();
             return;
         }
@@ -96,6 +96,7 @@ public class ConsoleCommandsManager
         {
             text += $"Something went wrong with your command!\n";
         }
+
         Console.WriteLine(text +
                           "Below are all the possible commands.\n" +
                           "Please refer to each command's example to learn how to use it:\n");
@@ -111,20 +112,21 @@ public class ConsoleCommandsManager
         }
 
         if (!GameManager.TrySelect(position2D)) return false;
-        
-        Console.WriteLine($"Selected tile object at {position2D.X},{position2D.Y}");
+
+        Console.WriteLine($"Selected tile object at {position2D.X},{position2D.Y}\n");
+        GameManager.RefreshGameViewport(false);
         return true;
     }
 
     private bool HandleDeselectCommand()
     {
         if (!GameManager.TryDeselect()) return false;
-        
-        Console.WriteLine("Deselected current tile object");
-        return true;
 
+        Console.WriteLine("Deselected current tile object\n");
+        GameManager.RefreshGameViewport(false);
+        return true;
     }
-    
+
     private static bool HandleOnQuitCommand()
     {
         GameManager.StopGameLoop();
@@ -139,10 +141,11 @@ public class ConsoleCommandsManager
         }
 
         if (!GameManager.TryMove(position2D)) return false;
-        
-        Console.WriteLine($"Moved the selected tile object to {position2D.X},{position2D.Y} and deselected the object.");
-        return true;
 
+        Console.WriteLine(
+            $"Moved the selected tile object to {position2D.X},{position2D.Y} and deselected the object.\n");
+        GameManager.RefreshGameViewport(false);
+        return true;
     }
 
     private bool TryGetPositionFromArgument(string? args, out Position2D position2D)
