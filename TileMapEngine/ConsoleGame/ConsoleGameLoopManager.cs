@@ -5,31 +5,27 @@ using TileMapEngine.CoreEngine;
 
 namespace ConsoleRenderer;
 
-public static class ConsoleGameLoopManager 
+public class ConsoleGameLoopManager : IGameLoopManager
 {
-    public static event Action<TileMapEngine.CoreEngine.TileObject.TileObject> OnSelectedTileObjectChanged;
+    public TileMapEngine.CoreEngine.TileObject.TileObject CurrentSelectedTileObject;
+    private ConsoleGameRenderer _gameRenderer;
     
-    public static TileMapEngine.CoreEngine.TileObject.TileObject CurrentSelectedTileObject;
-    private static ConsoleGameRenderer _gameRenderer;
-    
-    private static ConsoleCommandsManager _consoleCommandsManager;
+    private ConsoleCommandsManager _consoleCommandsManager;
 
-    private static bool _isRunning;
+    private bool _isRunning;
 
-    public static void Init()
+    public void Init(TileMap tileMap)
     {
+        ConfigTileMap(tileMap);
         ConfigConsoleCommands();
     }
 
-    public static void ConfigTileMap(TileMap tileMap, ConsoleColor oddColor, ConsoleColor evenColor)
+    public void AssignCheckersPattern(TileMap tileMap, ConsoleColor oddColor, ConsoleColor evenColor)
     {
-        _gameRenderer = new ConsoleGameRenderer();
-        _gameRenderer.InitGameRenderer(tileMap);
         _gameRenderer.AssignCheckersPattern(tileMap, oddColor, evenColor);
-        GameManager.Init(tileMap);
     }
 
-    public static void StartGameLoop()
+    public void StartGameLoop()
     {
         _isRunning = true;
 
@@ -39,22 +35,27 @@ public static class ConsoleGameLoopManager
         }
     }
 
-    public static void StopGameLoop() => _isRunning = false;
+    public void StopGameLoop() => _isRunning = false;
 
-    public static ConsoleCommandsManager GetConsoleCommandsManager() => _consoleCommandsManager;
+    public ConsoleCommandsManager GetConsoleCommandsManager() => _consoleCommandsManager;
 
-    public static void RefreshGameViewport(bool clearConsole = false)
+    public void RefreshGameViewport(bool clearConsole = false)
     {
         _gameRenderer.RefreshTileMapDraw(GameManager.TileMap, clearConsole);
     }
 
-    public static void SetSelectedTileObject(TileMapEngine.CoreEngine.TileObject.TileObject tileObject)
+    public void SetSelectedTileObject(TileMapEngine.CoreEngine.TileObject.TileObject tileObject)
     {
         CurrentSelectedTileObject = tileObject;
-        OnSelectedTileObjectChanged(CurrentSelectedTileObject);
+    }
+    
+    private void ConfigTileMap(TileMap tileMap)
+    {
+        _gameRenderer = new ConsoleGameRenderer();
+        _gameRenderer.InitGameRenderer(tileMap);
     }
 
-    private static void ConfigConsoleCommands()
+    private void ConfigConsoleCommands()
     {
         _consoleCommandsManager = new ConsoleCommandsManager();
         _consoleCommandsManager.Init();

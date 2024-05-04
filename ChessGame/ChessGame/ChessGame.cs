@@ -2,6 +2,7 @@ using System.Numerics;
 using ConsoleRenderer;
 using ConsoleRenderer.ConsoleCommands;
 using ConsoleRenderer.ConsoleRenderer;
+using TileMapEngine;
 using TileMapEngine.CoreEngine;
 using TileMapEngine.CoreEngine.TileObject;
 
@@ -11,8 +12,6 @@ public class ChessGame
 {
     public void RunChessGame()
     {
-        ConsoleGameLoopManager.Init();
-
         ConfigTileMap();
 
         ConfigGameConsoleCommands();
@@ -30,8 +29,9 @@ public class ChessGame
     {
         var tileMap = new TileMap(8, 8);
 
-        ConsoleGameLoopManager.ConfigTileMap(tileMap, ConsoleColor.White, ConsoleColor.Black);
-        // ConsoleGameLoopManager.AddTileObject()
+        var consoleGameLoop = new ConsoleGameLoopManager();
+        GameManager.Init(tileMap, consoleGameLoop);
+        consoleGameLoop.AssignCheckersPattern(tileMap, ConsoleColor.White, ConsoleColor.Black);
 
         // TODO remove below, just for testing
         var renderer1 = new ConsoleTileRenderer();
@@ -42,12 +42,18 @@ public class ChessGame
         tileMap[2, 5].PlaceTileObject(new TileObject(renderer1, tileMap[2, 5], movePatterns));
 
 
-        ConsoleGameLoopManager.RefreshGameViewport(true);
+        GameManager.RefreshGameViewport(true);
     }
 
     private void ConfigGameConsoleCommands()
     {
-        var commandsManager = ConsoleGameLoopManager.GetConsoleCommandsManager();
+        var consoleGameLoop = GameManager.GetGameLoopManager() as ConsoleGameLoopManager;
+        if (consoleGameLoop == null)
+        {
+            return;
+        }
+        
+        var commandsManager = consoleGameLoop.GetConsoleCommandsManager();
         var moves = new ConsoleCommand("moves",
             "Shows the possible moves of the selected unit (if possible). example: /moves",
             false,
@@ -63,7 +69,7 @@ public class ChessGame
             false,
             _ =>
             {
-                ConsoleGameLoopManager.RefreshGameViewport();
+                GameManager.RefreshGameViewport(false);
                 return true;
             });
         commandsManager.AddCommand(refresh);
@@ -92,6 +98,6 @@ public class ChessGame
 
     private void StartGame()
     {
-        ConsoleGameLoopManager.StartGameLoop();
+        GameManager.GetGameLoopManager().StartGameLoop();
     }
 }

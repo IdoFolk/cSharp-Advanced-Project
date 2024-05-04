@@ -121,7 +121,7 @@ public class ConsoleCommandsManager
     
     private static bool HandleOnQuitCommand()
     {
-        ConsoleGameLoopManager.StopGameLoop();
+        GameManager.StopGameLoop();
         return true;
     }
 

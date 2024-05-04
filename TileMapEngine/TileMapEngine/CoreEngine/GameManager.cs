@@ -11,11 +11,17 @@ public static class GameManager
     public static TileMap TileMap { get; private set; }
     private static TileObject? SelectedTileObject { get; set; }
     private static List<Tile> CurrentHighlightedTiles { get; set; }
-    public static void Init(TileMap tileMap)
+
+    private static IGameLoopManager _gameLoopManager;
+    public static void Init(TileMap tileMap, IGameLoopManager gameLoopManager)
     {
         TileMap = tileMap;
         CurrentHighlightedTiles = new List<Tile>();
+        _gameLoopManager = gameLoopManager;
+        _gameLoopManager.Init(tileMap);
     }
+
+    public static IGameLoopManager GetGameLoopManager() => _gameLoopManager;
 
     public static bool TrySelect(Position2D position, bool highlightPossibleMoveTiles = true)
     {
@@ -61,7 +67,8 @@ public static class GameManager
             
         return true;
     }
-
+    public static void RefreshGameViewport(bool clear) => _gameLoopManager.RefreshGameViewport(clear);
+    public static void StopGameLoop() => _gameLoopManager.StopGameLoop();
     private static void ClearSelectedObject()
     {
         SelectedTileObject = null;
@@ -72,4 +79,5 @@ public static class GameManager
         
         CurrentHighlightedTiles.Clear();
     }
+
 }
