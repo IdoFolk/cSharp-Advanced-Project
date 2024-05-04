@@ -1,7 +1,9 @@
 using System.Numerics;
+using ChessGame.Pieces;
 using ConsoleRenderer;
 using ConsoleRenderer.ConsoleCommands;
 using ConsoleRenderer.ConsoleRenderer;
+using TileMapEngine;
 using TileMapEngine.CoreEngine;
 using TileMapEngine.CoreEngine.TileObject;
 
@@ -9,10 +11,9 @@ namespace ChessGame;
 
 public class ChessGame
 {
+    private GamePiecesManager _gamePiecesManager;
     public void RunChessGame()
     {
-        ConsoleGameLoopManager.Init();
-
         ConfigTileMap();
 
         ConfigGameConsoleCommands();
@@ -30,24 +31,19 @@ public class ChessGame
     {
         var tileMap = new TileMap(8, 8);
 
-        ConsoleGameLoopManager.ConfigTileMap(tileMap, ConsoleColor.White, ConsoleColor.Black);
-        // ConsoleGameLoopManager.AddTileObject()
-
-        // TODO remove below, just for testing
-        var renderer1 = new ConsoleTileRenderer();
-        var consoleString1 = new ConsoleDrawableString("$", ConsoleColor.Yellow);
-        renderer1.Init(consoleString1, new Vector2(2, 5));
-        var movePatterns = new List<MovePattern>();
-        movePatterns.Add(new MovePattern([Movement.Forward], true));
-        tileMap[2, 5].PlaceTileObject(new TileObject(renderer1, tileMap[2, 5], movePatterns));
-
-
-        ConsoleGameLoopManager.RefreshGameViewport(true);
+        var consoleGameLoop = new ConsoleGameLoopManager();
+        GameManager.InitTileMap(tileMap, consoleGameLoop);
+        consoleGameLoop.AssignCheckersPattern(tileMap, ConsoleColor.White, ConsoleColor.Black);
     }
 
     private void ConfigGameConsoleCommands()
     {
-        var commandsManager = ConsoleGameLoopManager.GetConsoleCommandsManager();
+        if (GameManager.GetGameLoopManager() is not ConsoleGameLoopManager consoleGameLoop)
+        {
+            return;
+        }
+        
+        var commandsManager = consoleGameLoop.GetConsoleCommandsManager();
         var moves = new ConsoleCommand("moves",
             "Shows the possible moves of the selected unit (if possible). example: /moves",
             false,
@@ -63,7 +59,7 @@ public class ChessGame
             false,
             _ =>
             {
-                ConsoleGameLoopManager.RefreshGameViewport();
+                GameManager.RefreshGameViewport(false);
                 return true;
             });
         commandsManager.AddCommand(refresh);
@@ -74,6 +70,8 @@ public class ChessGame
         // Config the game rules:
         // Create the different chess pieces types
         // determine the rules for each piece type
+        _gamePiecesManager = new GamePiecesManager();
+        _gamePiecesManager.Init();
     }
 
     private void ConfigGameRules()
@@ -92,6 +90,6 @@ public class ChessGame
 
     private void StartGame()
     {
-        ConsoleGameLoopManager.StartGameLoop();
+        GameManager.GetGameLoopManager()?.StartGameLoop();
     }
 }

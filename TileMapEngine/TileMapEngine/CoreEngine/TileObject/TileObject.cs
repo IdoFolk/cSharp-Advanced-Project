@@ -5,26 +5,27 @@ namespace TileMapEngine.CoreEngine.TileObject;
 
 public class TileObject : ICloneable
 {
-    public event Action OnMove;
+    public event Action? OnMove;
     public ObjectMovement Movement { get; private set; }
-    public Tile CurrentTile { get; private set; }
     public Position2D Position => CurrentTile.Position;
-    public ITileRenderer TileRenderer { get; }
+    private Tile? CurrentTile { get; set; }
+    private ITileRenderer TileRenderer { get; }
 
-    public TileObject(ITileRenderer tileRenderer, Tile currentTile)
+    protected TileObject(ITileRenderer tileRenderer, Tile? currentTile)
     {
         TileRenderer = tileRenderer;
         CurrentTile = currentTile;
         Movement = new ObjectMovement(this);
     }
-    public TileObject(ITileRenderer tileRenderer, Tile currentTile, List<MovePattern> movePatterns)
+
+    protected TileObject(ITileRenderer tileRenderer, Tile? currentTile, List<MovePattern> movePatterns)
     {
         TileRenderer = tileRenderer;
         CurrentTile = currentTile;
         Movement = new ObjectMovement(this, movePatterns);
     }
 
-    public bool TryMove(Tile newTile)
+    public bool TryMove(Tile? newTile)
     {
         if (Movement.GetPossibleMoves().Contains(newTile.Position))
         {

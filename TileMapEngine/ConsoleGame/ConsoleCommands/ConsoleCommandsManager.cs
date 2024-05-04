@@ -12,7 +12,7 @@ public class ConsoleCommandsManager
         var help = new ConsoleCommand("help",
             "Show all available commands. example: /help",
             false,
-            _ => HandleHelpCommand());
+            _ => HandleHelpCommand(false));
         AddCommand(help);
 
         var select = new ConsoleCommand("select",
@@ -89,10 +89,16 @@ public class ConsoleCommandsManager
         }
     }
 
-    private bool HandleHelpCommand()
+    private bool HandleHelpCommand(bool isFallback = true)
     {
-        Console.WriteLine($"\nBelow are all the possible commands.\n" +
-                          $"Please refer to each command's example to learn how to use it:\n");
+        var text = "\n";
+        if (isFallback)
+        {
+            text += $"Something went wrong with your command!\n";
+        }
+        Console.WriteLine(text +
+                          "Below are all the possible commands.\n" +
+                          "Please refer to each command's example to learn how to use it:\n");
         PrintAllCommands();
         return true;
     }
@@ -106,7 +112,7 @@ public class ConsoleCommandsManager
 
         if (!GameManager.TrySelect(position2D)) return false;
         
-        Console.WriteLine($"Selecting tile object at {position2D.X},{position2D.Y}");
+        Console.WriteLine($"Selected tile object at {position2D.X},{position2D.Y}");
         return true;
     }
 
@@ -114,14 +120,14 @@ public class ConsoleCommandsManager
     {
         if (!GameManager.TryDeselect()) return false;
         
-        Console.WriteLine("Deselecting current tile object");
+        Console.WriteLine("Deselected current tile object");
         return true;
 
     }
     
     private static bool HandleOnQuitCommand()
     {
-        ConsoleGameLoopManager.StopGameLoop();
+        GameManager.StopGameLoop();
         return true;
     }
 
@@ -134,7 +140,7 @@ public class ConsoleCommandsManager
 
         if (!GameManager.TryMove(position2D)) return false;
         
-        Console.WriteLine($"Moving the selected tile object to {position2D.X},{position2D.Y} and deselecting the object.");
+        Console.WriteLine($"Moved the selected tile object to {position2D.X},{position2D.Y} and deselected the object.");
         return true;
 
     }
