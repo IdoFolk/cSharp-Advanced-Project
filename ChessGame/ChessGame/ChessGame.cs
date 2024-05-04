@@ -1,11 +1,7 @@
-using System.Numerics;
 using ChessGame.Pieces;
 using ConsoleRenderer;
 using ConsoleRenderer.ConsoleCommands;
-using ConsoleRenderer.ConsoleRenderer;
-using TileMapEngine;
 using TileMapEngine.CoreEngine;
-using TileMapEngine.CoreEngine.TileObject;
 
 namespace ChessGame;
 
@@ -55,7 +51,7 @@ public class ChessGame
         commandsManager.AddCommand(moves);
 
         var refresh = new ConsoleCommand("refresh",
-            "Refresh the game viewport. example: /refresh",
+            "Re-draws the game updated game state onto the viewport. example: /refresh",
             false,
             _ =>
             {
@@ -67,9 +63,6 @@ public class ChessGame
 
     private void ConfigGamePieces()
     {
-        // Config the game rules:
-        // Create the different chess pieces types
-        // determine the rules for each piece type
         _gamePiecesManager = new GamePiecesManager();
         _gamePiecesManager.Init();
     }

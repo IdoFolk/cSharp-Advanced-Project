@@ -1,27 +1,17 @@
 namespace TileMapEngine.CoreEngine.TileObject;
 
-public class ObjectMovement
+public class ObjectMovement(TileObject owner, List<MovePattern> movePatterns)
 {
-    public MovePattern[] MovePatterns => _movePatterns.ToArray();
-    private readonly List<MovePattern> _movePatterns;
-    private TileObject _owner;
+    public MovePattern[] MovePatterns => movePatterns.ToArray();
 
-    public ObjectMovement(TileObject owner)
+    public ObjectMovement(TileObject owner) : this(owner, [])
     {
-        _owner = owner;
-        _movePatterns = new();
     }
 
-    public ObjectMovement(TileObject owner, List<MovePattern> movePatterns)
-    {
-        _owner = owner;
-        _movePatterns = movePatterns;
-    }
-
-    public Position2D[] GetPossibleMoves() //return a tile object if encountered
+    public IEnumerable<Position2D> GetPossibleMoves() //return a tile object if encountered
     {
         List<Position2D> possibleMoves = new();
-        foreach (MovePattern movePattern in _movePatterns)
+        foreach (var movePattern in movePatterns)
         {
             if (movePattern.IsDirection)
                 possibleMoves.AddRange(GetMovesByDirection(movePattern));
@@ -34,9 +24,9 @@ public class ObjectMovement
 
     private List<Position2D> GetMovesByDirection(MovePattern movePattern)
     {
-        Position2D newPosition = _owner.Position;
-        List<Position2D> availablePositions = new();
-        TileMap? tileMap = GameManager.TileMap;
+        var newPosition = owner.Position;
+        List<Position2D> availablePositions = [];
+        var tileMap = GameManager.TileMap;
         foreach (var movement in movePattern.Movement)
         {
             do
@@ -44,8 +34,8 @@ public class ObjectMovement
                 newPosition = MovePositionByMovement(movement, newPosition);
                 availablePositions.Add(newPosition);
 
-                if (!tileMap.CheckTileExistsInPosition(newPosition)) return availablePositions;
-            } while (tileMap[newPosition].CurrentTileObject == null);
+                if (tileMap != null && !tileMap.CheckTileExistsInPosition(newPosition)) return availablePositions;
+            } while (tileMap?[newPosition]?.CurrentTileObject == null);
         }
 
         return availablePositions;
@@ -53,7 +43,7 @@ public class ObjectMovement
 
     private Position2D GetMovesByMovePattern(MovePattern movePattern)
     {
-        return movePattern.Movement.Aggregate(_owner.Position,
+        return movePattern.Movement.Aggregate(owner.Position,
             (current, movement) => MovePositionByMovement(movement, current));
     }
 
@@ -65,10 +55,10 @@ public class ObjectMovement
             Movement.Right => new Position2D(1, 0),
             Movement.Forward => new Position2D(0, -1),
             Movement.Back => new Position2D(0, 1),
-            Movement.Forward_Right => new Position2D(1, -1),
-            Movement.Forward_Left => new Position2D(-1, -1),
-            Movement.Back_Right => new Position2D(1, 1),
-            Movement.Back_Left => new Position2D(-1, 1),
+            Movement.ForwardRight => new Position2D(1, -1),
+            Movement.ForwardLeft => new Position2D(-1, -1),
+            Movement.BackRight => new Position2D(1, 1),
+            Movement.BackLeft => new Position2D(-1, 1),
             _ => throw new ArgumentOutOfRangeException(nameof(movement), movement, null)
         };
 
@@ -77,12 +67,12 @@ public class ObjectMovement
 
     public void AddMovePattern(MovePattern movePattern)
     {
-        _movePatterns.Add(movePattern);
+        movePatterns.Add(movePattern);
     }
 
     public void RemoveMovePattern(MovePattern movePattern)
     {
-        _movePatterns.Remove(movePattern);
+        movePatterns.Remove(movePattern);
     }
 }
 
@@ -99,8 +89,8 @@ public enum Movement
     Right,
     Forward,
     Back,
-    Forward_Right,
-    Forward_Left,
-    Back_Right,
-    Back_Left
+    ForwardRight,
+    ForwardLeft,
+    BackRight,
+    BackLeft
 }

@@ -9,7 +9,7 @@ public class Pawn : ChessGamePiece
 {
     private static ConsoleDrawableString _drawableString = new("$", ConsoleColor.White);
     private static readonly List<MovePattern> MovePatterns = [
-        new MovePattern([TileMapEngine.CoreEngine.TileObject.Movement.Forward], true),
+        new MovePattern([TileMapEngine.CoreEngine.TileObject.Movement.Forward], false),
     ];
     
     public Pawn(ITileRenderer renderer, Tile tile, ConsoleColor color) : base(renderer, MovePatterns, tile)
