@@ -1,4 +1,5 @@
 using System.Numerics;
+using ChessGame.Pieces;
 using ConsoleRenderer;
 using ConsoleRenderer.ConsoleCommands;
 using ConsoleRenderer.ConsoleRenderer;
@@ -10,6 +11,7 @@ namespace ChessGame;
 
 public class ChessGame
 {
+    private GamePiecesManager _gamePiecesManager;
     public void RunChessGame()
     {
         ConfigTileMap();
@@ -30,19 +32,8 @@ public class ChessGame
         var tileMap = new TileMap(8, 8);
 
         var consoleGameLoop = new ConsoleGameLoopManager();
-        GameManager.Init(tileMap, consoleGameLoop);
+        GameManager.InitTileMap(tileMap, consoleGameLoop);
         consoleGameLoop.AssignCheckersPattern(tileMap, ConsoleColor.White, ConsoleColor.Black);
-
-        // TODO remove below, just for testing
-        var renderer1 = new ConsoleTileRenderer();
-        var consoleString1 = new ConsoleDrawableString("$", ConsoleColor.Yellow);
-        renderer1.Init(consoleString1, new Vector2(2, 5));
-        var movePatterns = new List<MovePattern>();
-        movePatterns.Add(new MovePattern([Movement.Forward], true));
-        tileMap[2, 5].PlaceTileObject(new TileObject(renderer1, tileMap[2, 5], movePatterns));
-
-
-        GameManager.RefreshGameViewport(true);
     }
 
     private void ConfigGameConsoleCommands()
@@ -79,6 +70,8 @@ public class ChessGame
         // Config the game rules:
         // Create the different chess pieces types
         // determine the rules for each piece type
+        _gamePiecesManager = new GamePiecesManager();
+        _gamePiecesManager.Init();
     }
 
     private void ConfigGameRules()

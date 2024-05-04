@@ -61,8 +61,3 @@ public class ConsoleGameLoopManager : IGameLoopManager
         _consoleCommandsManager.Init();
     }
 }
-
-public struct ConsoleTileObjectConfig
-{
-    
-}
