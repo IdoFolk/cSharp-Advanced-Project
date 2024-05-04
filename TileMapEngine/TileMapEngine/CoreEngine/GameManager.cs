@@ -1,4 +1,3 @@
-using Renderer.Rendering;
 using TileMapEngine.CoreEngine;
 using TileMapEngine.CoreEngine.TileObject;
 
@@ -10,54 +9,67 @@ public static class GameManager
     public static event Action<TileObject> OnDeselectCommand;
     public static event Action<TileObject> OnMoveCommand;
     public static TileMap TileMap { get; private set; }
-    public static TileObject? SelectedTileObject { get; private set; }
-
+    private static TileObject? SelectedTileObject { get; set; }
+    private static List<Tile> CurrentHighlightedTiles { get; set; }
     public static void Init(TileMap tileMap)
     {
         TileMap = tileMap;
+        CurrentHighlightedTiles = new List<Tile>();
     }
 
-    public static bool TrySelect(Position2D position)
+    public static bool TrySelect(Position2D position, bool highlightPossibleMoveTiles = true)
     {
-        if (TileMap.CheckTileObjectInPosition(position))
+        if (!TileMap.CheckTileObjectInPosition(position)) return false;
+        
+        SelectedTileObject = TileMap[position]?.CurrentTileObject;
+        if (SelectedTileObject == null)
         {
-            SelectedTileObject = TileMap[position]?.CurrentTileObject;
-            foreach (var possibleMove in SelectedTileObject.Movement.GetPossibleMoves())
-            {
-                if (TileMap.CheckTileExistsInPosition(possibleMove))
-                {
-                    TileMap[possibleMove].HighlightTile(ConsoleColor.Cyan);
-                }
-            }
-            OnSelectCommand?.Invoke(SelectedTileObject);
-            // TODO We need to refresh the screen
-            return true;
+            return false;
         }
+            
+        foreach (var possibleMove in SelectedTileObject.Movement.GetPossibleMoves())
+        {
+            if (!TileMap.CheckTileExistsInPosition(possibleMove) || !highlightPossibleMoveTiles) continue;
+            
+            TileMap[possibleMove]?.HighlightTile(false);
+            CurrentHighlightedTiles.Add(TileMap[possibleMove]);
+        }
+        
+        OnSelectCommand?.Invoke(SelectedTileObject);
+        // TODO We need to refresh the screen
+        return true;
 
-        return false;
     }
     public static bool TryDeselect()
     {
-        if (SelectedTileObject != null)
-        {
-            OnDeselectCommand?.Invoke(SelectedTileObject);
-            SelectedTileObject = null;
-            // TODO We need to refresh the screen
-            return true;
-        }
+        if (SelectedTileObject == null) return false;
+        
+        OnDeselectCommand?.Invoke(SelectedTileObject);
+        ClearSelectedObject();
+        // TODO We need to refresh the screen
+        return true;
 
-        return false;
     }
     public static bool TryMove(Position2D position)
     {
         if (!TileMap.CheckTileExistsInPosition(position)) return false;
+
+        if (SelectedTileObject == null || !SelectedTileObject.TryMove(TileMap[position])) return false;
         
-        if (SelectedTileObject != null && SelectedTileObject.TryMove(TileMap[position]))
-        {
-            OnMoveCommand?.Invoke(SelectedTileObject);
+        ClearSelectedObject();
+        OnMoveCommand?.Invoke(SelectedTileObject);
             
-            return true;
+        return true;
+    }
+
+    private static void ClearSelectedObject()
+    {
+        SelectedTileObject = null;
+        foreach (var highlightedTile in CurrentHighlightedTiles)
+        {
+            highlightedTile.ResetHighlight(false);
         }
-        return false;
+        
+        CurrentHighlightedTiles.Clear();
     }
 }

@@ -1,5 +1,3 @@
-using TileMapEngine.CoreEngine;
-
 namespace ChessGame;
 
 public class EngineTests
