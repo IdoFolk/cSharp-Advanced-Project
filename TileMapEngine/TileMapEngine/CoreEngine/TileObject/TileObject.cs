@@ -8,7 +8,7 @@ public class TileObject : ICloneable
     public event Action? OnMove;
     public ObjectMovement Movement { get; private set; }
     public Position2D Position => CurrentTile.Position;
-    private Tile? CurrentTile { get; set; }
+    public Tile? CurrentTile { get; set; }
     private ITileRenderer TileRenderer { get; }
 
     protected TileObject(ITileRenderer tileRenderer, Tile? currentTile)
@@ -27,17 +27,17 @@ public class TileObject : ICloneable
 
     public bool TryMove(Tile? newTile)
     {
-        if (Movement.GetPossibleMoves().Contains(newTile.Position))
-        {
-            OnMove?.Invoke();
-            newTile.PlaceTileObject(this);
-            CurrentTile = newTile;
-            TileRenderer.UpdatePosition(new Vector2(Position.X, Position.Y));
+        if (newTile == null || !Movement.GetPossibleMoves().Contains(newTile.Position)) return false;
 
-            return true;
-        }
+        if (!CheckPossibleMoveTileCallback(newTile)) return false;
+        
+        OnMove?.Invoke();
+        newTile.PlaceTileObject(this);
+        CurrentTile = newTile;
+        TileRenderer.UpdatePosition(new Vector2(Position.X, Position.Y));
 
-        return false;
+        return true;
+
     }
 
     public void DrawTileObject(int rowsOffset = 0) => TileRenderer.Draw(rowsOffset,true);
@@ -45,5 +45,15 @@ public class TileObject : ICloneable
     public object Clone()
     {
         return new TileObject(TileRenderer,CurrentTile,new List<MovePattern>(Movement.MovePatterns));
+    }
+
+    public virtual void HandleOtherTileObjectInPossibleMoveCallback(TileObject tileObject)
+    {
+        // To be overriden by inheritors
+    }
+
+    public virtual bool CheckPossibleMoveTileCallback(Tile tile)
+    {
+        return true; // To be overriden by inheritors
     }
 }

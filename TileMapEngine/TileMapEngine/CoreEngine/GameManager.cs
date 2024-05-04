@@ -1,7 +1,3 @@
-using System.Numerics;
-using Renderer.Rendering;
-using TileMapEngine.CoreEngine.TileObject;
-
 namespace TileMapEngine.CoreEngine;
 
 public static class GameManager
@@ -23,6 +19,12 @@ public static class GameManager
         _gameLoopManager?.Init(tileMap);
     }
 
+    public static void HighlightTile(Tile tile)
+    {
+        tile.HighlightTile(false);
+        CurrentHighlightedTiles?.Add(tile);
+    }
+
     public static IGameLoopManager? GetGameLoopManager() => _gameLoopManager;
     
     public static void AddObjectToTileMap(TileObject.TileObject tileObject, Position2D position2D)
@@ -32,6 +34,11 @@ public static class GameManager
     
     public static bool TrySelect(Position2D position, bool highlightPossibleMoveTiles = true)
     {
+        if (SelectedTileObject != null)
+        {
+            ClearSelectedObject();
+        }
+        
         if (TileMap != null && !TileMap.CheckTileObjectInPosition(position)) return false;
 
         SelectedTileObject = TileMap?[position]?.CurrentTileObject;
@@ -44,12 +51,28 @@ public static class GameManager
         {
             if (TileMap != null && (!TileMap.CheckTileExistsInPosition(possibleMove) || !highlightPossibleMoveTiles)) continue;
 
-            TileMap?[possibleMove]?.HighlightTile(false);
-            CurrentHighlightedTiles?.Add(TileMap?[possibleMove]);
+            var tile = TileMap?[possibleMove];
+            if (tile == null)
+            {
+                continue;
+            }
+
+            if (!SelectedTileObject.CheckPossibleMoveTileCallback(tile))
+            {
+                continue;
+            }
+
+            var tileObject = tile.CurrentTileObject;
+            if (tileObject != null)
+            {
+                SelectedTileObject.HandleOtherTileObjectInPossibleMoveCallback(tileObject);
+                continue;
+            }
+
+            HighlightTile(tile);
         }
 
         OnSelectCommand?.Invoke(SelectedTileObject);
-        RefreshGameViewport(false);
         return true;
     }
 
@@ -59,7 +82,6 @@ public static class GameManager
 
         OnDeselectCommand?.Invoke(SelectedTileObject);
         ClearSelectedObject();
-        RefreshGameViewport(false);
         return true;
     }
 
@@ -67,11 +89,16 @@ public static class GameManager
     {
         if (TileMap != null && !TileMap.CheckTileExistsInPosition(position)) return false;
 
-        if (SelectedTileObject == null || !SelectedTileObject.TryMove(TileMap?[position])) return false;
+        if (SelectedTileObject == null) return false;
+
+        var tile = TileMap?[position];
+
+        if (tile == null) return false;
+        
+        if (!SelectedTileObject.TryMove(tile)) return false;
 
         ClearSelectedObject();
         OnMoveCommand?.Invoke(SelectedTileObject);
-        RefreshGameViewport(false);
         return true;
     }
 

@@ -4,7 +4,7 @@ namespace ConsoleRenderer.ConsoleRenderer;
 
 public struct ConsoleDrawableString(
     string str,
-    ConsoleColor fgConsoleColor,
+    ConsoleColor fgConsoleColor = default,
     ConsoleColor bgConsoleColor = ConsoleColor.Black,
     ConsoleColor highlightColor = ConsoleColor.Green) : IDrawable
 {

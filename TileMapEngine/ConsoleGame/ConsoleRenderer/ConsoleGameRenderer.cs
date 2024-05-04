@@ -8,14 +8,12 @@ public class ConsoleGameRenderer : IGameRenderer<TileMap,ConsoleColor>
 
     public void InitGameRenderer(TileMap? tileMap)
     {
-        // Console.SetWindowSize(1000, 1000);
         Console.Clear();
         
         var tileDrawable = new ConsoleDrawableString("[ ]", ConsoleColor.White);
         var tileRenderer = new ConsoleTileRenderer();
         tileMap.AssignRendererToTiles(tileRenderer, tileDrawable);
         
-        //Console.SetWindowSize(width * 10, height * 10);Vector2
         Console.CursorVisible = false;
 
         foreach (var mapTile in tileMap)
@@ -35,13 +33,17 @@ public class ConsoleGameRenderer : IGameRenderer<TileMap,ConsoleColor>
         
         var rowsOffset = Console.GetCursorPosition().Top;
 
-        if (Console.BufferHeight < rowsOffset + tileMap.GetHeight())
+        if (OperatingSystem.IsWindows() && Console.BufferHeight < rowsOffset + tileMap.GetHeight())
         {
             Console.SetBufferSize(Console.BufferWidth, rowsOffset + tileMap.GetHeight());
         }
         
         foreach (var mapTile in tileMap)
         {
+            // if (mapTile.Position.X == 0)
+            // {
+            //     
+            // }
             mapTile.DrawTile(rowsOffset);
         }
 
