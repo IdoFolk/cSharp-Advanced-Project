@@ -14,13 +14,13 @@ public class ConsoleGameLoopManager : IGameLoopManager
 
     private bool _isRunning;
 
-    public void Init(TileMap tileMap)
+    public void Init(TileMap? tileMap)
     {
         ConfigTileMap(tileMap);
         ConfigConsoleCommands();
     }
 
-    public void AssignCheckersPattern(TileMap tileMap, ConsoleColor oddColor, ConsoleColor evenColor)
+    public void AssignCheckersPattern(TileMap? tileMap, ConsoleColor oddColor, ConsoleColor evenColor)
     {
         _gameRenderer.AssignCheckersPattern(tileMap, oddColor, evenColor);
     }
@@ -49,7 +49,7 @@ public class ConsoleGameLoopManager : IGameLoopManager
         CurrentSelectedTileObject = tileObject;
     }
     
-    private void ConfigTileMap(TileMap tileMap)
+    private void ConfigTileMap(TileMap? tileMap)
     {
         _gameRenderer = new ConsoleGameRenderer();
         _gameRenderer.InitGameRenderer(tileMap);

@@ -6,7 +6,7 @@ namespace ConsoleRenderer.ConsoleRenderer;
 public class ConsoleGameRenderer : IGameRenderer<TileMap,ConsoleColor>
 {
 
-    public void InitGameRenderer(TileMap tileMap)
+    public void InitGameRenderer(TileMap? tileMap)
     {
         // Console.SetWindowSize(1000, 1000);
         Console.Clear();
@@ -26,7 +26,7 @@ public class ConsoleGameRenderer : IGameRenderer<TileMap,ConsoleColor>
         Console.WriteLine("\n");
     }
 
-    public void RefreshTileMapDraw(TileMap tileMap, bool clearConsole = false)
+    public void RefreshTileMapDraw(TileMap? tileMap, bool clearConsole = false)
     {
         if (clearConsole)
         {
@@ -48,7 +48,7 @@ public class ConsoleGameRenderer : IGameRenderer<TileMap,ConsoleColor>
         Console.WriteLine();
     }
 
-    public void AssignCheckersPattern(TileMap tileMap, ConsoleColor oddColor, ConsoleColor evenColor,
+    public void AssignCheckersPattern(TileMap? tileMap, ConsoleColor oddColor, ConsoleColor evenColor,
         ConsoleColor bgColor = default)
     {
         foreach (var tile in tileMap)

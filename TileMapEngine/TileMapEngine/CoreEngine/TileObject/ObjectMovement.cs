@@ -36,7 +36,7 @@ public class ObjectMovement
     {
         Position2D newPosition = _owner.Position;
         List<Position2D> availablePositions = new();
-        TileMap tileMap = GameManager.TileMap;
+        TileMap? tileMap = GameManager.TileMap;
         foreach (var movement in movePattern.Movement)
         {
             do
