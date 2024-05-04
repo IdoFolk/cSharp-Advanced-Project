@@ -1,4 +1,3 @@
-using System.Numerics;
 using ConsoleRenderer.ConsoleRenderer;
 using Renderer.Rendering;
 using TileMapEngine.CoreEngine;
@@ -8,20 +7,15 @@ namespace ChessGame.Pieces;
 
 public class Pawn : ChessGamePiece
 {
-    public Pawn(ITileRenderer tileRenderer, Tile? currentTile) : base(tileRenderer, currentTile)
+    private static ConsoleDrawableString _drawableString = new("$", ConsoleColor.White);
+    private static readonly List<MovePattern> MovePatterns = [
+        new MovePattern([TileMapEngine.CoreEngine.TileObject.Movement.Forward], true),
+    ];
+    
+    public Pawn(ITileRenderer renderer, Tile tile, ConsoleColor color) : base(renderer, MovePatterns, tile)
     {
-    }
-
-    public Pawn(ITileRenderer tileRenderer, Tile? currentTile, List<MovePattern> movePatterns) : base(tileRenderer, currentTile, movePatterns)
-    {
-    }
-
-    public Pawn(TileObjectConfig tileObjectConfig, Tile? tile) : base(tileObjectConfig, tile)
-    {
-    }
-
-    public Pawn(Tile tile, ConsoleColor color) : base(new TileObjectConfig(), tile)
-    {
-        
+        _drawableString.FgConsoleColor = color;
+        var position = tile.Position;
+        Init(renderer, _drawableString, position);
     }
 }

@@ -1,13 +1,14 @@
+using System.Numerics;
 using Renderer.Rendering;
 using TileMapEngine.CoreEngine;
 using TileMapEngine.CoreEngine.TileObject;
 
 namespace ChessGame.Pieces;
 
-public class ChessGamePiece : TileObject
+public abstract class ChessGamePiece : TileObject
 {
-    public ChessGamePiece(TileObjectConfig tileObjectConfig, Tile? tile) : base(tileObjectConfig.TileRenderer, tile,
-        tileObjectConfig.MovePatterns)
+    protected ChessGamePiece(ITileRenderer renderer, List<MovePattern> movePatterns, Tile? tile) : base(renderer, tile,
+        movePatterns)
     {
     }
 
@@ -19,13 +20,11 @@ public class ChessGamePiece : TileObject
         tileRenderer, currentTile, movePatterns)
     {
     }
-
-    public void Init(TileObjectConfig tileObjectConfig)
+    
+    public void Init(ITileRenderer renderer, IDrawable drawable, Position2D position2D)
     {
-        tileObjectConfig.TileRenderer.Init(tileObjectConfig.Drawable, tileObjectConfig.Position);
+        renderer.Init(drawable, new Vector2(position2D.X, position2D.Y));
         
-        var position = new Position2D((int)tileObjectConfig.Position.X, (int)tileObjectConfig.Position.Y);
-        
-        GameManager.AddObjectToTileMap(this, position);
+        GameManager.AddObjectToTileMap(this, position2D);
     }
 }

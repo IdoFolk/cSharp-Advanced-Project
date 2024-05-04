@@ -91,15 +91,3 @@ public static class GameManager
         CurrentHighlightedTiles.Clear();
     }
 }
-
-public struct TileObjectConfig(
-    ITileRenderer tileRenderer,
-    IDrawable drawable,
-    Vector2 position2D,
-    List<MovePattern> movePatterns)
-{
-    public readonly ITileRenderer TileRenderer = tileRenderer;
-    public readonly IDrawable Drawable = drawable;
-    public Vector2 Position = position2D;
-    public readonly List<MovePattern> MovePatterns = movePatterns;
-}
