@@ -47,8 +47,7 @@ public class ChessGame
 
     private void ConfigGameConsoleCommands()
     {
-        var consoleGameLoop = GameManager.GetGameLoopManager() as ConsoleGameLoopManager;
-        if (consoleGameLoop == null)
+        if (GameManager.GetGameLoopManager() is not ConsoleGameLoopManager consoleGameLoop)
         {
             return;
         }

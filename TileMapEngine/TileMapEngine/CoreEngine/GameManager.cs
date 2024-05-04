@@ -42,7 +42,7 @@ public static class GameManager
         }
         
         OnSelectCommand?.Invoke(SelectedTileObject);
-        // TODO We need to refresh the screen
+        RefreshGameViewport(false);
         return true;
 
     }
@@ -52,9 +52,8 @@ public static class GameManager
         
         OnDeselectCommand?.Invoke(SelectedTileObject);
         ClearSelectedObject();
-        // TODO We need to refresh the screen
+        RefreshGameViewport(false);
         return true;
-
     }
     public static bool TryMove(Position2D position)
     {
@@ -64,7 +63,7 @@ public static class GameManager
         
         ClearSelectedObject();
         OnMoveCommand?.Invoke(SelectedTileObject);
-            
+        RefreshGameViewport(false);
         return true;
     }
     public static void RefreshGameViewport(bool clear) => _gameLoopManager.RefreshGameViewport(clear);
