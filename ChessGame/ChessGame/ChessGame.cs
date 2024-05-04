@@ -90,6 +90,6 @@ public class ChessGame
 
     private void StartGame()
     {
-        GameManager.GetGameLoopManager().StartGameLoop();
+        GameManager.GetGameLoopManager()?.StartGameLoop();
     }
 }

@@ -10,15 +10,16 @@ public class GamePiecesManager
 {
     public void Init()
     {
-        var consoleString1 = new ConsoleDrawableString("$", ConsoleColor.Yellow);
-        var renderer1 = new ConsoleTileRenderer();
+        var drawableString = new ConsoleDrawableString("$", ConsoleColor.Yellow);
+        var consoleTileRenderer = new ConsoleTileRenderer();
         var movePatterns = new List<MovePattern>();
         movePatterns.Add(new MovePattern([Movement.Forward], true));
-        
-        var pieceConfig = new TileObjectConfig(renderer1, consoleString1, new Vector2(2, 5), movePatterns);
-        
-        GameManager.AddTileObject(pieceConfig);
 
+        var pieceConfig = new TileObjectConfig(consoleTileRenderer, drawableString, new Vector2(2, 5), movePatterns);
+        var newChessPiece = new ChessGamePiece(pieceConfig,
+            GameManager.TileMap?[(int)pieceConfig.Position.X, (int)pieceConfig.Position.Y]);
+        
+        newChessPiece.Init(pieceConfig);
 
         GameManager.RefreshGameViewport(true);
     }

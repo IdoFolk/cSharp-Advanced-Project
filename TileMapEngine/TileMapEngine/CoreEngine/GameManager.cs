@@ -25,22 +25,11 @@ public static class GameManager
 
     public static IGameLoopManager? GetGameLoopManager() => _gameLoopManager;
     
-    public static void AddTileObject(TileObject.TileObject tileObject, Position2D position2D)
+    public static void AddObjectToTileMap(TileObject.TileObject tileObject, Position2D position2D)
     {
         TileMap?[position2D]?.PlaceTileObject(tileObject);
     }
     
-    public static void AddTileObject(TileObjectConfig tileObjectConfig)
-    {
-        tileObjectConfig.TileRenderer.Init(tileObjectConfig.Drawable, tileObjectConfig.Position);
-
-        var position = new Position2D((int)tileObjectConfig.Position.X, (int)tileObjectConfig.Position.Y);
-
-        var newTileObject = new TileObject.TileObject(tileObjectConfig.TileRenderer, TileMap?[position],
-            tileObjectConfig.MovePatterns);
-        
-        TileMap?[position]?.PlaceTileObject(newTileObject);
-    }
     public static bool TrySelect(Position2D position, bool highlightPossibleMoveTiles = true)
     {
         if (TileMap != null && !TileMap.CheckTileObjectInPosition(position)) return false;
