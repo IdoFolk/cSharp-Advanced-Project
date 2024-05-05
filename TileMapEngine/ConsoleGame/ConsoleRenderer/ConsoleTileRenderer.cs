@@ -116,6 +116,7 @@ public class ConsoleTileRenderer : ITileRenderer
 
     private void DrawAtCachedScreenPosition()
     {
+        // We add 1 because of the board guides (numbers and letters)
         Console.SetCursorPosition((int)_screenPosition.X + 1, (int)_screenPosition.Y + 1);
         
         Console.Write($"{_drawable.ConsoleString}");

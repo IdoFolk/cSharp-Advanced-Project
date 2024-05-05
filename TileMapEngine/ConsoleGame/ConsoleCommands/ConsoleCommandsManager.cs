@@ -15,7 +15,7 @@ public class ConsoleCommandsManager
         AddCommand(help);
 
         var select = new ConsoleCommand("select",
-            "Select a tile object at position (x,y). example: /select 3,5",
+            "Select a tile object (if exists) at index position (x,y). example: /select 0,5",
             true,
             HandleSelectCommand);
         AddCommand(select);
@@ -27,7 +27,7 @@ public class ConsoleCommandsManager
         AddCommand(deselect);
 
         var move = new ConsoleCommand("move",
-            "Move the selected tile object (if possible) to position (x,y). example: /move 0,1",
+            "Move the selected tile object (if exists) to index position (x,y). example: /move 0,1",
             true,
             HandleMoveCommand);
         AddCommand(move);
@@ -37,6 +37,32 @@ public class ConsoleCommandsManager
             true,
             _ => HandleOnQuitCommand());
         AddCommand(quit);
+        
+        var refresh = new ConsoleCommand("refresh",
+            "Clears the console and re-draws the game updated game state onto the viewport. example: /refresh",
+            false,
+            _ =>
+            {
+                GameManager.RefreshGameViewport(true);
+                return true;
+            });
+        AddCommand(refresh);
+    }
+
+    private static bool TryGetPositionFromArgument(string? args, out Position2D position2D)
+    {
+        var splitArgs = args?.Split(',');
+
+        if (splitArgs is { Length: 2 } &&
+            int.TryParse(splitArgs[0], out var x) &&
+            int.TryParse(splitArgs[1], out var y))
+        {
+            position2D = new Position2D(x, y);
+            return true;
+        }
+
+        position2D = default;
+        return false;
     }
 
     public void AddCommand(ConsoleCommand command) => _availableCommands.Add(command);
@@ -94,7 +120,7 @@ public class ConsoleCommandsManager
         var text = "\n";
         if (isFallback)
         {
-            text += $"Something went wrong with your command!\n";
+            text += $"Oops! Something went wrong with your command.\n\n";
         }
 
         Console.WriteLine(text +
@@ -146,21 +172,5 @@ public class ConsoleCommandsManager
             $"Moved the selected tile object to {position2D.X},{position2D.Y} and deselected the object.\n");
         GameManager.RefreshGameViewport(false);
         return true;
-    }
-
-    private bool TryGetPositionFromArgument(string? args, out Position2D position2D)
-    {
-        var splitArgs = args?.Split(',');
-
-        if (splitArgs is { Length: 2 } &&
-            int.TryParse(splitArgs[0], out var x) &&
-            int.TryParse(splitArgs[1], out var y))
-        {
-            position2D = new Position2D(x, y);
-            return true;
-        }
-
-        position2D = default;
-        return false;
     }
 }
