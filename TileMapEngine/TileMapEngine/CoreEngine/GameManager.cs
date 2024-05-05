@@ -104,6 +104,7 @@ public static class GameManager
 
     public static void RefreshGameViewport(bool clear) => _gameLoopManager?.RefreshGameViewport(clear);
     public static void StopGameLoop() => _gameLoopManager?.StopGameLoop();
+    public static bool GetIsAnySelected() => SelectedTileObject != null;
 
     private static void ClearSelectedObject()
     {

@@ -1,6 +1,5 @@
 using ChessGame.Pieces;
 using ConsoleRenderer;
-using ConsoleRenderer.ConsoleCommands;
 using TileMapEngine.CoreEngine;
 
 namespace ChessGame;
@@ -8,6 +7,9 @@ namespace ChessGame;
 public class ChessGame
 {
     private GamePiecesManager _gamePiecesManager;
+
+    public static readonly int BoardSize = 8;
+
     public void RunChessGame()
     {
         ConfigTileMap();
@@ -17,7 +19,7 @@ public class ChessGame
         ConfigGamePieces();
 
         ConfigGameRules();
-        
+
         ConfigPlayers();
 
         StartGame();
@@ -25,7 +27,7 @@ public class ChessGame
 
     private void ConfigTileMap()
     {
-        var tileMap = new TileMap(8, 8);
+        var tileMap = new TileMap(BoardSize, BoardSize);
 
         var consoleGameLoop = new ConsoleGameLoopManager();
         GameManager.InitTileMap(tileMap, consoleGameLoop);
@@ -34,31 +36,7 @@ public class ChessGame
 
     private void ConfigGameConsoleCommands()
     {
-        if (GameManager.GetGameLoopManager() is not ConsoleGameLoopManager consoleGameLoop)
-        {
-            return;
-        }
-        
-        var commandsManager = consoleGameLoop.GetConsoleCommandsManager();
-        var moves = new ConsoleCommand("moves",
-            "Shows the possible moves of the selected unit (if possible). example: /moves",
-            false,
-            _ =>
-            {
-                Console.WriteLine($"Showing possible moves of selected unit");
-                return true;
-            });
-        commandsManager.AddCommand(moves);
-
-        var refresh = new ConsoleCommand("refresh",
-            "Clears the console and re-draws the game updated game state onto the viewport. example: /refresh",
-            false,
-            _ =>
-            {
-                GameManager.RefreshGameViewport(true);
-                return true;
-            });
-        commandsManager.AddCommand(refresh);
+        new ChessConsoleCommands().Init();
     }
 
     private void ConfigGamePieces()
