@@ -16,7 +16,7 @@ public class ChessConsoleCommands
         var commandsManager = consoleGameLoop.GetConsoleCommandsManager();
 
         var chessSelect = new ConsoleCommand("gselect",
-            "Identical to the /select command but with the guides convention. example: /gselect D,8",
+            "Identical to the /select command but with the guides convention. example: /gselect G,8",
             true,
             HandleChessSelectCommand);
         commandsManager.AddCommand(chessSelect);
