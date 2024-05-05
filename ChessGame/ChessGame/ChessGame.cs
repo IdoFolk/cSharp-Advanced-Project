@@ -51,11 +51,11 @@ public class ChessGame
         commandsManager.AddCommand(moves);
 
         var refresh = new ConsoleCommand("refresh",
-            "Re-draws the game updated game state onto the viewport. example: /refresh",
+            "Clears the console and re-draws the game updated game state onto the viewport. example: /refresh",
             false,
             _ =>
             {
-                GameManager.RefreshGameViewport(false);
+                GameManager.RefreshGameViewport(true);
                 return true;
             });
         commandsManager.AddCommand(refresh);

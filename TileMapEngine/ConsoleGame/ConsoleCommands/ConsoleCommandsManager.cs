@@ -15,7 +15,7 @@ public class ConsoleCommandsManager
         AddCommand(help);
 
         var select = new ConsoleCommand("select",
-            "Select a tile object at position (x,y). example: /select 3,5",
+            "Select a tile object at index position (x,y). example: /select 0,5",
             true,
             HandleSelectCommand);
         AddCommand(select);
@@ -27,7 +27,7 @@ public class ConsoleCommandsManager
         AddCommand(deselect);
 
         var move = new ConsoleCommand("move",
-            "Move the selected tile object (if possible) to position (x,y). example: /move 0,1",
+            "Move the selected tile object (if possible) to index position (x,y). example: /move 0,1",
             true,
             HandleMoveCommand);
         AddCommand(move);
