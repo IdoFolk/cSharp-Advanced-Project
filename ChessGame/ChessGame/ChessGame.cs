@@ -17,7 +17,7 @@ public class ChessGame
         ConfigGamePieces();
 
         ConfigGameRules();
-
+        
         ConfigPlayers();
 
         StartGame();

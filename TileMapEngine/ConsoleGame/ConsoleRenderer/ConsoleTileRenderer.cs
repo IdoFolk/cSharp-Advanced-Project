@@ -25,8 +25,8 @@ public class ConsoleTileRenderer : ITileRenderer
     {
         var objectDeviation = isTileObject ? 1 : 0;
 
-        _screenPosition = new Vector2(_tileMapPosition2D.X * 3 + objectDeviation,
-            _tileMapPosition2D.Y + rowsOffset);
+        _screenPosition = new Vector2((_tileMapPosition2D.X * 3) + objectDeviation,
+            _tileMapPosition2D.Y + rowsOffset );
         
         if (_isHighlighted)
         {
@@ -116,7 +116,7 @@ public class ConsoleTileRenderer : ITileRenderer
 
     private void DrawAtCachedScreenPosition()
     {
-        Console.SetCursorPosition((int)_screenPosition.X, (int)_screenPosition.Y);
+        Console.SetCursorPosition((int)_screenPosition.X + 1, (int)_screenPosition.Y + 1);
         
         Console.Write($"{_drawable.ConsoleString}");
     }

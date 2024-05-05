@@ -10,8 +10,12 @@ public abstract class ChessGamePiece(ITileRenderer renderer, List<MovePattern> m
     : TileObject(renderer, tile,
         movePatterns)
 {
+
+    protected Position2D startingPosition2D;
     protected void Init(ITileRenderer renderer, IDrawable drawable, Position2D position2D)
     {
+        startingPosition2D = position2D;
+        
         renderer.Init(drawable, new Vector2(position2D.X, position2D.Y));
 
         GameManager.AddObjectToTileMap(this, position2D);
@@ -42,14 +46,14 @@ public class King : ChessGamePiece
 
     private static readonly List<MovePattern> MovePatterns =
     [
-        new MovePattern([TileMapEngine.CoreEngine.TileObject.Movement.Back], false),
-        new MovePattern([TileMapEngine.CoreEngine.TileObject.Movement.BackLeft], false),
-        new MovePattern([TileMapEngine.CoreEngine.TileObject.Movement.Left], false),
-        new MovePattern([TileMapEngine.CoreEngine.TileObject.Movement.ForwardLeft], false),
-        new MovePattern([TileMapEngine.CoreEngine.TileObject.Movement.Forward], false),
-        new MovePattern([TileMapEngine.CoreEngine.TileObject.Movement.ForwardRight], false),
-        new MovePattern([TileMapEngine.CoreEngine.TileObject.Movement.Right], false),
-        new MovePattern([TileMapEngine.CoreEngine.TileObject.Movement.BackRight], false),
+        new MovePattern([MovementType.Back], false),
+        new MovePattern([MovementType.BackLeft], false),
+        new MovePattern([MovementType.Left], false),
+        new MovePattern([MovementType.ForwardLeft], false),
+        new MovePattern([MovementType.Forward], false),
+        new MovePattern([MovementType.ForwardRight], false),
+        new MovePattern([MovementType.Right], false),
+        new MovePattern([MovementType.BackRight], false),
     ];
 
     public King(ITileRenderer renderer, Tile tile, ConsoleColor color) : base(renderer, MovePatterns, tile)
@@ -76,14 +80,14 @@ public class Queen : ChessGamePiece
 
     private static readonly List<MovePattern> MovePatterns =
     [
-        new MovePattern([TileMapEngine.CoreEngine.TileObject.Movement.Back], true),
-        new MovePattern([TileMapEngine.CoreEngine.TileObject.Movement.BackLeft], true),
-        new MovePattern([TileMapEngine.CoreEngine.TileObject.Movement.Left], true),
-        new MovePattern([TileMapEngine.CoreEngine.TileObject.Movement.ForwardLeft], true),
-        new MovePattern([TileMapEngine.CoreEngine.TileObject.Movement.Forward], true),
-        new MovePattern([TileMapEngine.CoreEngine.TileObject.Movement.ForwardRight], true),
-        new MovePattern([TileMapEngine.CoreEngine.TileObject.Movement.Right], true),
-        new MovePattern([TileMapEngine.CoreEngine.TileObject.Movement.BackRight], true),
+        new MovePattern([MovementType.Back], true),
+        new MovePattern([MovementType.BackLeft], true),
+        new MovePattern([MovementType.Left], true),
+        new MovePattern([MovementType.ForwardLeft], true),
+        new MovePattern([MovementType.Forward], true),
+        new MovePattern([MovementType.ForwardRight], true),
+        new MovePattern([MovementType.Right], true),
+        new MovePattern([MovementType.BackRight], true),
     ];
 
     public Queen(ITileRenderer renderer, Tile tile, ConsoleColor color) : base(renderer, MovePatterns, tile)
@@ -110,9 +114,10 @@ public class Pawn : ChessGamePiece
 
     private static readonly List<MovePattern> MovePatterns =
     [
-        new MovePattern([TileMapEngine.CoreEngine.TileObject.Movement.Forward], false),
-        new MovePattern([TileMapEngine.CoreEngine.TileObject.Movement.ForwardLeft], false),
-        new MovePattern([TileMapEngine.CoreEngine.TileObject.Movement.ForwardRight], false),
+        new MovePattern([MovementType.Forward], false),
+        new MovePattern([MovementType.Forward, MovementType.Forward], false),
+        new MovePattern([MovementType.ForwardLeft], false),
+        new MovePattern([MovementType.ForwardRight], false),
     ];
 
     public Pawn(ITileRenderer renderer, Tile tile, ConsoleColor color) : base(renderer, MovePatterns, tile)
@@ -125,8 +130,8 @@ public class Pawn : ChessGamePiece
     protected override void HandleOtherChessPieceInPossibleMoveCallback(ChessGamePiece otherPiece)
     {
         var tile = otherPiece.CurrentTile;
-        
-        if (tile?.Position.X != Position.X) // Means the other tile isn't at Movement.Forward direction, so it's a diagonal eat
+
+        if (tile?.Position.X != Position.X && tile?.Position.Y == Position.Y - 1) // Means the other tile isn't at Movement.Forward direction, so it's a diagonal eat
         {
             GameManager.HighlightTile(tile);
         }
@@ -134,6 +139,13 @@ public class Pawn : ChessGamePiece
 
     protected override bool CheckIfTileIsPossibleMoveCallback(Tile tile)
     {
+        if (tile.CurrentTileObject == null &&
+            tile.Position.Y == Position.Y - 2 &&
+            Position == startingPosition2D)
+        {
+            return true;
+        }
+        
         if (tile.CurrentTileObject != null &&
             tile.Position.X != Position.X) // Means the other tile isn't at Movement.Forward direction, so it's a diagonal eat
         {
@@ -157,10 +169,10 @@ public class Bishop : ChessGamePiece
 
     private static readonly List<MovePattern> MovePatterns =
     [
-        new MovePattern([TileMapEngine.CoreEngine.TileObject.Movement.BackLeft], true),
-        new MovePattern([TileMapEngine.CoreEngine.TileObject.Movement.ForwardLeft], true),
-        new MovePattern([TileMapEngine.CoreEngine.TileObject.Movement.BackRight], true),
-        new MovePattern([TileMapEngine.CoreEngine.TileObject.Movement.ForwardRight], true),
+        new MovePattern([MovementType.BackLeft], true),
+        new MovePattern([MovementType.ForwardLeft], true),
+        new MovePattern([MovementType.BackRight], true),
+        new MovePattern([MovementType.ForwardRight], true),
     ];
 
     public Bishop(ITileRenderer renderer, Tile tile, ConsoleColor color) : base(renderer, MovePatterns, tile)
@@ -187,10 +199,10 @@ public class Rook : ChessGamePiece
 
     private static readonly List<MovePattern> MovePatterns =
     [
-        new MovePattern([TileMapEngine.CoreEngine.TileObject.Movement.Forward], true),
-        new MovePattern([TileMapEngine.CoreEngine.TileObject.Movement.Back], true),
-        new MovePattern([TileMapEngine.CoreEngine.TileObject.Movement.Right], true),
-        new MovePattern([TileMapEngine.CoreEngine.TileObject.Movement.Left], true),
+        new MovePattern([MovementType.Forward], true),
+        new MovePattern([MovementType.Back], true),
+        new MovePattern([MovementType.Right], true),
+        new MovePattern([MovementType.Left], true),
     ];
 
     public Rook(ITileRenderer renderer, Tile tile, ConsoleColor color) : base(renderer, MovePatterns, tile)
@@ -219,38 +231,38 @@ public class Knight : ChessGamePiece
     [
         new MovePattern(
         [
-            TileMapEngine.CoreEngine.TileObject.Movement.Left, TileMapEngine.CoreEngine.TileObject.Movement.ForwardLeft
+            MovementType.Left, MovementType.ForwardLeft
         ], false),
         new MovePattern(
-            [TileMapEngine.CoreEngine.TileObject.Movement.Left, TileMapEngine.CoreEngine.TileObject.Movement.BackLeft],
+            [MovementType.Left, MovementType.BackLeft],
             false),
 
         new MovePattern(
         [
-            TileMapEngine.CoreEngine.TileObject.Movement.Forward,
-            TileMapEngine.CoreEngine.TileObject.Movement.ForwardLeft
+            MovementType.Forward,
+            MovementType.ForwardLeft
         ], false),
         new MovePattern(
         [
-            TileMapEngine.CoreEngine.TileObject.Movement.Forward,
-            TileMapEngine.CoreEngine.TileObject.Movement.ForwardRight
+            MovementType.Forward,
+            MovementType.ForwardRight
         ], false),
 
         new MovePattern(
         [
-            TileMapEngine.CoreEngine.TileObject.Movement.Right,
-            TileMapEngine.CoreEngine.TileObject.Movement.ForwardRight
+            MovementType.Right,
+            MovementType.ForwardRight
         ], false),
         new MovePattern(
         [
-            TileMapEngine.CoreEngine.TileObject.Movement.Right, TileMapEngine.CoreEngine.TileObject.Movement.BackRight
+            MovementType.Right, MovementType.BackRight
         ], false),
 
         new MovePattern(
-            [TileMapEngine.CoreEngine.TileObject.Movement.Back, TileMapEngine.CoreEngine.TileObject.Movement.BackLeft],
+            [MovementType.Back, MovementType.BackLeft],
             false),
         new MovePattern(
-            [TileMapEngine.CoreEngine.TileObject.Movement.Back, TileMapEngine.CoreEngine.TileObject.Movement.BackRight],
+            [MovementType.Back, MovementType.BackRight],
             false),
     ];
 
