@@ -3,7 +3,7 @@ using TileMapEngine.CoreEngine;
 
 namespace ConsoleRenderer.ConsoleRenderer;
 
-public class ConsoleGameRenderer : IGameRenderer<TileMap,ConsoleColor>
+public class ConsoleGameRenderer : IGameRenderer<TileMap, ConsoleColor>
 {
     const string letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
@@ -19,10 +19,10 @@ public class ConsoleGameRenderer : IGameRenderer<TileMap,ConsoleColor>
         var tileDrawable = new ConsoleDrawableString("[ ]", ConsoleColor.White);
         var tileRenderer = new ConsoleTileRenderer();
         tileMap.AssignRendererToTiles(tileRenderer, tileDrawable);
-        
+
         Console.CursorVisible = false;
 
-        DrawMapGuidelines(tileMap);
+        DrawMapGuidelines(tileMap, 0);
         foreach (var mapTile in tileMap)
         {
             mapTile.DrawTile(0);
@@ -37,21 +37,22 @@ public class ConsoleGameRenderer : IGameRenderer<TileMap,ConsoleColor>
         {
             Console.Clear();
         }
-        
+
         var rowsOffset = Console.GetCursorPosition().Top;
 
         if (OperatingSystem.IsWindows() && Console.BufferHeight < rowsOffset + tileMap.GetHeight() + 1)
         {
             Console.SetBufferSize(Console.BufferWidth, rowsOffset + tileMap.GetHeight() + 1);
         }
-        
-        DrawMapGuidelines(tileMap);
+
+        if (tileMap == null)
+        {
+            return;
+        }
+
+        DrawMapGuidelines(tileMap, rowsOffset);
         foreach (var mapTile in tileMap)
         {
-            // if (mapTile.Position.X == 0)
-            // {
-            //     
-            // }
             mapTile.DrawTile(rowsOffset);
         }
 
@@ -75,22 +76,23 @@ public class ConsoleGameRenderer : IGameRenderer<TileMap,ConsoleColor>
         RefreshTileMapDraw(tileMap);
     }
 
-    private void DrawMapGuidelines(TileMap tileMap) 
+    private void DrawMapGuidelines(TileMap tileMap, int rowsOffset)
     {
         if (tileMap.GetWidth() > letters.Length)
         {
-            Console.WriteLine("tileMap length exceeds the max letter count");
-            return;
+            throw new Exception("The provided tileMap length exceeds the max letter count.");
         }
-        for (int i = 0; i < tileMap.GetWidth(); i++)
+
+        for (var i = 0; i < tileMap.GetWidth(); i++)
         {
-            Console.SetCursorPosition((i*3)+2,0);
+            Console.SetCursorPosition((i * 3) + 2, rowsOffset);
             Console.Write(letters[i]);
         }
-        for (int i = 0; i < tileMap.GetHeight(); i++)
+
+        for (var i = 0; i < tileMap.GetHeight(); i++)
         {
-            Console.SetCursorPosition(0,i+1);
-            Console.Write(i+1);
+            Console.SetCursorPosition(0, rowsOffset + i + 1);
+            Console.Write(i + 1);
         }
     }
 }
