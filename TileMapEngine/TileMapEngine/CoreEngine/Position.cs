@@ -31,6 +31,15 @@ public readonly struct Position2D
             p1.Y - p2.Y
         );
     }
+    public static bool operator ==(Position2D p1, Position2D p2)
+    {
+        return p1.Equals(p2);
+    }
+
+    public static bool operator !=(Position2D p1, Position2D p2)
+    {
+        return !p1.Equals(p2);
+    }
 
     public override bool Equals(object? obj)
     {

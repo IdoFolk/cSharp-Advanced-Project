@@ -47,19 +47,19 @@ public class ObjectMovement(TileObject owner, List<MovePattern> movePatterns)
             (current, movement) => MovePositionByMovement(movement, current));
     }
 
-    private static Position2D MovePositionByMovement(Movement movement, Position2D newPosition)
+    private static Position2D MovePositionByMovement(MovementType movementType, Position2D newPosition)
     {
-        newPosition += movement switch
+        newPosition += movementType switch
         {
-            Movement.Left => new Position2D(-1, 0),
-            Movement.Right => new Position2D(1, 0),
-            Movement.Forward => new Position2D(0, -1),
-            Movement.Back => new Position2D(0, 1),
-            Movement.ForwardRight => new Position2D(1, -1),
-            Movement.ForwardLeft => new Position2D(-1, -1),
-            Movement.BackRight => new Position2D(1, 1),
-            Movement.BackLeft => new Position2D(-1, 1),
-            _ => throw new ArgumentOutOfRangeException(nameof(movement), movement, null)
+            MovementType.Left => new Position2D(-1, 0),
+            MovementType.Right => new Position2D(1, 0),
+            MovementType.Forward => new Position2D(0, -1),
+            MovementType.Back => new Position2D(0, 1),
+            MovementType.ForwardRight => new Position2D(1, -1),
+            MovementType.ForwardLeft => new Position2D(-1, -1),
+            MovementType.BackRight => new Position2D(1, 1),
+            MovementType.BackLeft => new Position2D(-1, 1),
+            _ => throw new ArgumentOutOfRangeException(nameof(movementType), movementType, null)
         };
 
         return newPosition;
@@ -76,13 +76,13 @@ public class ObjectMovement(TileObject owner, List<MovePattern> movePatterns)
     }
 }
 
-public readonly struct MovePattern(Movement[] movement, bool isDirection)
+public readonly struct MovePattern(MovementType[] movement, bool isDirection)
 {
-    public Movement[] Movement { get; } = movement;
+    public MovementType[] Movement { get; } = movement;
     public bool IsDirection { get; } = isDirection;
 }
 
-public enum Movement
+public enum MovementType
 {
     //all possible direction a piece can go in
     Left,
