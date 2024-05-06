@@ -40,8 +40,5 @@ public abstract class TileObject
 
     public abstract void HandleOtherTileObjectInPossibleMoveCallback(TileObject tileObject);
 
-    public virtual bool CheckPossibleMoveTileCallback(Tile tile)
-    {
-        return true; // To be overriden by inheritors
-    }
+    public abstract bool CheckPossibleMoveTileCallback(Tile tile);
 }

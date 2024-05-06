@@ -10,12 +10,14 @@ public abstract class ChessGamePiece(ITileRenderer renderer, List<MovePattern> m
     : TileObject(renderer, tile,
         movePatterns, owner)
 {
-
+    public static event Action<ChessGamePiece>? OnPieceEaten;
+    
     protected Position2D StartingPosition2D;
+
     protected void Init(ITileRenderer renderer, IDrawable drawable, Position2D position2D)
     {
         StartingPosition2D = position2D;
-        
+
         renderer.Init(drawable, new Vector2(position2D.X, position2D.Y));
 
         TileMapManager.AddObjectToTileMap(this, position2D);
@@ -23,20 +25,35 @@ public abstract class ChessGamePiece(ITileRenderer renderer, List<MovePattern> m
 
     public override void HandleOtherTileObjectInPossibleMoveCallback(TileObject tileObject)
     {
-        if (tileObject is ChessGamePiece otherPiece)
+        if (tileObject.OwnerActor != OwnerActor &&
+            tileObject is ChessGamePiece otherPiece)
         {
-            // TODO handle according to actor once we have it
             HandleOtherChessPieceInPossibleMoveCallback(otherPiece);
         }
     }
 
-    public override bool CheckPossibleMoveTileCallback(Tile tile)
+    public override bool CheckPossibleMoveTileCallback(Tile tile) => CheckIfTileIsPossibleMoveCallback(tile);
+
+    protected virtual void HandleOtherChessPieceInPossibleMoveCallback(ChessGamePiece otherPiece)
     {
-        return CheckIfTileIsPossibleMoveCallback(tile);
+        if (otherPiece.CurrentTile != null) TileMapManager.HighlightTile(otherPiece.CurrentTile);
     }
 
-    protected abstract void HandleOtherChessPieceInPossibleMoveCallback(ChessGamePiece otherPiece);
-    protected abstract bool CheckIfTileIsPossibleMoveCallback(Tile tile);
+    protected virtual bool CheckIfTileIsPossibleMoveCallback(Tile tile)
+    {
+        var tileObject = tile.CurrentTileObject;
+        if (tileObject == null)
+        {
+            return true;
+        }
+
+        if (tileObject.OwnerActor == OwnerActor || tileObject is not ChessGamePiece eatenPiece) return false;
+        
+        InvokePieceEaten(eatenPiece);
+        return true;
+    }
+    
+    protected static void InvokePieceEaten(ChessGamePiece eatenPiece) => OnPieceEaten?.Invoke(eatenPiece);
 }
 
 public class King : ChessGamePiece
@@ -55,21 +72,12 @@ public class King : ChessGamePiece
         new MovePattern([MovementType.BackRight], false),
     ];
 
-    public King(ITileRenderer renderer, Tile tile, ConsoleColor color, Actor owner) : base(renderer, MovePatterns, tile, owner)
+    public King(ITileRenderer renderer, Tile tile, ConsoleColor color, Actor owner) : base(renderer, MovePatterns, tile,
+        owner)
     {
         _drawableString.FgConsoleColor = color;
         var position = tile.Position;
         Init(renderer, _drawableString, position);
-    }
-
-    protected override void HandleOtherChessPieceInPossibleMoveCallback(ChessGamePiece otherPiece)
-    {
-        TileMapManager.HighlightTile(otherPiece.CurrentTile);
-    }
-
-    protected override bool CheckIfTileIsPossibleMoveCallback(Tile tile)
-    {
-        return true;
     }
 }
 
@@ -89,21 +97,12 @@ public class Queen : ChessGamePiece
         new MovePattern([MovementType.BackRight], true),
     ];
 
-    public Queen(ITileRenderer renderer, Tile tile, ConsoleColor color, Actor owner) : base(renderer, MovePatterns, tile, owner)
+    public Queen(ITileRenderer renderer, Tile tile, ConsoleColor color, Actor owner) : base(renderer, MovePatterns,
+        tile, owner)
     {
         _drawableString.FgConsoleColor = color;
         var position = tile.Position;
         Init(renderer, _drawableString, position);
-    }
-
-    protected override void HandleOtherChessPieceInPossibleMoveCallback(ChessGamePiece otherPiece)
-    {
-        TileMapManager.HighlightTile(otherPiece.CurrentTile);
-    }
-
-    protected override bool CheckIfTileIsPossibleMoveCallback(Tile tile)
-    {
-        return true;
     }
 }
 
@@ -119,7 +118,8 @@ public class WhitePawn : ChessGamePiece
         new MovePattern([MovementType.ForwardRight], false),
     ];
 
-    public WhitePawn(ITileRenderer renderer, Tile tile, ConsoleColor color, Actor owner) : base(renderer, MovePatterns, tile, owner)
+    public WhitePawn(ITileRenderer renderer, Tile tile, ConsoleColor color, Actor owner) : base(renderer, MovePatterns,
+        tile, owner)
     {
         _drawableString.FgConsoleColor = color;
         var position = tile.Position;
@@ -130,7 +130,9 @@ public class WhitePawn : ChessGamePiece
     {
         var tile = otherPiece.CurrentTile;
 
-        if (tile?.Position.X != Position.X && tile?.Position.Y == Position.Y - 1) // Means the other tile isn't at Movement.Forward direction, so it's a diagonal eat
+        if (tile?.Position.X != Position.X &&
+            tile?.Position.Y ==
+            Position.Y - 1) // Means the other tile isn't at Movement.Forward direction, so it's a diagonal eat
         {
             TileMapManager.HighlightTile(tile);
         }
@@ -138,22 +140,23 @@ public class WhitePawn : ChessGamePiece
 
     protected override bool CheckIfTileIsPossibleMoveCallback(Tile tile)
     {
-        if (tile.CurrentTileObject == null &&
-            tile.Position.Y == Position.Y - 2 &&
-            Position == StartingPosition2D)
+        switch (tile.CurrentTileObject)
         {
-            return true;
+            case null when
+                tile.Position.Y == Position.Y - 2 &&
+                Position == StartingPosition2D:
+                return true;
+            // Means the other tile isn't at Movement.Forward direction, so it's a diagonal eat
+            case ChessGamePiece chessGamePiece when
+                tile.Position.X !=
+                Position.X:
+                InvokePieceEaten(chessGamePiece);
+                return true;
+            default:
+                return tile.CurrentTileObject == null &&
+                       tile.Position.Y == Position.Y - 1 &&
+                       tile.Position.X == Position.X;
         }
-        
-        if (tile.CurrentTileObject != null &&
-            tile.Position.X != Position.X) // Means the other tile isn't at Movement.Forward direction, so it's a diagonal eat
-        {
-            return true;
-        }
-
-        return tile.CurrentTileObject == null &&
-               tile.Position.Y == Position.Y - 1 &&
-               tile.Position.X == Position.X;
     }
 }
 
@@ -169,7 +172,8 @@ public class BlackPawn : ChessGamePiece
         new MovePattern([MovementType.BackRight], false),
     ];
 
-    public BlackPawn(ITileRenderer renderer, Tile tile, ConsoleColor color, Actor owner) : base(renderer, MovePatterns, tile, owner)
+    public BlackPawn(ITileRenderer renderer, Tile tile, ConsoleColor color, Actor owner) : base(renderer, MovePatterns,
+        tile, owner)
     {
         _drawableString.FgConsoleColor = color;
         var position = tile.Position;
@@ -180,7 +184,9 @@ public class BlackPawn : ChessGamePiece
     {
         var tile = otherPiece.CurrentTile;
 
-        if (tile?.Position.X != Position.X && tile?.Position.Y == Position.Y + 1) // Means the other tile isn't at Movement.Forward direction, so it's a diagonal eat
+        if (tile?.Position.X != Position.X &&
+            tile?.Position.Y ==
+            Position.Y + 1) // Means the other tile isn't at Movement.Forward direction, so it's a diagonal eat
         {
             TileMapManager.HighlightTile(tile);
         }
@@ -188,22 +194,23 @@ public class BlackPawn : ChessGamePiece
 
     protected override bool CheckIfTileIsPossibleMoveCallback(Tile tile)
     {
-        if (tile.CurrentTileObject == null &&
-            tile.Position.Y == Position.Y + 2 &&
-            Position == StartingPosition2D)
+        switch (tile.CurrentTileObject)
         {
-            return true;
+            case null when
+                tile.Position.Y == Position.Y + 2 &&
+                Position == StartingPosition2D:
+                return true;
+            // Means the other tile isn't at Movement.Forward direction, so it's a diagonal eat
+            case ChessGamePiece chessGamePiece when
+                tile.Position.X !=
+                Position.X:
+                InvokePieceEaten(chessGamePiece);
+                return true;
+            default:
+                return tile.CurrentTileObject == null &&
+                       tile.Position.Y == Position.Y + 1 &&
+                       tile.Position.X == Position.X;
         }
-        
-        if (tile.CurrentTileObject != null &&
-            tile.Position.X != Position.X) // Means the other tile isn't at Movement.Forward direction, so it's a diagonal eat
-        {
-            return true;
-        }
-
-        return tile.CurrentTileObject == null &&
-               tile.Position.Y == Position.Y + 1 &&
-               tile.Position.X == Position.X;
     }
 }
 
@@ -219,21 +226,12 @@ public class Bishop : ChessGamePiece
         new MovePattern([MovementType.ForwardRight], true),
     ];
 
-    public Bishop(ITileRenderer renderer, Tile tile, ConsoleColor color, Actor owner) : base(renderer, MovePatterns, tile, owner)
+    public Bishop(ITileRenderer renderer, Tile tile, ConsoleColor color, Actor owner) : base(renderer, MovePatterns,
+        tile, owner)
     {
         _drawableString.FgConsoleColor = color;
         var position = tile.Position;
         Init(renderer, _drawableString, position);
-    }
-
-    protected override void HandleOtherChessPieceInPossibleMoveCallback(ChessGamePiece otherPiece)
-    {
-        TileMapManager.HighlightTile(otherPiece.CurrentTile);
-    }
-
-    protected override bool CheckIfTileIsPossibleMoveCallback(Tile tile)
-    {
-        return true;
     }
 }
 
@@ -249,21 +247,12 @@ public class Rook : ChessGamePiece
         new MovePattern([MovementType.Left], true),
     ];
 
-    public Rook(ITileRenderer renderer, Tile tile, ConsoleColor color, Actor owner) : base(renderer, MovePatterns, tile, owner)
+    public Rook(ITileRenderer renderer, Tile tile, ConsoleColor color, Actor owner) : base(renderer, MovePatterns, tile,
+        owner)
     {
         _drawableString.FgConsoleColor = color;
         var position = tile.Position;
         Init(renderer, _drawableString, position);
-    }
-
-    protected override void HandleOtherChessPieceInPossibleMoveCallback(ChessGamePiece otherPiece)
-    {
-        TileMapManager.HighlightTile(otherPiece.CurrentTile);
-    }
-
-    protected override bool CheckIfTileIsPossibleMoveCallback(Tile tile)
-    {
-        return true;
     }
 }
 
@@ -310,20 +299,11 @@ public class Knight : ChessGamePiece
             false),
     ];
 
-    public Knight(ITileRenderer renderer, Tile tile, ConsoleColor color, Actor owner) : base(renderer, MovePatterns, tile, owner)
+    public Knight(ITileRenderer renderer, Tile tile, ConsoleColor color, Actor owner) : base(renderer, MovePatterns,
+        tile, owner)
     {
         _drawableString.FgConsoleColor = color;
         var position = tile.Position;
         Init(renderer, _drawableString, position);
-    }
-
-    protected override void HandleOtherChessPieceInPossibleMoveCallback(ChessGamePiece otherPiece)
-    {
-        TileMapManager.HighlightTile(otherPiece.CurrentTile);
-    }
-
-    protected override bool CheckIfTileIsPossibleMoveCallback(Tile tile)
-    {
-        return true;
     }
 }

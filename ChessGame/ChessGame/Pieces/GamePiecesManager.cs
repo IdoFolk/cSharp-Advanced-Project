@@ -65,7 +65,7 @@ public class GamePiecesManager
         {
             pieces.Add(new Rook(new ConsoleTileRenderer(), tile77, ConsoleColor.White, whitePlayer));
         }
-
+        
         return pieces;
     }
     

@@ -50,6 +50,9 @@ public class ChessGame
         
         _blackPlayer = new ChessPlayer(PlayerColor.Black, "Black Player");
         var blackPieces = _gamePiecesManager.CreateAndGetBlackPlayerPieces(_blackPlayer);
+        _blackPlayer.AddTileObjects(blackPieces);
+        
+        ChessGamePiece.OnPieceEaten += piece => piece.OwnerActor.RemoveObject(piece);
     }
 
     private void ConfigGameRules()
