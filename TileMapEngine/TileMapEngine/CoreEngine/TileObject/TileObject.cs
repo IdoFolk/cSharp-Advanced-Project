@@ -13,14 +13,6 @@ public class TileObject : ICloneable
     
     public Actor OwnerActor { get; }
 
-    protected TileObject(ITileRenderer tileRenderer, Tile? currentTile, Actor ownerActor)
-    {
-        TileRenderer = tileRenderer;
-        CurrentTile = currentTile;
-        OwnerActor = ownerActor;
-        Movement = new ObjectMovement(this);
-    }
-
     protected TileObject(ITileRenderer tileRenderer, Tile? currentTile, List<MovePattern> movePatterns, Actor ownerActor)
     {
         TileRenderer = tileRenderer;

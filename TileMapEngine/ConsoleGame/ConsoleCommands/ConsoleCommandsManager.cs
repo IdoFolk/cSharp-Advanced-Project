@@ -159,9 +159,9 @@ public class ConsoleCommandsManager
         return true;
     }
 
-    private bool HandleMoveCommand(string args)
+    private bool HandleMoveCommand(CommandCallbackArguments commandCallbackArguments)
     {
-        if (!TryGetPositionFromArgument(args, out var position2D))
+        if (!TryGetPositionFromArgument(commandCallbackArguments.args, out var position2D))
         {
             return false;
         }

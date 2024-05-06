@@ -1,12 +1,14 @@
 using ConsoleRenderer.ConsoleCommands;
 using ConsoleRenderer.ConsoleRenderer;
 using TileMapEngine.CoreEngine;
+using TileObject = TileMapEngine.CoreEngine.TileObject.TileObject;
+
 
 namespace ConsoleRenderer;
 
 public class ConsoleGameLoopManager : IGameLoopManager
 {
-    public TileMapEngine.CoreEngine.TileObject.TileObject CurrentSelectedTileObject;
+    public TileObject CurrentSelectedTileObject;
     private ConsoleGameRenderer _gameRenderer;
     
     private ConsoleCommandsManager _consoleCommandsManager;
@@ -32,6 +34,11 @@ public class ConsoleGameLoopManager : IGameLoopManager
         while (_isRunning)
         {
             _consoleCommandsManager.HandleUserInput(currentTurnActor);
+
+            if (!GameManager.GetShouldAdvanceTurn())
+            {
+                continue;
+            }
             
             if (currentTurnActor == firstActor)
             {
@@ -52,7 +59,7 @@ public class ConsoleGameLoopManager : IGameLoopManager
         _gameRenderer.RefreshTileMapDraw(GameManager.TileMap, clearConsole);
     }
 
-    public void SetSelectedTileObject(TileMapEngine.CoreEngine.TileObject.TileObject tileObject)
+    public void SetSelectedTileObject(TileObject tileObject)
     {
         CurrentSelectedTileObject = tileObject;
     }

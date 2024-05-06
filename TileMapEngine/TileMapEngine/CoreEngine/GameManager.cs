@@ -11,6 +11,8 @@ public static class GameManager
 
     private static IGameLoopManager? _gameLoopManager;
 
+    private static bool _shouldAdvanceTurn;
+
     public static void InitTileMap(TileMap? tileMap, IGameLoopManager? gameLoopManager)
     {
         TileMap = tileMap;
@@ -26,6 +28,17 @@ public static class GameManager
     }
 
     public static IGameLoopManager? GetGameLoopManager() => _gameLoopManager;
+    
+    public static bool GetShouldAdvanceTurn()
+    {
+        if (_shouldAdvanceTurn)
+        {
+            _shouldAdvanceTurn = false;
+            return true;
+        }
+
+        return false;
+    }
     
     public static void AddObjectToTileMap(TileObject.TileObject tileObject, Position2D position2D)
     {

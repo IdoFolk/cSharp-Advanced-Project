@@ -51,11 +51,12 @@ public class ChessGame
     {
         _gamePiecesManager = new GamePiecesManager();
         
-        var whitePieces = _gamePiecesManager.CreateAndGetWhitePlayerPieces();
-        _whitePlayer = new ChessPlayer(whitePieces, PlayerColor.White, "White Player");
+        _whitePlayer = new ChessPlayer(PlayerColor.White, "White Player");
+        var whitePieces = _gamePiecesManager.CreateAndGetWhitePlayerPieces(_whitePlayer);
+        _whitePlayer.AddTileObjects(whitePieces);
         
-        var blackPieces = _gamePiecesManager.CreateAndGetBlackPlayerPieces();
-        _blackPlayer = new ChessPlayer(blackPieces, PlayerColor.Black, "Black Player");
+        _blackPlayer = new ChessPlayer(PlayerColor.Black, "Black Player");
+        var blackPieces = _gamePiecesManager.CreateAndGetBlackPlayerPieces(_blackPlayer);
     }
 
     private void ConfigGameRules()
