@@ -26,7 +26,7 @@ public class ObjectMovement(TileObject owner, List<MovePattern> movePatterns)
     {
         var newPosition = owner.Position;
         List<Position2D> availablePositions = [];
-        var tileMap = GameManager.TileMap;
+        var tileMap = TileMapManager.TileMap;
         foreach (var movement in movePattern.Movement)
         {
             do

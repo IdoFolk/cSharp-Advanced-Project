@@ -27,30 +27,30 @@ public class ChessConsoleCommands
     {
         if (!GetPositionFromGuidesArgs(commandCallbackArguments.args, out var position2D)) return false;
 
-        if (!GameManager.TrySelect(commandCallbackArguments.playingActor, position2D)) return false;
+        if (!TileMapManager.TrySelect(commandCallbackArguments.playingActor, position2D)) return false;
 
         var splitArgs = commandCallbackArguments.args.Split(',');
         Console.WriteLine($"Selected tile object at {splitArgs[0]},{splitArgs[1]}\n");
-        GameManager.RefreshGameViewport(false);
+        TileMapManager.RefreshGameViewport(false);
         return true;
     }
 
     private bool HandleChessMoveCommand(CommandCallbackArguments commandCallbackArguments)
     {
-        if (!GameManager.GetIsAnySelected())
+        if (!TileMapManager.GetIsAnySelected())
         {
             return false;
         }
 
         if (!GetPositionFromGuidesArgs(commandCallbackArguments.args, out var position2D)) return false;
 
-        if (!GameManager.TryMove(position2D)) return false;
+        if (!TileMapManager.TryMove(position2D)) return false;
 
         var splitArgs = commandCallbackArguments.args.Split(',');
         Console.WriteLine(
             $"Moved to {splitArgs[0]},{splitArgs[1]} and ended {commandCallbackArguments.playingActor.ActorName}'s turn.\n");
 
-        GameManager.RefreshGameViewport(false);
+        TileMapManager.RefreshGameViewport(false);
         return true;
     }
 

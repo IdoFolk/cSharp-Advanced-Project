@@ -3,7 +3,7 @@ using Renderer.Rendering;
 
 namespace TileMapEngine.CoreEngine.Objects;
 
-public class TileObject : ICloneable
+public abstract class TileObject
 {
     public event Action? OnMove;
     public ObjectMovement Movement { get; private set; }
@@ -38,18 +38,7 @@ public class TileObject : ICloneable
 
     public void DrawTileObject(int rowsOffset = 0) => TileRenderer.Draw(rowsOffset,true);
 
-    public object Clone()
-    {
-        return new TileObject(TileRenderer,CurrentTile, [..Movement.MovePatterns], OwnerActor);
-    }
+    public abstract void HandleOtherTileObjectInPossibleMoveCallback(TileObject tileObject);
 
-    public virtual void HandleOtherTileObjectInPossibleMoveCallback(TileObject tileObject)
-    {
-        // To be overriden by inheritors
-    }
-
-    public virtual bool CheckPossibleMoveTileCallback(Tile tile)
-    {
-        return true; // To be overriden by inheritors
-    }
+    public abstract bool CheckPossibleMoveTileCallback(Tile tile);
 }

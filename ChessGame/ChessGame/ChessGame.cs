@@ -31,7 +31,7 @@ public class ChessGame
         var tileMap = new TileMap(BoardSize, BoardSize);
 
         _gameLoopManager = new ConsoleGameLoopManager();
-        GameManager.InitTileMap(tileMap, _gameLoopManager);
+        TileMapManager.InitTileMap(tileMap, _gameLoopManager);
         _gameLoopManager.AssignCheckersPattern(tileMap, ConsoleColor.Cyan, ConsoleColor.DarkBlue);
     }
 
@@ -50,6 +50,9 @@ public class ChessGame
         
         _blackPlayer = new ChessPlayer(PlayerColor.Black, "Black Player");
         var blackPieces = _gamePiecesManager.CreateAndGetBlackPlayerPieces(_blackPlayer);
+        _blackPlayer.AddTileObjects(blackPieces);
+        
+        ChessGamePiece.OnPieceEaten += piece => piece.OwnerActor.RemoveObject(piece);
     }
 
     private void ConfigGameRules()

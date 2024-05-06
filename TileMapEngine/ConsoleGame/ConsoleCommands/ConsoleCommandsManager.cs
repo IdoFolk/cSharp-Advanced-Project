@@ -43,7 +43,7 @@ public class ConsoleCommandsManager
             false,
             _ =>
             {
-                GameManager.RefreshGameViewport(true);
+                TileMapManager.RefreshGameViewport(true);
                 return true;
             });
         AddCommand(refresh);
@@ -137,25 +137,25 @@ public class ConsoleCommandsManager
             return false;
         }
 
-        if (!GameManager.TrySelect(callbackArguments.playingActor, position2D)) return false;
+        if (!TileMapManager.TrySelect(callbackArguments.playingActor, position2D)) return false;
 
         Console.WriteLine($"Selected tile object at {position2D.X},{position2D.Y}\n");
-        GameManager.RefreshGameViewport(false);
+        TileMapManager.RefreshGameViewport(false);
         return true;
     }
 
     private bool HandleDeselectCommand()
     {
-        if (!GameManager.TryDeselect()) return false;
+        if (!TileMapManager.TryDeselect()) return false;
 
         Console.WriteLine("Deselected current tile object\n");
-        GameManager.RefreshGameViewport(false);
+        TileMapManager.RefreshGameViewport(false);
         return true;
     }
 
     private static bool HandleOnQuitCommand()
     {
-        GameManager.StopGameLoop();
+        TileMapManager.StopGameLoop();
         return true;
     }
 
@@ -166,11 +166,11 @@ public class ConsoleCommandsManager
             return false;
         }
 
-        if (!GameManager.TryMove(position2D)) return false;
+        if (!TileMapManager.TryMove(position2D)) return false;
 
         Console.WriteLine(
             $"Moved to {position2D.X},{position2D.Y} and ended {commandCallbackArguments.playingActor.ActorName}'s turn.\n");
-        GameManager.RefreshGameViewport(false);
+        TileMapManager.RefreshGameViewport(false);
         return true;
     }
 }
