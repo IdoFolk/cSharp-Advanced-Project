@@ -36,8 +36,13 @@ public class ConsoleGameLoopManager : IGameLoopManager
         _gameRenderer.AssignCheckersPattern(tileMap, oddColor, evenColor);
     }
     
-    public void StartTwoPlayersGameLoop(Actor firstActor, Actor secondActor)
+    public void StartTwoPlayersGameLoop(Actor? firstActor, Actor? secondActor)
     {
+        if (firstActor == null || secondActor == null)
+        {
+            throw new Exception("One or more of the assigned actors are null.");
+        }
+        
         _isRunning = true;
         var currentTurnActor = firstActor;
 

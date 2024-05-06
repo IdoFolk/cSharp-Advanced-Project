@@ -5,7 +5,7 @@ namespace TileMapEngine.CoreEngine;
 public class Actor(string actorName)
 {
     public string ActorName { get; set; } = actorName;
-    private List<TileObject> TileObjects { get; set; } = [];
+    protected List<TileObject> TileObjects { get; set; } = [];
 
     public void AddTileObjects(List<TileObject> objects) => TileObjects.AddRange(objects);
 

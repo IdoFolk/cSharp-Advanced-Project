@@ -6,10 +6,9 @@ namespace ChessGame;
 
 public class ChessGame
 {
-    private ConsoleGameLoopManager _gameLoopManager;
-    private GamePiecesManager _gamePiecesManager;
-    private ChessPlayer _whitePlayer;
-    private ChessPlayer _blackPlayer;
+    private ConsoleGameLoopManager? _gameLoopManager;
+    private ChessPlayer? _whitePlayer;
+    private ChessPlayer? _blackPlayer;
 
     public static readonly int BoardSize = 8;
 
@@ -42,14 +41,12 @@ public class ChessGame
     
     private void ConfigPlayers()
     {
-        _gamePiecesManager = new GamePiecesManager();
-        
         _whitePlayer = new ChessPlayer(PlayerColor.White, "White Player");
-        var whitePieces = _gamePiecesManager.CreateAndGetWhitePlayerPieces(_whitePlayer);
+        var whitePieces = GamePiecesConfig.CreateAndGetWhitePlayerPieces(_whitePlayer);
         _whitePlayer.AddTileObjects(whitePieces);
         
         _blackPlayer = new ChessPlayer(PlayerColor.Black, "Black Player");
-        var blackPieces = _gamePiecesManager.CreateAndGetBlackPlayerPieces(_blackPlayer);
+        var blackPieces = GamePiecesConfig.CreateAndGetBlackPlayerPieces(_blackPlayer);
         _blackPlayer.AddTileObjects(blackPieces);
         
         ChessGamePiece.OnPieceEaten += piece => piece.OwnerActor.RemoveObject(piece);
@@ -63,7 +60,7 @@ public class ChessGame
 
     private void StartGame()
     {
-        _gameLoopManager.RefreshGameViewport(true);
-        _gameLoopManager.StartTwoPlayersGameLoop(_whitePlayer, _blackPlayer);
+        _gameLoopManager?.RefreshGameViewport(true);
+        _gameLoopManager?.StartTwoPlayersGameLoop(_whitePlayer, _blackPlayer);
     }
 }
