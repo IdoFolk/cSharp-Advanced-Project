@@ -11,7 +11,7 @@ public class ChessConsoleCommands
         var commandsManager = consoleGameLoop.GetConsoleCommandsManager();
 
         var chessSelect = new ConsoleCommand("gselect",
-            "Identical to the /select command but with the guides convention. example: /gselect G,8",
+            "Identical to the /select command but with the guides convention. example: /gselect H,8",
             true,
             HandleChessSelectCommand);
         commandsManager.AddCommand(chessSelect);
@@ -48,7 +48,8 @@ public class ChessConsoleCommands
 
         var splitArgs = commandCallbackArguments.args.Split(',');
         Console.WriteLine(
-            $"Moved the selected tile object to {splitArgs[0]},{splitArgs[1]} and deselected the object.\n");
+            $"Moved to {splitArgs[0]},{splitArgs[1]} and ended {commandCallbackArguments.playingActor.ActorName}'s turn.\n");
+
         GameManager.RefreshGameViewport(false);
         return true;
     }

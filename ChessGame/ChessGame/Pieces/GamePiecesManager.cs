@@ -14,7 +14,7 @@ public class GamePiecesManager
             var tile = GameManager.TileMap?[i, 6];
             if (tile != null)
             {
-                pieces.Add(new Pawn(new ConsoleTileRenderer(), tile, ConsoleColor.White,whitePlayer));
+                pieces.Add(new WhitePawn(new ConsoleTileRenderer(), tile, ConsoleColor.White,whitePlayer));
             }
         }
         
@@ -77,7 +77,7 @@ public class GamePiecesManager
             var tile = GameManager.TileMap?[i, 1];
             if (tile != null)
             {
-                pieces.Add(new Pawn(new ConsoleTileRenderer(), tile, ConsoleColor.DarkCyan, blackPlayer));
+                pieces.Add(new BlackPawn(new ConsoleTileRenderer(), tile, ConsoleColor.DarkCyan, blackPlayer));
             }
         }
         

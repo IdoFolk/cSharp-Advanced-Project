@@ -108,7 +108,7 @@ public class Queen : ChessGamePiece
     }
 }
 
-public class Pawn : ChessGamePiece
+public class WhitePawn : ChessGamePiece
 {
     private static ConsoleDrawableString _drawableString = new("P");
 
@@ -120,7 +120,7 @@ public class Pawn : ChessGamePiece
         new MovePattern([MovementType.ForwardRight], false),
     ];
 
-    public Pawn(ITileRenderer renderer, Tile tile, ConsoleColor color, Actor owner) : base(renderer, MovePatterns, tile, owner)
+    public WhitePawn(ITileRenderer renderer, Tile tile, ConsoleColor color, Actor owner) : base(renderer, MovePatterns, tile, owner)
     {
         _drawableString.FgConsoleColor = color;
         var position = tile.Position;
@@ -152,14 +152,59 @@ public class Pawn : ChessGamePiece
             return true;
         }
 
+        return tile.CurrentTileObject == null &&
+               tile.Position.Y == Position.Y - 1 &&
+               tile.Position.X == Position.X;
+    }
+}
+
+public class BlackPawn : ChessGamePiece
+{
+    private static ConsoleDrawableString _drawableString = new("P");
+
+    private static readonly List<MovePattern> MovePatterns =
+    [
+        new MovePattern([MovementType.Back], false),
+        new MovePattern([MovementType.Back, MovementType.Back], false),
+        new MovePattern([MovementType.BackLeft], false),
+        new MovePattern([MovementType.BackRight], false),
+    ];
+
+    public BlackPawn(ITileRenderer renderer, Tile tile, ConsoleColor color, Actor owner) : base(renderer, MovePatterns, tile, owner)
+    {
+        _drawableString.FgConsoleColor = color;
+        var position = tile.Position;
+        Init(renderer, _drawableString, position);
+    }
+
+    protected override void HandleOtherChessPieceInPossibleMoveCallback(ChessGamePiece otherPiece)
+    {
+        var tile = otherPiece.CurrentTile;
+
+        if (tile?.Position.X != Position.X && tile?.Position.Y == Position.Y + 1) // Means the other tile isn't at Movement.Forward direction, so it's a diagonal eat
+        {
+            GameManager.HighlightTile(tile);
+        }
+    }
+
+    protected override bool CheckIfTileIsPossibleMoveCallback(Tile tile)
+    {
         if (tile.CurrentTileObject == null &&
-            tile.Position.Y == Position.Y - 1 &&
-            tile.Position.X == Position.X)
+            tile.Position.Y == Position.Y + 2 &&
+            Position == StartingPosition2D)
+        {
+            return true;
+        }
+        
+        if (tile.CurrentTileObject != null &&
+            tile.Position.X != Position.X) // Means the other tile isn't at Movement.Forward direction, so it's a diagonal eat
         {
             return true;
         }
 
-        return false;
+        return tile.CurrentTileObject == null &&
+               tile.Position.Y == Position.Y + 1 &&
+               tile.Position.X == Position.X;
     }
 }
 

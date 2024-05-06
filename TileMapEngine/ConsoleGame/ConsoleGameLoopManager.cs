@@ -14,11 +14,21 @@ public class ConsoleGameLoopManager : IGameLoopManager
     private ConsoleCommandsManager _consoleCommandsManager;
 
     private bool _isRunning;
+    private bool _shouldMoveToNextTurn;
 
     public void Init(TileMap? tileMap)
     {
         ConfigTileMap(tileMap);
         ConfigConsoleCommands();
+
+        GameManager.OnTileObjectSelected += SetSelectedTileObject;
+        GameManager.OnDeselected += ClearCurrentSelectedObject;
+        GameManager.OnTileObjectMoved += HandleOnTileObjectMoved;
+    }
+
+    private void HandleOnTileObjectMoved(TileObject obj)
+    {
+        _shouldMoveToNextTurn = true;
     }
 
     public void AssignCheckersPattern(TileMap? tileMap, ConsoleColor oddColor, ConsoleColor evenColor)
@@ -35,10 +45,12 @@ public class ConsoleGameLoopManager : IGameLoopManager
         {
             _consoleCommandsManager.HandleUserInput(currentTurnActor);
 
-            if (!GameManager.GetShouldAdvanceTurn())
+            if (!_shouldMoveToNextTurn)
             {
                 continue;
             }
+            
+            _shouldMoveToNextTurn = false;
             
             if (currentTurnActor == firstActor)
             {
@@ -50,7 +62,11 @@ public class ConsoleGameLoopManager : IGameLoopManager
         }
     }
 
-    public void StopGameLoop() => _isRunning = false;
+    public void StopGameLoop()
+    {
+        _isRunning = false;
+        
+    }
 
     public ConsoleCommandsManager GetConsoleCommandsManager() => _consoleCommandsManager;
 
@@ -74,5 +90,10 @@ public class ConsoleGameLoopManager : IGameLoopManager
     {
         _consoleCommandsManager = new ConsoleCommandsManager();
         _consoleCommandsManager.Init();
+    }
+    
+    private void ClearCurrentSelectedObject()
+    {
+        CurrentSelectedTileObject = null;
     }
 }

@@ -11,7 +11,7 @@ public class ConsoleCommandsManager
         var help = new ConsoleCommand("help",
             "Show all available commands. example: /help",
             false,
-            _ => HandleHelpCommand(default,false));
+            _ => HandleHelpCommand(default, false));
         AddCommand(help);
 
         var select = new ConsoleCommand("select",
@@ -37,7 +37,7 @@ public class ConsoleCommandsManager
             true,
             _ => HandleOnQuitCommand());
         AddCommand(quit);
-        
+
         var refresh = new ConsoleCommand("refresh",
             "Clears the console and re-draws the game updated game state onto the viewport. example: /refresh",
             false,
@@ -78,7 +78,7 @@ public class ConsoleCommandsManager
     public void HandleUserInput(Actor playingActor)
     {
         Console.WriteLine();
-        Console.Write("Waiting for command: ");
+        Console.Write($"Waiting for command from {playingActor.ActorName}: ");
         var input = Console.ReadLine();
         var splitInput = input?.Split(' ');
 
@@ -169,7 +169,7 @@ public class ConsoleCommandsManager
         if (!GameManager.TryMove(position2D)) return false;
 
         Console.WriteLine(
-            $"Moved the selected tile object to {position2D.X},{position2D.Y} and deselected the object.\n");
+            $"Moved to {position2D.X},{position2D.Y} and ended {commandCallbackArguments.playingActor.ActorName}'s turn.\n");
         GameManager.RefreshGameViewport(false);
         return true;
     }

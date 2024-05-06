@@ -15,13 +15,6 @@ public class ChessGame
 
     public void RunChessGame()
     {
-        if (GameManager.GetGameLoopManager() is not ConsoleGameLoopManager consoleGameLoop)
-        {
-            return;
-        }
-
-        _gameLoopManager = consoleGameLoop;
-        
         ConfigTileMap();
 
         ConfigGameConsoleCommands();
@@ -37,9 +30,9 @@ public class ChessGame
     {
         var tileMap = new TileMap(BoardSize, BoardSize);
 
-        var consoleGameLoop = new ConsoleGameLoopManager();
-        GameManager.InitTileMap(tileMap, consoleGameLoop);
-        consoleGameLoop.AssignCheckersPattern(tileMap, ConsoleColor.Cyan, ConsoleColor.DarkBlue);
+        _gameLoopManager = new ConsoleGameLoopManager();
+        GameManager.InitTileMap(tileMap, _gameLoopManager);
+        _gameLoopManager.AssignCheckersPattern(tileMap, ConsoleColor.Cyan, ConsoleColor.DarkBlue);
     }
 
     private void ConfigGameConsoleCommands()

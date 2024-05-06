@@ -4,17 +4,15 @@ namespace TileMapEngine.CoreEngine;
 
 public static class GameManager
 {
-    public static event Action<TileObject>? OnSelectCommand;
-    public static event Action<TileObject>? OnDeselectCommand;
-    public static event Action<TileObject>? OnMoveCommand;
+    public static event Action<TileObject>? OnTileObjectSelected;
+    public static event Action? OnDeselected;
+    public static event Action<TileObject>? OnTileObjectMoved;
     public static TileMap? TileMap { get; private set; }
     private static TileObject? SelectedTileObject { get; set; }
     private static List<Tile>? CurrentHighlightedTiles { get; set; }
 
     private static IGameLoopManager? _gameLoopManager;
-
-    private static bool _shouldAdvanceTurn;
-
+    
     public static void InitTileMap(TileMap? tileMap, IGameLoopManager? gameLoopManager)
     {
         TileMap = tileMap;
@@ -30,17 +28,6 @@ public static class GameManager
     }
 
     public static IGameLoopManager? GetGameLoopManager() => _gameLoopManager;
-    
-    public static bool GetShouldAdvanceTurn()
-    {
-        if (_shouldAdvanceTurn)
-        {
-            _shouldAdvanceTurn = false;
-            return true;
-        }
-
-        return false;
-    }
     
     public static void AddObjectToTileMap(TileObject tileObject, Position2D position2D)
     {
@@ -70,7 +57,6 @@ public static class GameManager
         }
         
         SelectedTileObject = tileObjectToSelect;
-        _gameLoopManager?.SetSelectedTileObject(SelectedTileObject);
 
         foreach (var possibleMove in SelectedTileObject.Movement.GetPossibleMoves())
         {
@@ -97,7 +83,7 @@ public static class GameManager
             HighlightTile(tile);
         }
 
-        OnSelectCommand?.Invoke(SelectedTileObject);
+        OnTileObjectSelected?.Invoke(SelectedTileObject);
         return true;
     }
 
@@ -105,7 +91,7 @@ public static class GameManager
     {
         if (SelectedTileObject == null) return false;
 
-        OnDeselectCommand?.Invoke(SelectedTileObject);
+        OnDeselected?.Invoke();
         ClearSelectedObject();
         return true;
     }
@@ -123,7 +109,7 @@ public static class GameManager
         if (!SelectedTileObject.TryMove(tile)) return false;
 
         ClearSelectedObject();
-        OnMoveCommand?.Invoke(SelectedTileObject);
+        OnTileObjectMoved?.Invoke(SelectedTileObject);
         return true;
     }
 
@@ -134,7 +120,6 @@ public static class GameManager
     private static void ClearSelectedObject()
     {
         SelectedTileObject = null;
-        _gameLoopManager.SetSelectedTileObject(SelectedTileObject);
         if (CurrentHighlightedTiles == null) return;
         
         foreach (var highlightedTile in CurrentHighlightedTiles)
