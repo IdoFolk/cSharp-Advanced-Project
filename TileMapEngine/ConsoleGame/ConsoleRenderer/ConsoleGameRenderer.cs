@@ -62,6 +62,8 @@ public class ConsoleGameRenderer : IGameRenderer<TileMap, ConsoleColor>
     public void AssignCheckersPattern(TileMap? tileMap, ConsoleColor oddColor, ConsoleColor evenColor,
         ConsoleColor bgColor = default)
     {
+        if (tileMap == null) return;
+        
         foreach (var tile in tileMap)
         {
             if ((tile.Position.X + tile.Position.Y) % 2 == 0)
@@ -73,7 +75,7 @@ public class ConsoleGameRenderer : IGameRenderer<TileMap, ConsoleColor>
             tile.TileRenderer.ChangeColor(oddColor, bgColor);
         }
 
-        RefreshTileMapDraw(tileMap);
+        RefreshTileMapDraw(tileMap, true);
     }
 
     private void DrawMapGuidelines(TileMap tileMap, int rowsOffset)

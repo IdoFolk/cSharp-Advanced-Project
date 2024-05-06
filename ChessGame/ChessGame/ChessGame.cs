@@ -7,6 +7,8 @@ namespace ChessGame;
 public class ChessGame
 {
     private GamePiecesManager _gamePiecesManager;
+    private ChessPlayer _whitePlayer;
+    private ChessPlayer _blackPlayer;
 
     public static readonly int BoardSize = 8;
 
@@ -16,11 +18,9 @@ public class ChessGame
 
         ConfigGameConsoleCommands();
 
-        ConfigGamePieces();
-
-        ConfigGameRules();
-
         ConfigPlayers();
+        
+        ConfigGameRules();
 
         StartGame();
     }
@@ -31,18 +31,23 @@ public class ChessGame
 
         var consoleGameLoop = new ConsoleGameLoopManager();
         GameManager.InitTileMap(tileMap, consoleGameLoop);
-        consoleGameLoop.AssignCheckersPattern(tileMap, ConsoleColor.White, ConsoleColor.Black);
+        consoleGameLoop.AssignCheckersPattern(tileMap, ConsoleColor.Cyan, ConsoleColor.DarkBlue);
     }
 
     private void ConfigGameConsoleCommands()
     {
         new ChessConsoleCommands().Init();
     }
-
-    private void ConfigGamePieces()
+    
+    private void ConfigPlayers()
     {
         _gamePiecesManager = new GamePiecesManager();
-        _gamePiecesManager.Init();
+        
+        var whitePieces = _gamePiecesManager.CreateAndGetWhitePlayerPieces();
+        _whitePlayer = new ChessPlayer(whitePieces, PlayerColor.White, "White Player");
+        
+        var blackPieces = _gamePiecesManager.CreateAndGetBlackPlayerPieces();
+        _blackPlayer = new ChessPlayer(blackPieces, PlayerColor.Black, "Black Player");
     }
 
     private void ConfigGameRules()
@@ -51,16 +56,10 @@ public class ChessGame
         // determine the game's flow (turns and their logic)
     }
 
-    private void ConfigPlayers()
-    {
-        // Config the players
-        // create 2 players
-        // determine a name and color to each player
-        // add to each players their 16 pieces
-    }
-
     private void StartGame()
     {
-        GameManager.GetGameLoopManager()?.StartGameLoop();
+        var gameLoopManager = GameManager.GetGameLoopManager();
+        gameLoopManager?.RefreshGameViewport(true);
+        gameLoopManager?.StartGameLoop();
     }
 }
