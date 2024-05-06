@@ -18,12 +18,11 @@ public abstract class ChessGamePiece(ITileRenderer renderer, List<MovePattern> m
         
         renderer.Init(drawable, new Vector2(position2D.X, position2D.Y));
 
-        GameManager.AddObjectToTileMap(this, position2D);
+        TileMapManager.AddObjectToTileMap(this, position2D);
     }
 
     public override void HandleOtherTileObjectInPossibleMoveCallback(TileObject tileObject)
     {
-        base.HandleOtherTileObjectInPossibleMoveCallback(tileObject);
         if (tileObject is ChessGamePiece otherPiece)
         {
             // TODO handle according to actor once we have it
@@ -65,7 +64,7 @@ public class King : ChessGamePiece
 
     protected override void HandleOtherChessPieceInPossibleMoveCallback(ChessGamePiece otherPiece)
     {
-        GameManager.HighlightTile(otherPiece.CurrentTile);
+        TileMapManager.HighlightTile(otherPiece.CurrentTile);
     }
 
     protected override bool CheckIfTileIsPossibleMoveCallback(Tile tile)
@@ -99,7 +98,7 @@ public class Queen : ChessGamePiece
 
     protected override void HandleOtherChessPieceInPossibleMoveCallback(ChessGamePiece otherPiece)
     {
-        GameManager.HighlightTile(otherPiece.CurrentTile);
+        TileMapManager.HighlightTile(otherPiece.CurrentTile);
     }
 
     protected override bool CheckIfTileIsPossibleMoveCallback(Tile tile)
@@ -133,7 +132,7 @@ public class WhitePawn : ChessGamePiece
 
         if (tile?.Position.X != Position.X && tile?.Position.Y == Position.Y - 1) // Means the other tile isn't at Movement.Forward direction, so it's a diagonal eat
         {
-            GameManager.HighlightTile(tile);
+            TileMapManager.HighlightTile(tile);
         }
     }
 
@@ -183,7 +182,7 @@ public class BlackPawn : ChessGamePiece
 
         if (tile?.Position.X != Position.X && tile?.Position.Y == Position.Y + 1) // Means the other tile isn't at Movement.Forward direction, so it's a diagonal eat
         {
-            GameManager.HighlightTile(tile);
+            TileMapManager.HighlightTile(tile);
         }
     }
 
@@ -229,7 +228,7 @@ public class Bishop : ChessGamePiece
 
     protected override void HandleOtherChessPieceInPossibleMoveCallback(ChessGamePiece otherPiece)
     {
-        GameManager.HighlightTile(otherPiece.CurrentTile);
+        TileMapManager.HighlightTile(otherPiece.CurrentTile);
     }
 
     protected override bool CheckIfTileIsPossibleMoveCallback(Tile tile)
@@ -259,7 +258,7 @@ public class Rook : ChessGamePiece
 
     protected override void HandleOtherChessPieceInPossibleMoveCallback(ChessGamePiece otherPiece)
     {
-        GameManager.HighlightTile(otherPiece.CurrentTile);
+        TileMapManager.HighlightTile(otherPiece.CurrentTile);
     }
 
     protected override bool CheckIfTileIsPossibleMoveCallback(Tile tile)
@@ -320,7 +319,7 @@ public class Knight : ChessGamePiece
 
     protected override void HandleOtherChessPieceInPossibleMoveCallback(ChessGamePiece otherPiece)
     {
-        GameManager.HighlightTile(otherPiece.CurrentTile);
+        TileMapManager.HighlightTile(otherPiece.CurrentTile);
     }
 
     protected override bool CheckIfTileIsPossibleMoveCallback(Tile tile)

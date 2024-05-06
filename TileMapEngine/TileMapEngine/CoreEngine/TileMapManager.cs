@@ -2,7 +2,7 @@ using TileMapEngine.CoreEngine.Objects;
 
 namespace TileMapEngine.CoreEngine;
 
-public static class GameManager
+public static class TileMapManager
 {
     public static event Action<TileObject>? OnTileObjectSelected;
     public static event Action? OnDeselected;

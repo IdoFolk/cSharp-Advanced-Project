@@ -31,7 +31,7 @@ public class ChessGame
         var tileMap = new TileMap(BoardSize, BoardSize);
 
         _gameLoopManager = new ConsoleGameLoopManager();
-        GameManager.InitTileMap(tileMap, _gameLoopManager);
+        TileMapManager.InitTileMap(tileMap, _gameLoopManager);
         _gameLoopManager.AssignCheckersPattern(tileMap, ConsoleColor.Cyan, ConsoleColor.DarkBlue);
     }
 

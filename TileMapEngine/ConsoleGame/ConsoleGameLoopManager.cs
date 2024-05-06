@@ -21,9 +21,9 @@ public class ConsoleGameLoopManager : IGameLoopManager
         ConfigTileMap(tileMap);
         ConfigConsoleCommands();
 
-        GameManager.OnTileObjectSelected += SetSelectedTileObject;
-        GameManager.OnDeselected += ClearCurrentSelectedObject;
-        GameManager.OnTileObjectMoved += HandleOnTileObjectMoved;
+        TileMapManager.OnTileObjectSelected += SetSelectedTileObject;
+        TileMapManager.OnDeselected += ClearCurrentSelectedObject;
+        TileMapManager.OnTileObjectMoved += HandleOnTileObjectMoved;
     }
 
     private void HandleOnTileObjectMoved(TileObject obj)
@@ -72,7 +72,7 @@ public class ConsoleGameLoopManager : IGameLoopManager
 
     public void RefreshGameViewport(bool clearConsole = false)
     {
-        _gameRenderer.RefreshTileMapDraw(GameManager.TileMap, clearConsole);
+        _gameRenderer.RefreshTileMapDraw(TileMapManager.TileMap, clearConsole);
     }
 
     public void SetSelectedTileObject(TileObject tileObject)
