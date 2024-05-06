@@ -2,19 +2,19 @@ using System.Numerics;
 using ConsoleRenderer.ConsoleRenderer;
 using Renderer.Rendering;
 using TileMapEngine.CoreEngine;
-using TileMapEngine.CoreEngine.TileObject;
+using TileMapEngine.CoreEngine.Objects;
 
 namespace ChessGame.Pieces;
 
-public abstract class ChessGamePiece(ITileRenderer renderer, List<MovePattern> movePatterns, Tile? tile)
+public abstract class ChessGamePiece(ITileRenderer renderer, List<MovePattern> movePatterns, Tile? tile, Actor owner)
     : TileObject(renderer, tile,
-        movePatterns)
+        movePatterns, owner)
 {
 
-    protected Position2D startingPosition2D;
+    protected Position2D StartingPosition2D;
     protected void Init(ITileRenderer renderer, IDrawable drawable, Position2D position2D)
     {
-        startingPosition2D = position2D;
+        StartingPosition2D = position2D;
         
         renderer.Init(drawable, new Vector2(position2D.X, position2D.Y));
 
@@ -56,7 +56,7 @@ public class King : ChessGamePiece
         new MovePattern([MovementType.BackRight], false),
     ];
 
-    public King(ITileRenderer renderer, Tile tile, ConsoleColor color) : base(renderer, MovePatterns, tile)
+    public King(ITileRenderer renderer, Tile tile, ConsoleColor color, Actor owner) : base(renderer, MovePatterns, tile, owner)
     {
         _drawableString.FgConsoleColor = color;
         var position = tile.Position;
@@ -90,7 +90,7 @@ public class Queen : ChessGamePiece
         new MovePattern([MovementType.BackRight], true),
     ];
 
-    public Queen(ITileRenderer renderer, Tile tile, ConsoleColor color) : base(renderer, MovePatterns, tile)
+    public Queen(ITileRenderer renderer, Tile tile, ConsoleColor color, Actor owner) : base(renderer, MovePatterns, tile, owner)
     {
         _drawableString.FgConsoleColor = color;
         var position = tile.Position;
@@ -108,7 +108,7 @@ public class Queen : ChessGamePiece
     }
 }
 
-public class Pawn : ChessGamePiece
+public class WhitePawn : ChessGamePiece
 {
     private static ConsoleDrawableString _drawableString = new("P");
 
@@ -120,7 +120,7 @@ public class Pawn : ChessGamePiece
         new MovePattern([MovementType.ForwardRight], false),
     ];
 
-    public Pawn(ITileRenderer renderer, Tile tile, ConsoleColor color) : base(renderer, MovePatterns, tile)
+    public WhitePawn(ITileRenderer renderer, Tile tile, ConsoleColor color, Actor owner) : base(renderer, MovePatterns, tile, owner)
     {
         _drawableString.FgConsoleColor = color;
         var position = tile.Position;
@@ -141,7 +141,7 @@ public class Pawn : ChessGamePiece
     {
         if (tile.CurrentTileObject == null &&
             tile.Position.Y == Position.Y - 2 &&
-            Position == startingPosition2D)
+            Position == StartingPosition2D)
         {
             return true;
         }
@@ -152,14 +152,59 @@ public class Pawn : ChessGamePiece
             return true;
         }
 
+        return tile.CurrentTileObject == null &&
+               tile.Position.Y == Position.Y - 1 &&
+               tile.Position.X == Position.X;
+    }
+}
+
+public class BlackPawn : ChessGamePiece
+{
+    private static ConsoleDrawableString _drawableString = new("P");
+
+    private static readonly List<MovePattern> MovePatterns =
+    [
+        new MovePattern([MovementType.Back], false),
+        new MovePattern([MovementType.Back, MovementType.Back], false),
+        new MovePattern([MovementType.BackLeft], false),
+        new MovePattern([MovementType.BackRight], false),
+    ];
+
+    public BlackPawn(ITileRenderer renderer, Tile tile, ConsoleColor color, Actor owner) : base(renderer, MovePatterns, tile, owner)
+    {
+        _drawableString.FgConsoleColor = color;
+        var position = tile.Position;
+        Init(renderer, _drawableString, position);
+    }
+
+    protected override void HandleOtherChessPieceInPossibleMoveCallback(ChessGamePiece otherPiece)
+    {
+        var tile = otherPiece.CurrentTile;
+
+        if (tile?.Position.X != Position.X && tile?.Position.Y == Position.Y + 1) // Means the other tile isn't at Movement.Forward direction, so it's a diagonal eat
+        {
+            GameManager.HighlightTile(tile);
+        }
+    }
+
+    protected override bool CheckIfTileIsPossibleMoveCallback(Tile tile)
+    {
         if (tile.CurrentTileObject == null &&
-            tile.Position.Y == Position.Y - 1 &&
-            tile.Position.X == Position.X)
+            tile.Position.Y == Position.Y + 2 &&
+            Position == StartingPosition2D)
+        {
+            return true;
+        }
+        
+        if (tile.CurrentTileObject != null &&
+            tile.Position.X != Position.X) // Means the other tile isn't at Movement.Forward direction, so it's a diagonal eat
         {
             return true;
         }
 
-        return false;
+        return tile.CurrentTileObject == null &&
+               tile.Position.Y == Position.Y + 1 &&
+               tile.Position.X == Position.X;
     }
 }
 
@@ -175,7 +220,7 @@ public class Bishop : ChessGamePiece
         new MovePattern([MovementType.ForwardRight], true),
     ];
 
-    public Bishop(ITileRenderer renderer, Tile tile, ConsoleColor color) : base(renderer, MovePatterns, tile)
+    public Bishop(ITileRenderer renderer, Tile tile, ConsoleColor color, Actor owner) : base(renderer, MovePatterns, tile, owner)
     {
         _drawableString.FgConsoleColor = color;
         var position = tile.Position;
@@ -205,7 +250,7 @@ public class Rook : ChessGamePiece
         new MovePattern([MovementType.Left], true),
     ];
 
-    public Rook(ITileRenderer renderer, Tile tile, ConsoleColor color) : base(renderer, MovePatterns, tile)
+    public Rook(ITileRenderer renderer, Tile tile, ConsoleColor color, Actor owner) : base(renderer, MovePatterns, tile, owner)
     {
         _drawableString.FgConsoleColor = color;
         var position = tile.Position;
@@ -266,7 +311,7 @@ public class Knight : ChessGamePiece
             false),
     ];
 
-    public Knight(ITileRenderer renderer, Tile tile, ConsoleColor color) : base(renderer, MovePatterns, tile)
+    public Knight(ITileRenderer renderer, Tile tile, ConsoleColor color, Actor owner) : base(renderer, MovePatterns, tile, owner)
     {
         _drawableString.FgConsoleColor = color;
         var position = tile.Position;

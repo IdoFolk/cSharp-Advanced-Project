@@ -11,7 +11,7 @@ public class ConsoleCommandsManager
         var help = new ConsoleCommand("help",
             "Show all available commands. example: /help",
             false,
-            _ => HandleHelpCommand(false));
+            _ => HandleHelpCommand(default, false));
         AddCommand(help);
 
         var select = new ConsoleCommand("select",
@@ -37,7 +37,7 @@ public class ConsoleCommandsManager
             true,
             _ => HandleOnQuitCommand());
         AddCommand(quit);
-        
+
         var refresh = new ConsoleCommand("refresh",
             "Clears the console and re-draws the game updated game state onto the viewport. example: /refresh",
             false,
@@ -75,10 +75,10 @@ public class ConsoleCommandsManager
         }
     }
 
-    public void HandleUserInput()
+    public void HandleUserInput(Actor playingActor)
     {
         Console.WriteLine();
-        Console.Write("Waiting for command: ");
+        Console.Write($"Waiting for command from {playingActor.ActorName}: ");
         var input = Console.ReadLine();
         var splitInput = input?.Split(' ');
 
@@ -92,30 +92,30 @@ public class ConsoleCommandsManager
 
         foreach (var command in _availableCommands.Where(command => $"/{command.Command}" == $"{firstWordInInput}"))
         {
-            HandleCommandInput(command, args);
+            HandleCommandInput(playingActor, command, args);
             return;
         }
 
         HandleHelpCommand();
     }
 
-    private void HandleCommandInput(ConsoleCommand command, string args)
+    private void HandleCommandInput(Actor playingActor, ConsoleCommand command, string args)
     {
         if (command.HasArgument)
         {
-            if (command.Execute(args)) return;
+            if (command.Execute(playingActor, args)) return;
 
             HandleHelpCommand();
             return;
         }
 
-        if (!command.Execute())
+        if (!command.Execute(playingActor))
         {
             HandleHelpCommand();
         }
     }
 
-    private bool HandleHelpCommand(bool isFallback = true)
+    private bool HandleHelpCommand(Actor _ = default, bool isFallback = true)
     {
         var text = "\n";
         if (isFallback)
@@ -130,14 +130,14 @@ public class ConsoleCommandsManager
         return true;
     }
 
-    private bool HandleSelectCommand(string args)
+    private bool HandleSelectCommand(CommandCallbackArguments callbackArguments)
     {
-        if (!TryGetPositionFromArgument(args, out var position2D))
+        if (!TryGetPositionFromArgument(callbackArguments.args, out var position2D))
         {
             return false;
         }
 
-        if (!GameManager.TrySelect(position2D)) return false;
+        if (!GameManager.TrySelect(callbackArguments.playingActor, position2D)) return false;
 
         Console.WriteLine($"Selected tile object at {position2D.X},{position2D.Y}\n");
         GameManager.RefreshGameViewport(false);
@@ -159,9 +159,9 @@ public class ConsoleCommandsManager
         return true;
     }
 
-    private bool HandleMoveCommand(string args)
+    private bool HandleMoveCommand(CommandCallbackArguments commandCallbackArguments)
     {
-        if (!TryGetPositionFromArgument(args, out var position2D))
+        if (!TryGetPositionFromArgument(commandCallbackArguments.args, out var position2D))
         {
             return false;
         }
@@ -169,7 +169,7 @@ public class ConsoleCommandsManager
         if (!GameManager.TryMove(position2D)) return false;
 
         Console.WriteLine(
-            $"Moved the selected tile object to {position2D.X},{position2D.Y} and deselected the object.\n");
+            $"Moved to {position2D.X},{position2D.Y} and ended {commandCallbackArguments.playingActor.ActorName}'s turn.\n");
         GameManager.RefreshGameViewport(false);
         return true;
     }

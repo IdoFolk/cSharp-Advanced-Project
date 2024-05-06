@@ -1,16 +1,18 @@
+using TileMapEngine.CoreEngine.Objects;
+
 namespace TileMapEngine.CoreEngine;
 
 public static class GameManager
 {
-    public static event Action<TileObject.TileObject>? OnSelectCommand;
-    public static event Action<TileObject.TileObject>? OnDeselectCommand;
-    public static event Action<TileObject.TileObject>? OnMoveCommand;
+    public static event Action<TileObject>? OnTileObjectSelected;
+    public static event Action? OnDeselected;
+    public static event Action<TileObject>? OnTileObjectMoved;
     public static TileMap? TileMap { get; private set; }
-    private static TileObject.TileObject? SelectedTileObject { get; set; }
+    private static TileObject? SelectedTileObject { get; set; }
     private static List<Tile>? CurrentHighlightedTiles { get; set; }
 
     private static IGameLoopManager? _gameLoopManager;
-
+    
     public static void InitTileMap(TileMap? tileMap, IGameLoopManager? gameLoopManager)
     {
         TileMap = tileMap;
@@ -27,12 +29,13 @@ public static class GameManager
 
     public static IGameLoopManager? GetGameLoopManager() => _gameLoopManager;
     
-    public static void AddObjectToTileMap(TileObject.TileObject tileObject, Position2D position2D)
+    public static void AddObjectToTileMap(TileObject tileObject, Position2D position2D)
     {
         TileMap?[position2D]?.PlaceTileObject(tileObject);
     }
     
-    public static bool TrySelect(Position2D position, bool highlightPossibleMoveTiles = true)
+    public static bool TrySelect(Actor playingActor, Position2D position,
+        bool highlightPossibleMoveTiles = true)
     {
         if (SelectedTileObject != null)
         {
@@ -41,11 +44,19 @@ public static class GameManager
         
         if (TileMap != null && !TileMap.CheckTileObjectInPosition(position)) return false;
 
-        SelectedTileObject = TileMap?[position]?.CurrentTileObject;
-        if (SelectedTileObject == null)
+        var tileObjectToSelect = TileMap?[position]?.CurrentTileObject;
+
+        if (tileObjectToSelect == null)
         {
             return false;
         }
+
+        if (tileObjectToSelect.OwnerActor != playingActor)
+        {
+            return false;
+        }
+        
+        SelectedTileObject = tileObjectToSelect;
 
         foreach (var possibleMove in SelectedTileObject.Movement.GetPossibleMoves())
         {
@@ -72,7 +83,7 @@ public static class GameManager
             HighlightTile(tile);
         }
 
-        OnSelectCommand?.Invoke(SelectedTileObject);
+        OnTileObjectSelected?.Invoke(SelectedTileObject);
         return true;
     }
 
@@ -80,7 +91,7 @@ public static class GameManager
     {
         if (SelectedTileObject == null) return false;
 
-        OnDeselectCommand?.Invoke(SelectedTileObject);
+        OnDeselected?.Invoke();
         ClearSelectedObject();
         return true;
     }
@@ -98,7 +109,7 @@ public static class GameManager
         if (!SelectedTileObject.TryMove(tile)) return false;
 
         ClearSelectedObject();
-        OnMoveCommand?.Invoke(SelectedTileObject);
+        OnTileObjectMoved?.Invoke(SelectedTileObject);
         return true;
     }
 

@@ -1,4 +1,4 @@
-namespace TileMapEngine.CoreEngine.TileObject;
+namespace TileMapEngine.CoreEngine.Objects;
 
 public class ObjectMovement(TileObject owner, List<MovePattern> movePatterns)
 {

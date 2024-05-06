@@ -6,7 +6,10 @@ namespace ChessGame;
 
 public class ChessGame
 {
+    private ConsoleGameLoopManager _gameLoopManager;
     private GamePiecesManager _gamePiecesManager;
+    private ChessPlayer _whitePlayer;
+    private ChessPlayer _blackPlayer;
 
     public static readonly int BoardSize = 8;
 
@@ -16,11 +19,9 @@ public class ChessGame
 
         ConfigGameConsoleCommands();
 
-        ConfigGamePieces();
-
-        ConfigGameRules();
-
         ConfigPlayers();
+        
+        ConfigGameRules();
 
         StartGame();
     }
@@ -29,20 +30,26 @@ public class ChessGame
     {
         var tileMap = new TileMap(BoardSize, BoardSize);
 
-        var consoleGameLoop = new ConsoleGameLoopManager();
-        GameManager.InitTileMap(tileMap, consoleGameLoop);
-        consoleGameLoop.AssignCheckersPattern(tileMap, ConsoleColor.White, ConsoleColor.Black);
+        _gameLoopManager = new ConsoleGameLoopManager();
+        GameManager.InitTileMap(tileMap, _gameLoopManager);
+        _gameLoopManager.AssignCheckersPattern(tileMap, ConsoleColor.Cyan, ConsoleColor.DarkBlue);
     }
 
     private void ConfigGameConsoleCommands()
     {
-        new ChessConsoleCommands().Init();
+        new ChessConsoleCommands().Init(_gameLoopManager);
     }
-
-    private void ConfigGamePieces()
+    
+    private void ConfigPlayers()
     {
         _gamePiecesManager = new GamePiecesManager();
-        _gamePiecesManager.Init();
+        
+        _whitePlayer = new ChessPlayer(PlayerColor.White, "White Player");
+        var whitePieces = _gamePiecesManager.CreateAndGetWhitePlayerPieces(_whitePlayer);
+        _whitePlayer.AddTileObjects(whitePieces);
+        
+        _blackPlayer = new ChessPlayer(PlayerColor.Black, "Black Player");
+        var blackPieces = _gamePiecesManager.CreateAndGetBlackPlayerPieces(_blackPlayer);
     }
 
     private void ConfigGameRules()
@@ -51,16 +58,9 @@ public class ChessGame
         // determine the game's flow (turns and their logic)
     }
 
-    private void ConfigPlayers()
-    {
-        // Config the players
-        // create 2 players
-        // determine a name and color to each player
-        // add to each players their 16 pieces
-    }
-
     private void StartGame()
     {
-        GameManager.GetGameLoopManager()?.StartGameLoop();
+        _gameLoopManager.RefreshGameViewport(true);
+        _gameLoopManager.StartTwoPlayersGameLoop(_whitePlayer, _blackPlayer);
     }
 }

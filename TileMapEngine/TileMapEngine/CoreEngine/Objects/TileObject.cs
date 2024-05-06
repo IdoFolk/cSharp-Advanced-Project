@@ -1,7 +1,7 @@
 using System.Numerics;
 using Renderer.Rendering;
 
-namespace TileMapEngine.CoreEngine.TileObject;
+namespace TileMapEngine.CoreEngine.Objects;
 
 public class TileObject : ICloneable
 {
@@ -10,18 +10,14 @@ public class TileObject : ICloneable
     public Position2D Position => CurrentTile.Position;
     public Tile? CurrentTile { get; set; }
     private ITileRenderer TileRenderer { get; }
+    
+    public Actor OwnerActor { get; }
 
-    protected TileObject(ITileRenderer tileRenderer, Tile? currentTile)
+    protected TileObject(ITileRenderer tileRenderer, Tile? currentTile, List<MovePattern> movePatterns, Actor ownerActor)
     {
         TileRenderer = tileRenderer;
         CurrentTile = currentTile;
-        Movement = new ObjectMovement(this);
-    }
-
-    protected TileObject(ITileRenderer tileRenderer, Tile? currentTile, List<MovePattern> movePatterns)
-    {
-        TileRenderer = tileRenderer;
-        CurrentTile = currentTile;
+        OwnerActor = ownerActor;
         Movement = new ObjectMovement(this, movePatterns);
     }
 
@@ -44,7 +40,7 @@ public class TileObject : ICloneable
 
     public object Clone()
     {
-        return new TileObject(TileRenderer,CurrentTile,new List<MovePattern>(Movement.MovePatterns));
+        return new TileObject(TileRenderer,CurrentTile, [..Movement.MovePatterns], OwnerActor);
     }
 
     public virtual void HandleOtherTileObjectInPossibleMoveCallback(TileObject tileObject)

@@ -1,40 +1,72 @@
 using ConsoleRenderer.ConsoleCommands;
 using ConsoleRenderer.ConsoleRenderer;
 using TileMapEngine.CoreEngine;
+using TileObject = TileMapEngine.CoreEngine.Objects.TileObject;
+
 
 namespace ConsoleRenderer;
 
 public class ConsoleGameLoopManager : IGameLoopManager
 {
-    public TileMapEngine.CoreEngine.TileObject.TileObject CurrentSelectedTileObject;
+    public TileObject CurrentSelectedTileObject;
     private ConsoleGameRenderer _gameRenderer;
     
     private ConsoleCommandsManager _consoleCommandsManager;
 
     private bool _isRunning;
+    private bool _shouldMoveToNextTurn;
 
     public void Init(TileMap? tileMap)
     {
         ConfigTileMap(tileMap);
         ConfigConsoleCommands();
+
+        GameManager.OnTileObjectSelected += SetSelectedTileObject;
+        GameManager.OnDeselected += ClearCurrentSelectedObject;
+        GameManager.OnTileObjectMoved += HandleOnTileObjectMoved;
+    }
+
+    private void HandleOnTileObjectMoved(TileObject obj)
+    {
+        _shouldMoveToNextTurn = true;
     }
 
     public void AssignCheckersPattern(TileMap? tileMap, ConsoleColor oddColor, ConsoleColor evenColor)
     {
         _gameRenderer.AssignCheckersPattern(tileMap, oddColor, evenColor);
     }
-
-    public void StartGameLoop()
+    
+    public void StartTwoPlayersGameLoop(Actor firstActor, Actor secondActor)
     {
         _isRunning = true;
+        var currentTurnActor = firstActor;
 
         while (_isRunning)
         {
-            _consoleCommandsManager.HandleUserInput();
+            _consoleCommandsManager.HandleUserInput(currentTurnActor);
+
+            if (!_shouldMoveToNextTurn)
+            {
+                continue;
+            }
+            
+            _shouldMoveToNextTurn = false;
+            
+            if (currentTurnActor == firstActor)
+            {
+                currentTurnActor = secondActor;
+                continue;
+            }
+
+            currentTurnActor = firstActor;
         }
     }
 
-    public void StopGameLoop() => _isRunning = false;
+    public void StopGameLoop()
+    {
+        _isRunning = false;
+        
+    }
 
     public ConsoleCommandsManager GetConsoleCommandsManager() => _consoleCommandsManager;
 
@@ -43,7 +75,7 @@ public class ConsoleGameLoopManager : IGameLoopManager
         _gameRenderer.RefreshTileMapDraw(GameManager.TileMap, clearConsole);
     }
 
-    public void SetSelectedTileObject(TileMapEngine.CoreEngine.TileObject.TileObject tileObject)
+    public void SetSelectedTileObject(TileObject tileObject)
     {
         CurrentSelectedTileObject = tileObject;
     }
@@ -58,5 +90,10 @@ public class ConsoleGameLoopManager : IGameLoopManager
     {
         _consoleCommandsManager = new ConsoleCommandsManager();
         _consoleCommandsManager.Init();
+    }
+    
+    private void ClearCurrentSelectedObject()
+    {
+        CurrentSelectedTileObject = null;
     }
 }

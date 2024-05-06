@@ -1,6 +1,8 @@
+using TileMapEngine.CoreEngine;
+
 namespace ConsoleRenderer.ConsoleCommands;
 
-public readonly struct ConsoleCommand(string command, string description, bool hasArgument, Predicate<string> callback)
+public readonly struct ConsoleCommand(string command, string description, bool hasArgument, Predicate<CommandCallbackArguments> callback)
 {
     public readonly string Command = command;
     public readonly bool HasArgument = hasArgument;
@@ -10,8 +12,15 @@ public readonly struct ConsoleCommand(string command, string description, bool h
         return $"{Command}\t{description}";
     }
 
-    public bool Execute(string arg = "")
+    public bool Execute(Actor playingActor, string arg = "")
     {
-        return callback(arg); // Execute the callback with the argument
+        var callbackArg = new CommandCallbackArguments() { playingActor = playingActor, args = arg};
+        return callback(callbackArg); // Execute the callback with the argument
     }
+}
+
+public struct CommandCallbackArguments
+{
+    public string args;
+    public Actor playingActor;
 }
