@@ -1,7 +1,7 @@
 using System.Numerics;
 using Renderer.Rendering;
 
-namespace TileMapEngine.CoreEngine.TileObject;
+namespace TileMapEngine.CoreEngine.Objects;
 
 public class TileObject : ICloneable
 {

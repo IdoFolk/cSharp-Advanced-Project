@@ -2,7 +2,7 @@ using System.Numerics;
 using ConsoleRenderer.ConsoleRenderer;
 using Renderer.Rendering;
 using TileMapEngine.CoreEngine;
-using TileMapEngine.CoreEngine.TileObject;
+using TileMapEngine.CoreEngine.Objects;
 
 namespace ChessGame.Pieces;
 

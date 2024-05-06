@@ -1,12 +1,13 @@
 using Renderer.Rendering;
+using TileMapEngine.CoreEngine.Objects;
 
 namespace TileMapEngine.CoreEngine;
 
 public class Tile : IComparable<Tile>
 {
-    public event Action<TileObject.TileObject> OnTileObjectLand;
+    public event Action<TileObject> OnTileObjectLand;
     public Position2D Position { get; }
-    public TileObject.TileObject? CurrentTileObject { get; private set; }
+    public TileObject? CurrentTileObject { get; private set; }
     public ITileRenderer TileRenderer { get; private set; }
 
     public Tile(Position2D position)
@@ -21,7 +22,7 @@ public class Tile : IComparable<Tile>
 
     public void AssignRenderer(ITileRenderer renderer) => TileRenderer = renderer;
 
-    public void PlaceTileObject(TileObject.TileObject tileObject)
+    public void PlaceTileObject(TileObject tileObject)
     {
         CurrentTileObject = tileObject;
         CurrentTileObject.OnMove += RemoveTileObject;

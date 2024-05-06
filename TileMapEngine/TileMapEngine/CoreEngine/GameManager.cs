@@ -1,12 +1,14 @@
+using TileMapEngine.CoreEngine.Objects;
+
 namespace TileMapEngine.CoreEngine;
 
 public static class GameManager
 {
-    public static event Action<TileObject.TileObject>? OnSelectCommand;
-    public static event Action<TileObject.TileObject>? OnDeselectCommand;
-    public static event Action<TileObject.TileObject>? OnMoveCommand;
+    public static event Action<TileObject>? OnSelectCommand;
+    public static event Action<TileObject>? OnDeselectCommand;
+    public static event Action<TileObject>? OnMoveCommand;
     public static TileMap? TileMap { get; private set; }
-    private static TileObject.TileObject? SelectedTileObject { get; set; }
+    private static TileObject? SelectedTileObject { get; set; }
     private static List<Tile>? CurrentHighlightedTiles { get; set; }
 
     private static IGameLoopManager? _gameLoopManager;
@@ -40,7 +42,7 @@ public static class GameManager
         return false;
     }
     
-    public static void AddObjectToTileMap(TileObject.TileObject tileObject, Position2D position2D)
+    public static void AddObjectToTileMap(TileObject tileObject, Position2D position2D)
     {
         TileMap?[position2D]?.PlaceTileObject(tileObject);
     }

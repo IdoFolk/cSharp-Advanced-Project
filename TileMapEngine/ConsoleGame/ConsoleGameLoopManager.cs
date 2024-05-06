@@ -1,7 +1,7 @@
 using ConsoleRenderer.ConsoleCommands;
 using ConsoleRenderer.ConsoleRenderer;
 using TileMapEngine.CoreEngine;
-using TileObject = TileMapEngine.CoreEngine.TileObject.TileObject;
+using TileObject = TileMapEngine.CoreEngine.Objects.TileObject;
 
 
 namespace ConsoleRenderer;

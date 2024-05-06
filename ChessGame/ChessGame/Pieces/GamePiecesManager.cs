@@ -1,6 +1,6 @@
 using ConsoleRenderer.ConsoleRenderer;
 using TileMapEngine.CoreEngine;
-using TileMapEngine.CoreEngine.TileObject;
+using TileMapEngine.CoreEngine.Objects;
 
 namespace ChessGame.Pieces;
 
