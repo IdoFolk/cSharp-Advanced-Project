@@ -6,6 +6,7 @@ namespace ChessGame;
 
 public class ChessGame
 {
+    private ConsoleGameLoopManager _gameLoopManager;
     private GamePiecesManager _gamePiecesManager;
     private ChessPlayer _whitePlayer;
     private ChessPlayer _blackPlayer;
@@ -14,6 +15,13 @@ public class ChessGame
 
     public void RunChessGame()
     {
+        if (GameManager.GetGameLoopManager() is not ConsoleGameLoopManager consoleGameLoop)
+        {
+            return;
+        }
+
+        _gameLoopManager = consoleGameLoop;
+        
         ConfigTileMap();
 
         ConfigGameConsoleCommands();
@@ -36,7 +44,7 @@ public class ChessGame
 
     private void ConfigGameConsoleCommands()
     {
-        new ChessConsoleCommands().Init();
+        new ChessConsoleCommands().Init(_gameLoopManager);
     }
     
     private void ConfigPlayers()
@@ -58,8 +66,7 @@ public class ChessGame
 
     private void StartGame()
     {
-        var gameLoopManager = GameManager.GetGameLoopManager();
-        gameLoopManager?.RefreshGameViewport(true);
-        gameLoopManager?.StartGameLoop();
+        _gameLoopManager.RefreshGameViewport(true);
+        _gameLoopManager.StartTwoPlayersGameLoop(_whitePlayer, _blackPlayer);
     }
 }

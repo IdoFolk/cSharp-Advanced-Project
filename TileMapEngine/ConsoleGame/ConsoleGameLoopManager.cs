@@ -23,14 +23,23 @@ public class ConsoleGameLoopManager : IGameLoopManager
     {
         _gameRenderer.AssignCheckersPattern(tileMap, oddColor, evenColor);
     }
-
-    public void StartGameLoop()
+    
+    public void StartTwoPlayersGameLoop(Actor firstActor, Actor secondActor)
     {
         _isRunning = true;
+        var currentTurnActor = firstActor;
 
         while (_isRunning)
         {
-            _consoleCommandsManager.HandleUserInput();
+            _consoleCommandsManager.HandleUserInput(currentTurnActor);
+            
+            if (currentTurnActor == firstActor)
+            {
+                currentTurnActor = secondActor;
+                continue;
+            }
+
+            currentTurnActor = firstActor;
         }
     }
 

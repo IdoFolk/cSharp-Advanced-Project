@@ -32,7 +32,8 @@ public static class GameManager
         TileMap?[position2D]?.PlaceTileObject(tileObject);
     }
     
-    public static bool TrySelect(Position2D position, bool highlightPossibleMoveTiles = true)
+    public static bool TrySelect(Actor playingActor, Position2D position,
+        bool highlightPossibleMoveTiles = true)
     {
         if (SelectedTileObject != null)
         {
@@ -41,11 +42,20 @@ public static class GameManager
         
         if (TileMap != null && !TileMap.CheckTileObjectInPosition(position)) return false;
 
-        SelectedTileObject = TileMap?[position]?.CurrentTileObject;
-        if (SelectedTileObject == null)
+        var tileObjectToSelect = TileMap?[position]?.CurrentTileObject;
+
+        if (tileObjectToSelect == null)
         {
             return false;
         }
+
+        if (tileObjectToSelect.OwnerActor != playingActor)
+        {
+            return false;
+        }
+        
+        SelectedTileObject = tileObjectToSelect;
+        _gameLoopManager?.SetSelectedTileObject(SelectedTileObject);
 
         foreach (var possibleMove in SelectedTileObject.Movement.GetPossibleMoves())
         {
@@ -109,6 +119,7 @@ public static class GameManager
     private static void ClearSelectedObject()
     {
         SelectedTileObject = null;
+        _gameLoopManager.SetSelectedTileObject(SelectedTileObject);
         if (CurrentHighlightedTiles == null) return;
         
         foreach (var highlightedTile in CurrentHighlightedTiles)

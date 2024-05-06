@@ -6,7 +6,7 @@ namespace ChessGame.Pieces;
 
 public class GamePiecesManager
 {
-    public List<TileObject> CreateAndGetWhitePlayerPieces()
+    public List<TileObject> CreateAndGetWhitePlayerPieces(ChessPlayer whitePlayer)
     {
         var pieces = new List<TileObject>();
         for (var i = 0; i < 8; i++)

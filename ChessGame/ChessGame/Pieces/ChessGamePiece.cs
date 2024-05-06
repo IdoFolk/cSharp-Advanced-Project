@@ -6,15 +6,15 @@ using TileMapEngine.CoreEngine.TileObject;
 
 namespace ChessGame.Pieces;
 
-public abstract class ChessGamePiece(ITileRenderer renderer, List<MovePattern> movePatterns, Tile? tile)
+public abstract class ChessGamePiece(ITileRenderer renderer, List<MovePattern> movePatterns, Tile? tile, Actor owner)
     : TileObject(renderer, tile,
-        movePatterns)
+        movePatterns, owner)
 {
 
-    protected Position2D startingPosition2D;
+    protected Position2D StartingPosition2D;
     protected void Init(ITileRenderer renderer, IDrawable drawable, Position2D position2D)
     {
-        startingPosition2D = position2D;
+        StartingPosition2D = position2D;
         
         renderer.Init(drawable, new Vector2(position2D.X, position2D.Y));
 
@@ -56,7 +56,7 @@ public class King : ChessGamePiece
         new MovePattern([MovementType.BackRight], false),
     ];
 
-    public King(ITileRenderer renderer, Tile tile, ConsoleColor color) : base(renderer, MovePatterns, tile)
+    public King(ITileRenderer renderer, Tile tile, ConsoleColor color, Actor owner) : base(renderer, MovePatterns, tile, owner)
     {
         _drawableString.FgConsoleColor = color;
         var position = tile.Position;
@@ -90,7 +90,7 @@ public class Queen : ChessGamePiece
         new MovePattern([MovementType.BackRight], true),
     ];
 
-    public Queen(ITileRenderer renderer, Tile tile, ConsoleColor color) : base(renderer, MovePatterns, tile)
+    public Queen(ITileRenderer renderer, Tile tile, ConsoleColor color, Actor owner) : base(renderer, MovePatterns, tile, owner)
     {
         _drawableString.FgConsoleColor = color;
         var position = tile.Position;
@@ -120,7 +120,7 @@ public class Pawn : ChessGamePiece
         new MovePattern([MovementType.ForwardRight], false),
     ];
 
-    public Pawn(ITileRenderer renderer, Tile tile, ConsoleColor color) : base(renderer, MovePatterns, tile)
+    public Pawn(ITileRenderer renderer, Tile tile, ConsoleColor color, Actor owner) : base(renderer, MovePatterns, tile, owner)
     {
         _drawableString.FgConsoleColor = color;
         var position = tile.Position;
@@ -141,7 +141,7 @@ public class Pawn : ChessGamePiece
     {
         if (tile.CurrentTileObject == null &&
             tile.Position.Y == Position.Y - 2 &&
-            Position == startingPosition2D)
+            Position == StartingPosition2D)
         {
             return true;
         }
@@ -175,7 +175,7 @@ public class Bishop : ChessGamePiece
         new MovePattern([MovementType.ForwardRight], true),
     ];
 
-    public Bishop(ITileRenderer renderer, Tile tile, ConsoleColor color) : base(renderer, MovePatterns, tile)
+    public Bishop(ITileRenderer renderer, Tile tile, ConsoleColor color, Actor owner) : base(renderer, MovePatterns, tile, owner)
     {
         _drawableString.FgConsoleColor = color;
         var position = tile.Position;
@@ -205,7 +205,7 @@ public class Rook : ChessGamePiece
         new MovePattern([MovementType.Left], true),
     ];
 
-    public Rook(ITileRenderer renderer, Tile tile, ConsoleColor color) : base(renderer, MovePatterns, tile)
+    public Rook(ITileRenderer renderer, Tile tile, ConsoleColor color, Actor owner) : base(renderer, MovePatterns, tile, owner)
     {
         _drawableString.FgConsoleColor = color;
         var position = tile.Position;
@@ -266,7 +266,7 @@ public class Knight : ChessGamePiece
             false),
     ];
 
-    public Knight(ITileRenderer renderer, Tile tile, ConsoleColor color) : base(renderer, MovePatterns, tile)
+    public Knight(ITileRenderer renderer, Tile tile, ConsoleColor color, Actor owner) : base(renderer, MovePatterns, tile, owner)
     {
         _drawableString.FgConsoleColor = color;
         var position = tile.Position;
