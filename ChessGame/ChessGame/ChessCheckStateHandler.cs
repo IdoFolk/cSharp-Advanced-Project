@@ -1,5 +1,6 @@
 using ChessGame.Pieces;
 using TileMapEngine.CoreEngine;
+using TileMapEngine.CoreEngine.Objects;
 
 namespace ChessGame;
 
@@ -44,19 +45,42 @@ public static class ChessCheckStateHandler
     }
     public static bool IsInCheckAfterMove(ChessPlayer player, Position2D newPosition)
     {
-        ChessPlayer opponent = player.PlayerColor == PlayerColor.White ? _blackPlayer : _whitePlayer;
+        var opponent = player.PlayerColor == PlayerColor.White ? _blackPlayer : _whitePlayer;
 
-        foreach (var chessPiece in opponent.TileObjects)
+        foreach (var tileObject in opponent.TileObjects)
         {
-            foreach (var possibleMove in (chessPiece as ChessGamePiece).Movement.GetPossibleMoves())
+            if (tileObject is not ChessGamePiece chessPiece)
             {
-                if (possibleMove == newPosition) return false;
+                throw new Exception($"tile object {tileObject} is not a chess game piece.");
+            }
+            
+            foreach (var possibleMove in chessPiece.Movement.GetPossibleMoves())
+            {
+                if (possibleMove == newPosition)
+                {
+                    return IsInCheckNotFrom(player, chessPiece);
+                }
                 if (player.PlayerKing.Position == possibleMove) return true;
             }
         }
 
         return false;
     }
-    
-    
+
+    private static bool IsInCheckNotFrom(ChessPlayer player, ChessGamePiece threateningPiece)
+    {
+        ChessPlayer opponent = player.PlayerColor == PlayerColor.White ? _blackPlayer : _whitePlayer;
+
+        foreach (var chessPiece in opponent.TileObjects)
+        {
+            if (chessPiece == threateningPiece) continue;
+            
+            foreach (var possibleMove in (chessPiece as ChessGamePiece).Movement.GetPossibleMoves())
+            {
+                if (player.PlayerKing.Position == possibleMove) return true;
+            }
+        }
+
+        return false;
+    }
 }

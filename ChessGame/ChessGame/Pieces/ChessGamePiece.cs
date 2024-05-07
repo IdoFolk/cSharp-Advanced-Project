@@ -45,7 +45,6 @@ public class ChessGamePiece(
             throw new Exception("The owner of this ChessGamePiece is not ChessPlayer.");
         }
 
-        //TODO if the player is in check, test if this move cancels the check
         if (ChessCheckStateHandler.IsInCheck(player))
         {
             if (this is King or BlackPawn or WhitePawn)
@@ -53,7 +52,10 @@ public class ChessGamePiece(
                 return CheckIfTileIsPossibleMoveCallback(tile);
             }
 
-            return ChessCheckStateHandler.IsInCheckAfterMove(player, tile.Position);
+            if (ChessCheckStateHandler.IsInCheckAfterMove(player, tile.Position))
+            {
+                return false;
+            }
         }
 
         return CheckIfTileIsPossibleMoveCallback(tile);
@@ -123,7 +125,6 @@ public class King : ChessGamePiece
         {
             return false;
         }
-
 
         return true;
     }
@@ -246,6 +247,9 @@ public class BlackPawn : ChessGamePiece
 
     protected override bool CheckIfTileIsPossibleMoveCallback(Tile tile)
     {
+        var player = OwnerActor as ChessPlayer;
+        if (ChessCheckStateHandler.IsInCheckAfterMove(player, tile.Position)) return false;
+        
         switch (tile.CurrentTileObject)
         {
             case null when
