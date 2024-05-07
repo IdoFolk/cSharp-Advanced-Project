@@ -191,7 +191,12 @@ public class WhitePawn : ChessGamePiece
     protected override bool CheckIfTileIsPossibleMoveCallback(Tile tile)
     {
         var player = OwnerActor as ChessPlayer;
-        if (ChessCheckStateHandler.IsInCheckAfterMove(player, tile.Position)) return false;
+        if (ChessCheckStateHandler.IsInCheck(player) &&
+            ChessCheckStateHandler.IsInCheckAfterMove(player, tile.Position))
+        {
+            return false;
+        }
+        
         switch (tile.CurrentTileObject)
         {
             case null when
@@ -248,7 +253,11 @@ public class BlackPawn : ChessGamePiece
     protected override bool CheckIfTileIsPossibleMoveCallback(Tile tile)
     {
         var player = OwnerActor as ChessPlayer;
-        if (ChessCheckStateHandler.IsInCheckAfterMove(player, tile.Position)) return false;
+        if (ChessCheckStateHandler.IsInCheck(player) &&
+            ChessCheckStateHandler.IsInCheckAfterMove(player, tile.Position))
+        {
+            return false;
+        }
         
         switch (tile.CurrentTileObject)
         {
