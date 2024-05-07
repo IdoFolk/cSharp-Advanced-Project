@@ -6,19 +6,18 @@ using TileMapEngine.CoreEngine.Objects;
 
 namespace ChessGame.Pieces;
 
-public class ChessGamePiece
-    (
-        ITileRenderer renderer, 
-        List<MovePattern> movePatterns, 
-        Tile? tile, 
-        Actor owner, 
-        string name
-        )
+public class ChessGamePiece(
+    ITileRenderer renderer,
+    List<MovePattern> movePatterns,
+    Tile? tile,
+    Actor owner,
+    string name
+)
     : TileObject(renderer, tile, movePatterns, owner)
 {
     public string Name { get; } = name;
-    public static event Action<ChessGamePiece,ChessGamePiece>? OnPieceEaten;
-    
+    public static event Action<ChessGamePiece, ChessGamePiece>? OnPieceEaten;
+
     protected Position2D StartingPosition2D;
 
     protected void Init(ITileRenderer renderer, IDrawable drawable, Position2D position2D)
@@ -46,11 +45,17 @@ public class ChessGamePiece
             throw new Exception("The owner of this ChessGamePiece is not ChessPlayer.");
         }
 
-        if (player.GetIsInCheck() && typeof(King) != GetType())
+        //TODO if the player is in check, test if this move cancels the check
+        if (ChessCheckStateHandler.IsInCheck(player))
         {
-            return false;
+            if (this is King or BlackPawn or WhitePawn)
+            {
+                return CheckIfTileIsPossibleMoveCallback(tile);
+            }
+
+            return ChessCheckStateHandler.IsInCheckAfterMove(player, tile.Position);
         }
-        
+
         return CheckIfTileIsPossibleMoveCallback(tile);
     }
 
@@ -73,12 +78,13 @@ public class ChessGamePiece
         }
 
         if (tileObject.OwnerActor == OwnerActor || tileObject is not ChessGamePiece eatenPiece) return false;
-        
-        InvokePieceEaten(eatenPiece,this);
+
+        InvokePieceEaten(eatenPiece, this);
         return true;
     }
-    
-    protected static void InvokePieceEaten(ChessGamePiece eatenPiece,ChessGamePiece eaterPiece) => OnPieceEaten?.Invoke(eatenPiece,eaterPiece);
+
+    protected static void InvokePieceEaten(ChessGamePiece eatenPiece, ChessGamePiece eaterPiece) =>
+        OnPieceEaten?.Invoke(eatenPiece, eaterPiece);
 }
 
 public class King : ChessGamePiece
@@ -98,11 +104,28 @@ public class King : ChessGamePiece
     ];
 
     public King(ITileRenderer renderer, Tile tile, ConsoleColor color, Actor owner) : base(renderer, MovePatterns, tile,
-        owner,"King")
+        owner, "King")
     {
         _drawableString.FgConsoleColor = color;
         var position = tile.Position;
         Init(renderer, _drawableString, position);
+    }
+
+    protected override bool CheckIfTileIsPossibleMoveCallback(Tile tile)
+    {
+        var tileObject = tile.CurrentTileObject;
+        if (tileObject != null)
+        {
+            if (tileObject.OwnerActor == OwnerActor || tileObject is not ChessGamePiece eatenPiece) return false;
+        }
+
+        if (ChessCheckStateHandler.IsInCheckAtSpecificKingPosition(OwnerActor as ChessPlayer, tile.Position))
+        {
+            return false;
+        }
+
+
+        return true;
     }
 }
 
@@ -123,7 +146,7 @@ public class Queen : ChessGamePiece
     ];
 
     public Queen(ITileRenderer renderer, Tile tile, ConsoleColor color, Actor owner) : base(renderer, MovePatterns,
-        tile, owner,"Queen")
+        tile, owner, "Queen")
     {
         _drawableString.FgConsoleColor = color;
         var position = tile.Position;
@@ -143,8 +166,9 @@ public class WhitePawn : ChessGamePiece
         new MovePattern([MovementType.ForwardRight], false),
     ];
 
-    public WhitePawn(ITileRenderer renderer, Tile tile, ConsoleColor color, Actor owner,string name) : base(renderer, MovePatterns,
-        tile, owner,name)
+    public WhitePawn(ITileRenderer renderer, Tile tile, ConsoleColor color, Actor owner, string name) : base(renderer,
+        MovePatterns,
+        tile, owner, name)
     {
         _drawableString.FgConsoleColor = color;
         var position = tile.Position;
@@ -165,6 +189,8 @@ public class WhitePawn : ChessGamePiece
 
     protected override bool CheckIfTileIsPossibleMoveCallback(Tile tile)
     {
+        var player = OwnerActor as ChessPlayer;
+        if (ChessCheckStateHandler.IsInCheckAfterMove(player, tile.Position)) return false;
         switch (tile.CurrentTileObject)
         {
             case null when
@@ -175,7 +201,7 @@ public class WhitePawn : ChessGamePiece
             case ChessGamePiece chessGamePiece when
                 tile.Position.X !=
                 Position.X:
-                InvokePieceEaten(chessGamePiece,this);
+                InvokePieceEaten(chessGamePiece, this);
                 return true;
             default:
                 return tile.CurrentTileObject == null &&
@@ -197,8 +223,9 @@ public class BlackPawn : ChessGamePiece
         new MovePattern([MovementType.BackRight], false),
     ];
 
-    public BlackPawn(ITileRenderer renderer, Tile tile, ConsoleColor color, Actor owner,string name) : base(renderer, MovePatterns,
-        tile, owner,name)
+    public BlackPawn(ITileRenderer renderer, Tile tile, ConsoleColor color, Actor owner, string name) : base(renderer,
+        MovePatterns,
+        tile, owner, name)
     {
         _drawableString.FgConsoleColor = color;
         var position = tile.Position;
@@ -229,7 +256,7 @@ public class BlackPawn : ChessGamePiece
             case ChessGamePiece chessGamePiece when
                 tile.Position.X !=
                 Position.X:
-                InvokePieceEaten(chessGamePiece,this);
+                InvokePieceEaten(chessGamePiece, this);
                 return true;
             default:
                 return tile.CurrentTileObject == null &&
@@ -251,8 +278,9 @@ public class Bishop : ChessGamePiece
         new MovePattern([MovementType.ForwardRight], true),
     ];
 
-    public Bishop(ITileRenderer renderer, Tile tile, ConsoleColor color, Actor owner,string name) : base(renderer, MovePatterns,
-        tile, owner,name)
+    public Bishop(ITileRenderer renderer, Tile tile, ConsoleColor color, Actor owner, string name) : base(renderer,
+        MovePatterns,
+        tile, owner, name)
     {
         _drawableString.FgConsoleColor = color;
         var position = tile.Position;
@@ -272,8 +300,9 @@ public class Rook : ChessGamePiece
         new MovePattern([MovementType.Left], true),
     ];
 
-    public Rook(ITileRenderer renderer, Tile tile, ConsoleColor color, Actor owner,string name) : base(renderer, MovePatterns, tile,
-        owner,name)
+    public Rook(ITileRenderer renderer, Tile tile, ConsoleColor color, Actor owner, string name) : base(renderer,
+        MovePatterns, tile,
+        owner, name)
     {
         _drawableString.FgConsoleColor = color;
         var position = tile.Position;
@@ -324,8 +353,9 @@ public class Knight : ChessGamePiece
             false),
     ];
 
-    public Knight(ITileRenderer renderer, Tile tile, ConsoleColor color, Actor owner,string name) : base(renderer, MovePatterns,
-        tile, owner,name)
+    public Knight(ITileRenderer renderer, Tile tile, ConsoleColor color, Actor owner, string name) : base(renderer,
+        MovePatterns,
+        tile, owner, name)
     {
         _drawableString.FgConsoleColor = color;
         var position = tile.Position;

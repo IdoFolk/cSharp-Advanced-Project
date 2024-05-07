@@ -39,10 +39,16 @@ public class ChessGame
         _whitePlayer = new ChessPlayer(PlayerColor.White, "White Player");
         var whitePieces = GamePiecesConfig.CreateAndGetWhitePlayerPieces(_whitePlayer);
         _whitePlayer.AddTileObjects(whitePieces);
-
+        var whiteKing = whitePieces.Find((piece) => piece.GetType() == typeof(King));
+        _whitePlayer.Init(whiteKing as King);
+        
         _blackPlayer = new ChessPlayer(PlayerColor.Black, "Black Player");
         var blackPieces = GamePiecesConfig.CreateAndGetBlackPlayerPieces(_blackPlayer);
         _blackPlayer.AddTileObjects(blackPieces);
+        var blackKing = blackPieces.Find((piece) => piece.GetType() == typeof(King));
+        _blackPlayer.Init(blackKing as King);
+        
+        ChessCheckStateHandler.Init(_whitePlayer,_blackPlayer);
 
         ChessGamePiece.OnPieceEaten += (piece,otherPiece) =>
         {
@@ -66,11 +72,15 @@ public class ChessGame
             throw new Exception($"Actor {actor} is not of type ChessPlayer.");
         }
 
-        if (!player.GetIsInCheck())
+        if (player.GetIsInCheckMate())
         {
-            return;
+            EndGame(player);
         }
 
+    }
+
+    private void EndGame(ChessPlayer player)
+    {
         var text = player == _whitePlayer
             ? $"Black player wins by Checkmate! Game Over."
             : "White player wins by Checkmate! Game Over.";
