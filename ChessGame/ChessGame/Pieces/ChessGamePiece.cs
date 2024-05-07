@@ -27,6 +27,7 @@ public class ChessGamePiece(
         renderer.Init(drawable, new Vector2(position2D.X, position2D.Y));
 
         TileMapManager.AddObjectToTileMap(this, position2D);
+        
     }
 
     public override void HandleOtherTileObjectInPossibleMoveCallback(TileObject tileObject)
@@ -61,6 +62,12 @@ public class ChessGamePiece(
         return CheckIfTileIsPossibleMoveCallback(tile);
     }
 
+    public override void OnMoveCallback(Tile newTile)
+    {
+        if(newTile.CurrentTileObject is not ChessGamePiece chessPiece) return;
+        OnPieceEaten?.Invoke(chessPiece,this);
+    }
+
     public override object Clone()
     {
         return new ChessGamePiece(renderer, movePatterns, tile, owner, name);
@@ -79,9 +86,8 @@ public class ChessGamePiece(
             return true;
         }
 
-        if (tileObject.OwnerActor == OwnerActor || tileObject is not ChessGamePiece eatenPiece) return false;
+        if (tileObject.OwnerActor == OwnerActor) return false;
 
-        InvokePieceEaten(eatenPiece, this);
         return true;
     }
 
@@ -207,7 +213,7 @@ public class WhitePawn : ChessGamePiece
             case ChessGamePiece chessGamePiece when
                 tile.Position.X !=
                 Position.X:
-                InvokePieceEaten(chessGamePiece, this);
+                //InvokePieceEaten(chessGamePiece, this);
                 return true;
             default:
                 return tile.CurrentTileObject == null &&
@@ -269,7 +275,7 @@ public class BlackPawn : ChessGamePiece
             case ChessGamePiece chessGamePiece when
                 tile.Position.X !=
                 Position.X:
-                InvokePieceEaten(chessGamePiece, this);
+                //InvokePieceEaten(chessGamePiece, this);
                 return true;
             default:
                 return tile.CurrentTileObject == null &&

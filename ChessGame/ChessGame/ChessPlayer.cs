@@ -12,23 +12,30 @@ public class ChessPlayer(PlayerColor playerColor, string playerName) : Actor(pla
     {
         PlayerKing = king;
     }
-    // public bool GetIsInCheck()
-    // {
-    //     if (TileObjects.Find(tileObject => tileObject.GetType() == typeof(King)) is not King myKing)
-    //     {
-    //         throw new Exception($"No King piece found for {ActorName}.");
-    //     }
-    //
-    //     return ChessCheckStateHandler.IsInCheck(this);
-    // }
+    
     public bool GetIsInCheckMate()
     {
-        if (TileObjects.Find(tileObject => tileObject.GetType() == typeof(King)) is not King myKing)
-        {
-            throw new Exception($"No King piece found for {ActorName}.");
-        }
+        // foreach (var tileObject in TileObjects)
+        // {
+        //     if (tileObject is not ChessGamePiece chessPiece)
+        //     {
+        //         throw new Exception("This tile object is not ChessPiece");
+        //     }
+        //
+        //     foreach (var possibleMove in chessPiece.Movement.GetPossibleMoves())
+        //     {
+        //         if(!TileMapManager.TileMap.CheckTileExistsInPosition(possibleMove, out var tile)) continue;
+        //         if (chessPiece.CheckPossibleMoveTileCallback(tile))
+        //         {
+        //             return false;
+        //         }
+        //         
+        //     }
+        //
+        //     return true;
+        // }
 
-        // TODO create a ChessCheckStateHandler static class that holds both players and returns if in check state
+        
         
         return false;
     }

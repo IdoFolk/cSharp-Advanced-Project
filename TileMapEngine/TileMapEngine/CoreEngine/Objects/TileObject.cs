@@ -33,7 +33,8 @@ public abstract class TileObject : ICloneable
         if (newTile == null || !Movement.GetPossibleMoves().Contains(newTile.Position)) return false;
 
         if (!CheckPossibleMoveTileCallback(newTile)) return false;
-        
+
+        OnMoveCallback(newTile);
         OnMove?.Invoke();
         newTile.PlaceTileObject(this);
         CurrentTile = newTile;
@@ -48,6 +49,8 @@ public abstract class TileObject : ICloneable
     public abstract void HandleOtherTileObjectInPossibleMoveCallback(TileObject tileObject);
 
     public abstract bool CheckPossibleMoveTileCallback(Tile tile);
+
+    public abstract void OnMoveCallback(Tile newTile);
 
     public abstract object Clone();
 

@@ -55,6 +55,16 @@ public static class ChessCheckStateHandler
             {
                 throw new Exception($"tile object {tileObject} is not a chess game piece.");
             }
+            
+            if (chessPiece.Position == newPosition)
+            {
+                if (IsInCheckWithoutPiece(player, chessPiece))
+                {
+                    return true;
+                }
+            
+                continue;
+            }
 
             foreach (var movePattern in chessPiece.Movement.MovePatterns)
             {
@@ -67,20 +77,11 @@ public static class ChessCheckStateHandler
 
                 foreach (var possibleMove in possibleMoves)
                 {
+                   
                     if (possibleMove == newPosition)
                     {
                         if (IsInCheckNotFromDirection(player, chessPiece, movePattern))
                         {
-                            return true;
-                        }
-
-                        if (chessPiece.Position == newPosition)
-                        {
-                            if (!IsInCheckWithoutPiece(player, chessPiece))
-                            {
-                                return false;
-                            }
-
                             return true;
                         }
 
@@ -89,6 +90,7 @@ public static class ChessCheckStateHandler
                     
                     if (player.PlayerKing.Position == possibleMove) return true;
                 }
+                
             }
         }
 

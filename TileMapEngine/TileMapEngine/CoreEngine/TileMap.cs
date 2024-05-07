@@ -6,14 +6,14 @@ namespace TileMapEngine.CoreEngine;
 
 public class TileMap : IEnumerable<Tile>
 {
-    private readonly Tile[,] _tiles;
+    private readonly Tile?[,] _tiles;
     public int Size => _tiles.Length;
 
     #region Constructors
 
     public TileMap(int columns, int rows)
     {
-        _tiles = new Tile[rows, columns];
+        _tiles = new Tile?[rows, columns];
         for (var i = 0; i < rows; i++)
         {
             for (var j = 0; j < columns; j++)
@@ -23,12 +23,12 @@ public class TileMap : IEnumerable<Tile>
         }
     }
 
-    public TileMap(Tile[,] tileMatrix) => _tiles = tileMatrix;
+    public TileMap(Tile?[,] tileMatrix) => _tiles = tileMatrix;
 
     #endregion
 
     #region Public Methods
-    
+
     public int GetWidth() => _tiles.GetLength(0);
     public int GetHeight() => _tiles.GetLength(1);
 
@@ -36,6 +36,19 @@ public class TileMap : IEnumerable<Tile>
     {
         return position.X >= 0 && position.X < _tiles.GetLength(0) &&
                position.Y >= 0 && position.Y < _tiles.GetLength(1);
+    }
+
+    public bool CheckTileExistsInPosition(Position2D position, out Tile? Tile)
+    {
+        if (position.X >= 0 && position.X < _tiles.GetLength(0) &&
+            position.Y >= 0 && position.Y < _tiles.GetLength(1))
+        {
+            Tile = _tiles[position.X, position.Y];
+            return true;
+        }
+
+        Tile = null;
+        return false;
     }
 
     public bool CheckTileObjectInPosition(Position2D position)
