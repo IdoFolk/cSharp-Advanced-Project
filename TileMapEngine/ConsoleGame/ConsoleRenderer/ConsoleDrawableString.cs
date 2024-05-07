@@ -6,7 +6,7 @@ public struct ConsoleDrawableString(
     string str,
     ConsoleColor fgConsoleColor = default,
     ConsoleColor bgConsoleColor = ConsoleColor.Black,
-    ConsoleColor highlightColor = ConsoleColor.Green) : IDrawable
+    ConsoleColor highlightColor = ConsoleColor.Yellow) : IDrawable
 {
     public readonly string ConsoleString = str;
     public ConsoleColor FgConsoleColor = fgConsoleColor;

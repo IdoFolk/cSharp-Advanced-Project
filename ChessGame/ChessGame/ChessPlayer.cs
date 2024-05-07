@@ -16,7 +16,7 @@ public class ChessPlayer(PlayerColor playerColor, string playerName) : Actor(pla
 
         // TODO create a ChessCheckStateHandler static class that holds both players and returns if in check state
         
-        return true;
+        return false;
     }
 }
 
