@@ -72,6 +72,7 @@ public class ChessGame
             : "White player wins by Checkmate! Game Over.";
         
         Console.WriteLine(text);
+        
         ConsoleGameLoopManager.OnTurnStarted -= HandleOnTurnStarted;
         _gameLoopManager?.StopGameLoop();
     }
