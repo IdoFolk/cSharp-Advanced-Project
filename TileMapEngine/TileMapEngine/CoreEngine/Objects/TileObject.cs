@@ -3,7 +3,7 @@ using Renderer.Rendering;
 
 namespace TileMapEngine.CoreEngine.Objects;
 
-public abstract class TileObject
+public abstract class TileObject : ICloneable
 {
     public event Action? OnMove;
     public ObjectMovement Movement { get; private set; }
@@ -12,6 +12,13 @@ public abstract class TileObject
     private ITileRenderer TileRenderer { get; }
     
     public Actor OwnerActor { get; }
+    
+    protected TileObject(ITileRenderer tileRenderer, Tile? currentTile, List<MovePattern> movePatterns)
+    {
+        TileRenderer = tileRenderer;
+        CurrentTile = currentTile;
+        Movement = new ObjectMovement(this, movePatterns);
+    }
 
     protected TileObject(ITileRenderer tileRenderer, Tile? currentTile, List<MovePattern> movePatterns, Actor ownerActor)
     {
@@ -41,4 +48,7 @@ public abstract class TileObject
     public abstract void HandleOtherTileObjectInPossibleMoveCallback(TileObject tileObject);
 
     public abstract bool CheckPossibleMoveTileCallback(Tile tile);
+
+    public abstract object Clone();
+
 }

@@ -44,7 +44,11 @@ public class ChessGame
         var blackPieces = GamePiecesConfig.CreateAndGetBlackPlayerPieces(_blackPlayer);
         _blackPlayer.AddTileObjects(blackPieces);
 
-        ChessGamePiece.OnPieceEaten += piece => piece.OwnerActor.RemoveObject(piece);
+        ChessGamePiece.OnPieceEaten += (piece,otherPiece) =>
+        {
+            Console.WriteLine($"{piece.OwnerActor.ActorName}'s {piece.Name} was eaten by {otherPiece.Name}");
+            piece.OwnerActor.RemoveObject(piece);
+        };
     }
 
     private void StartGameLoop()

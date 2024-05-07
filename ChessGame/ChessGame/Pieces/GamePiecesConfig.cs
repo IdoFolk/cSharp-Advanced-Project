@@ -14,26 +14,26 @@ public class GamePiecesConfig
             var tile = TileMapManager.TileMap?[i, 6];
             if (tile != null)
             {
-                pieces.Add(new WhitePawn(new ConsoleTileRenderer(), tile, ConsoleColor.White,whitePlayer));
+                pieces.Add(new WhitePawn(new ConsoleTileRenderer(), tile, ConsoleColor.White,whitePlayer,$"Pawn {i+1}"));
             }
         }
         
         var tile07 = TileMapManager.TileMap?[0, 7];
         if (tile07 != null)
         {
-            pieces.Add(new Rook(new ConsoleTileRenderer(), tile07, ConsoleColor.White,whitePlayer));
+            pieces.Add(new Rook(new ConsoleTileRenderer(), tile07, ConsoleColor.White,whitePlayer,$"Rook 1"));
         }
         
         var tile17 = TileMapManager.TileMap?[1, 7];
         if (tile17 != null)
         {
-            pieces.Add(new Knight(new ConsoleTileRenderer(), tile17, ConsoleColor.White, whitePlayer));
+            pieces.Add(new Knight(new ConsoleTileRenderer(), tile17, ConsoleColor.White, whitePlayer,$"Knight 1"));
         }
         
         var tile27 = TileMapManager.TileMap?[2, 7];
         if (tile27 != null)
         {
-            pieces.Add(new Bishop(new ConsoleTileRenderer(), tile27, ConsoleColor.White, whitePlayer));
+            pieces.Add(new Bishop(new ConsoleTileRenderer(), tile27, ConsoleColor.White, whitePlayer,$"Bishop 1"));
         }
         
         var tile37 = TileMapManager.TileMap?[3, 7];
@@ -51,19 +51,19 @@ public class GamePiecesConfig
         var tile57 = TileMapManager.TileMap?[5, 7];
         if (tile57 != null)
         {
-            pieces.Add(new Bishop(new ConsoleTileRenderer(), tile57, ConsoleColor.White, whitePlayer));
+            pieces.Add(new Bishop(new ConsoleTileRenderer(), tile57, ConsoleColor.White, whitePlayer,$"Bishop 2"));
         }
         
         var tile67 = TileMapManager.TileMap?[6, 7];
         if (tile67 != null)
         {
-            pieces.Add(new Knight(new ConsoleTileRenderer(), tile67, ConsoleColor.White, whitePlayer));
+            pieces.Add(new Knight(new ConsoleTileRenderer(), tile67, ConsoleColor.White, whitePlayer,$"Knight 2"));
         }
         
         var tile77 = TileMapManager.TileMap?[7, 7];
         if (tile77 != null)
         {
-            pieces.Add(new Rook(new ConsoleTileRenderer(), tile77, ConsoleColor.White, whitePlayer));
+            pieces.Add(new Rook(new ConsoleTileRenderer(), tile77, ConsoleColor.White, whitePlayer,$"Rook 2"));
         }
         
         return pieces;
@@ -77,26 +77,26 @@ public class GamePiecesConfig
             var tile = TileMapManager.TileMap?[i, 1];
             if (tile != null)
             {
-                pieces.Add(new BlackPawn(new ConsoleTileRenderer(), tile, ConsoleColor.DarkCyan, blackPlayer));
+                pieces.Add(new BlackPawn(new ConsoleTileRenderer(), tile, ConsoleColor.DarkCyan, blackPlayer,$"Pawn {i+1}"));
             }
         }
         
         var tile00 = TileMapManager.TileMap?[0, 0];
         if (tile00 != null)
         {
-            pieces.Add(new Rook(new ConsoleTileRenderer(), tile00, ConsoleColor.DarkCyan, blackPlayer));
+            pieces.Add(new Rook(new ConsoleTileRenderer(), tile00, ConsoleColor.DarkCyan, blackPlayer,$"Rook 1"));
         }
         
         var tile10 = TileMapManager.TileMap?[1, 0];
         if (tile10 != null)
         {
-            pieces.Add(new Knight(new ConsoleTileRenderer(), tile10, ConsoleColor.DarkCyan, blackPlayer));
+            pieces.Add(new Knight(new ConsoleTileRenderer(), tile10, ConsoleColor.DarkCyan, blackPlayer,$"Knight 1"));
         }
         
         var tile20 = TileMapManager.TileMap?[2, 0];
         if (tile20 != null)
         {
-            pieces.Add(new Bishop(new ConsoleTileRenderer(), tile20, ConsoleColor.DarkCyan, blackPlayer));
+            pieces.Add(new Bishop(new ConsoleTileRenderer(), tile20, ConsoleColor.DarkCyan, blackPlayer,$"Bishop 1"));
         }
         
         var tile30 = TileMapManager.TileMap?[3, 0];
@@ -114,19 +114,19 @@ public class GamePiecesConfig
         var tile50 = TileMapManager.TileMap?[5, 0];
         if (tile50 != null)
         {
-            pieces.Add(new Bishop(new ConsoleTileRenderer(), tile50, ConsoleColor.DarkCyan, blackPlayer));
+            pieces.Add(new Bishop(new ConsoleTileRenderer(), tile50, ConsoleColor.DarkCyan, blackPlayer,$"Bishop 2"));
         }
         
         var tile60 = TileMapManager.TileMap?[6, 0];
         if (tile60 != null)
         {
-            pieces.Add(new Knight(new ConsoleTileRenderer(), tile60, ConsoleColor.DarkCyan, blackPlayer));
+            pieces.Add(new Knight(new ConsoleTileRenderer(), tile60, ConsoleColor.DarkCyan, blackPlayer,$"Knight 2"));
         }
         
         var tile70 = TileMapManager.TileMap?[7, 0];
         if (tile70 != null)
         {
-            pieces.Add(new Rook(new ConsoleTileRenderer(), tile70, ConsoleColor.DarkCyan, blackPlayer));
+            pieces.Add(new Rook(new ConsoleTileRenderer(), tile70, ConsoleColor.DarkCyan, blackPlayer,$"Rook 2"));
         }
 
         return pieces;
