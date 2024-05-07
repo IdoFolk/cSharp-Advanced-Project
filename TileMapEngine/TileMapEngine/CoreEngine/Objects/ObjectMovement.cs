@@ -14,17 +14,17 @@ public class ObjectMovement(TileObject owner, List<MovePattern> movePatterns)
         foreach (var movePattern in movePatterns)
         {
             if (movePattern.IsDirection)
-                possibleMoves.AddRange(GetMovesByDirection(movePattern));
+                possibleMoves.AddRange(GetMovesByDirection(movePattern, owner.Position));
             else
-                possibleMoves.Add(GetMovesByMovePattern(movePattern));
+                possibleMoves.Add(GetMovesByMovePattern(movePattern, owner.Position));
         }
 
         return possibleMoves.ToArray();
     }
 
-    private List<Position2D> GetMovesByDirection(MovePattern movePattern)
+    public static List<Position2D> GetMovesByDirection(MovePattern movePattern, Position2D position)
     {
-        var newPosition = owner.Position;
+        var newPosition = position;
         List<Position2D> availablePositions = [];
         var tileMap = TileMapManager.TileMap;
         foreach (var movement in movePattern.Movement)
@@ -41,9 +41,9 @@ public class ObjectMovement(TileObject owner, List<MovePattern> movePatterns)
         return availablePositions;
     }
 
-    private Position2D GetMovesByMovePattern(MovePattern movePattern)
+    public static Position2D GetMovesByMovePattern(MovePattern movePattern, Position2D position)
     {
-        return movePattern.Movement.Aggregate(owner.Position,
+        return movePattern.Movement.Aggregate(position,
             (current, movement) => MovePositionByMovement(movement, current));
     }
 
