@@ -6,8 +6,12 @@ namespace ChessGame;
 
 public class ChessConsoleCommands
 {
-    public void Init(ConsoleGameLoopManager consoleGameLoop)
+    public void Init(ConsoleGameLoopManager? consoleGameLoop)
     {
+        if (consoleGameLoop == null)
+        {
+            throw new Exception("Console game loop is null.");
+        }
         var commandsManager = consoleGameLoop.GetConsoleCommandsManager();
 
         var chessSelect = new ConsoleCommand("gselect",

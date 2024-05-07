@@ -120,7 +120,7 @@ public class ConsoleCommandsManager
         var text = "\n";
         if (isFallback)
         {
-            text += $"Oops! Something went wrong with your command.\n\n";
+            text += "Oops! Something went wrong with your command.\n\n";
         }
 
         Console.WriteLine(text +

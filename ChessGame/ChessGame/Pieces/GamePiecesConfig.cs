@@ -4,9 +4,9 @@ using TileMapEngine.CoreEngine.Objects;
 
 namespace ChessGame.Pieces;
 
-public class GamePiecesManager
+public class GamePiecesConfig
 {
-    public List<TileObject> CreateAndGetWhitePlayerPieces(ChessPlayer whitePlayer)
+    public static List<TileObject> CreateAndGetWhitePlayerPieces(ChessPlayer whitePlayer)
     {
         var pieces = new List<TileObject>();
         for (var i = 0; i < 8; i++)
@@ -69,7 +69,7 @@ public class GamePiecesManager
         return pieces;
     }
     
-    public List<TileObject> CreateAndGetBlackPlayerPieces(ChessPlayer blackPlayer)
+    public static List<TileObject> CreateAndGetBlackPlayerPieces(ChessPlayer blackPlayer)
     {
         var pieces = new List<TileObject>();
         for (var i = 0; i < 8; i++)

@@ -6,10 +6,9 @@ namespace ChessGame;
 
 public class ChessGame
 {
-    private ConsoleGameLoopManager _gameLoopManager;
-    private GamePiecesManager _gamePiecesManager;
-    private ChessPlayer _whitePlayer;
-    private ChessPlayer _blackPlayer;
+    private ConsoleGameLoopManager? _gameLoopManager;
+    private ChessPlayer? _whitePlayer;
+    private ChessPlayer? _blackPlayer;
 
     public static readonly int BoardSize = 8;
 
@@ -17,13 +16,13 @@ public class ChessGame
     {
         ConfigTileMap();
 
-        ConfigGameConsoleCommands();
+        new ChessConsoleCommands().Init(_gameLoopManager);
 
         ConfigPlayers();
-        
-        ConfigGameRules();
 
-        StartGame();
+        ConsoleGameLoopManager.OnTurnStarted += HandleOnTurnStarted;
+
+        StartGameLoop();
     }
 
     private void ConfigTileMap()
@@ -35,35 +34,45 @@ public class ChessGame
         _gameLoopManager.AssignCheckersPattern(tileMap, ConsoleColor.Cyan, ConsoleColor.DarkBlue);
     }
 
-    private void ConfigGameConsoleCommands()
-    {
-        new ChessConsoleCommands().Init(_gameLoopManager);
-    }
-    
     private void ConfigPlayers()
     {
-        _gamePiecesManager = new GamePiecesManager();
-        
         _whitePlayer = new ChessPlayer(PlayerColor.White, "White Player");
-        var whitePieces = _gamePiecesManager.CreateAndGetWhitePlayerPieces(_whitePlayer);
+        var whitePieces = GamePiecesConfig.CreateAndGetWhitePlayerPieces(_whitePlayer);
         _whitePlayer.AddTileObjects(whitePieces);
-        
+
         _blackPlayer = new ChessPlayer(PlayerColor.Black, "Black Player");
-        var blackPieces = _gamePiecesManager.CreateAndGetBlackPlayerPieces(_blackPlayer);
+        var blackPieces = GamePiecesConfig.CreateAndGetBlackPlayerPieces(_blackPlayer);
         _blackPlayer.AddTileObjects(blackPieces);
-        
+
         ChessGamePiece.OnPieceEaten += piece => piece.OwnerActor.RemoveObject(piece);
     }
 
-    private void ConfigGameRules()
+    private void StartGameLoop()
     {
-        // determine the game's win condition
-        // determine the game's flow (turns and their logic)
+        _gameLoopManager?.RefreshGameViewport(true);
+        
+        _gameLoopManager?.StartTwoPlayersGameLoop(_whitePlayer, _blackPlayer);
+        // A while loop starts above, nothing below will run in runtime!
     }
 
-    private void StartGame()
+    private void HandleOnTurnStarted(Actor actor)
     {
-        _gameLoopManager.RefreshGameViewport(true);
-        _gameLoopManager.StartTwoPlayersGameLoop(_whitePlayer, _blackPlayer);
+        if (actor is not ChessPlayer player)
+        {
+            throw new Exception($"Actor {actor} is not of type ChessPlayer.");
+        }
+
+        if (!player.GetIsInCheck())
+        {
+            return;
+        }
+
+        var text = player == _whitePlayer
+            ? $"Black player wins by Checkmate! Game Over."
+            : "White player wins by Checkmate! Game Over.";
+        
+        Console.WriteLine(text);
+        ConsoleGameLoopManager.OnTurnStarted -= HandleOnTurnStarted;
+        _gameLoopManager?.StopGameLoop();
     }
 }
