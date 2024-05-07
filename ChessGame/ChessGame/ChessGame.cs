@@ -22,7 +22,7 @@ public class ChessGame
 
         ConsoleGameLoopManager.OnTurnStarted += HandleOnTurnStarted;
 
-        StartGame();
+        StartGameLoop();
     }
 
     private void ConfigTileMap()
@@ -47,10 +47,12 @@ public class ChessGame
         ChessGamePiece.OnPieceEaten += piece => piece.OwnerActor.RemoveObject(piece);
     }
 
-    private void StartGame()
+    private void StartGameLoop()
     {
         _gameLoopManager?.RefreshGameViewport(true);
+        
         _gameLoopManager?.StartTwoPlayersGameLoop(_whitePlayer, _blackPlayer);
+        // A while loop starts above, nothing below will run in runtime!
     }
 
     private void HandleOnTurnStarted(Actor actor)

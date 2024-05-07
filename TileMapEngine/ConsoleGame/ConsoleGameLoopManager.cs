@@ -8,7 +8,7 @@ namespace ConsoleRenderer;
 
 public class ConsoleGameLoopManager : IGameLoopManager
 {
-    public static event Action<Actor> OnTurnStarted; 
+    public static event Action<Actor>? OnTurnStarted;
     
     private TileObject? _currentSelectedTileObject;
     private ConsoleGameRenderer? _gameRenderer;
