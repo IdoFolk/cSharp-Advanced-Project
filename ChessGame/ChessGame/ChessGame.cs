@@ -16,11 +16,11 @@ public class ChessGame
     {
         ConfigTileMap();
 
-        ConfigGameConsoleCommands();
+        new ChessConsoleCommands().Init(_gameLoopManager);
 
         ConfigPlayers();
-        
-        ConfigGameRules();
+
+        ConsoleGameLoopManager.OnTurnStarted += HandleOnTurnStarted;
 
         StartGame();
     }
@@ -34,33 +34,43 @@ public class ChessGame
         _gameLoopManager.AssignCheckersPattern(tileMap, ConsoleColor.Cyan, ConsoleColor.DarkBlue);
     }
 
-    private void ConfigGameConsoleCommands()
-    {
-        new ChessConsoleCommands().Init(_gameLoopManager);
-    }
-    
     private void ConfigPlayers()
     {
         _whitePlayer = new ChessPlayer(PlayerColor.White, "White Player");
         var whitePieces = GamePiecesConfig.CreateAndGetWhitePlayerPieces(_whitePlayer);
         _whitePlayer.AddTileObjects(whitePieces);
-        
+
         _blackPlayer = new ChessPlayer(PlayerColor.Black, "Black Player");
         var blackPieces = GamePiecesConfig.CreateAndGetBlackPlayerPieces(_blackPlayer);
         _blackPlayer.AddTileObjects(blackPieces);
-        
-        ChessGamePiece.OnPieceEaten += piece => piece.OwnerActor.RemoveObject(piece);
-    }
 
-    private void ConfigGameRules()
-    {
-        // determine the game's win condition
-        // determine the game's flow (turns and their logic)
+        ChessGamePiece.OnPieceEaten += piece => piece.OwnerActor.RemoveObject(piece);
     }
 
     private void StartGame()
     {
         _gameLoopManager?.RefreshGameViewport(true);
         _gameLoopManager?.StartTwoPlayersGameLoop(_whitePlayer, _blackPlayer);
+    }
+
+    private void HandleOnTurnStarted(Actor actor)
+    {
+        if (actor is not ChessPlayer player)
+        {
+            throw new Exception($"Actor {actor} is not of type ChessPlayer.");
+        }
+
+        if (!player.GetIsInCheck())
+        {
+            return;
+        }
+
+        var text = player == _whitePlayer
+            ? $"Black player wins by Checkmate! Game Over."
+            : "White player wins by Checkmate! Game Over.";
+        
+        Console.WriteLine(text);
+        ConsoleGameLoopManager.OnTurnStarted -= HandleOnTurnStarted;
+        _gameLoopManager?.StopGameLoop();
     }
 }

@@ -8,10 +8,11 @@ namespace ConsoleRenderer;
 
 public class ConsoleGameLoopManager : IGameLoopManager
 {
-    public TileObject CurrentSelectedTileObject;
-    private ConsoleGameRenderer _gameRenderer;
+    public static event Action<Actor> OnTurnStarted; 
     
-    private ConsoleCommandsManager _consoleCommandsManager;
+    private TileObject? _currentSelectedTileObject;
+    private ConsoleGameRenderer? _gameRenderer;
+    private ConsoleCommandsManager? _consoleCommandsManager;
 
     private bool _isRunning;
     private bool _shouldMoveToNextTurn;
@@ -33,7 +34,7 @@ public class ConsoleGameLoopManager : IGameLoopManager
 
     public void AssignCheckersPattern(TileMap? tileMap, ConsoleColor oddColor, ConsoleColor evenColor)
     {
-        _gameRenderer.AssignCheckersPattern(tileMap, oddColor, evenColor);
+        _gameRenderer?.AssignCheckersPattern(tileMap, oddColor, evenColor);
     }
     
     public void StartTwoPlayersGameLoop(Actor? firstActor, Actor? secondActor)
@@ -48,7 +49,9 @@ public class ConsoleGameLoopManager : IGameLoopManager
 
         while (_isRunning)
         {
-            _consoleCommandsManager.HandleUserInput(currentTurnActor);
+            OnTurnStarted?.Invoke(currentTurnActor);
+            
+            _consoleCommandsManager?.HandleUserInput(currentTurnActor);
 
             if (!_shouldMoveToNextTurn)
             {
@@ -69,20 +72,27 @@ public class ConsoleGameLoopManager : IGameLoopManager
 
     public void StopGameLoop()
     {
+        TileMapManager.OnTileObjectSelected -= SetSelectedTileObject;
+        TileMapManager.OnDeselected -= ClearCurrentSelectedObject;
+        TileMapManager.OnTileObjectMoved -= HandleOnTileObjectMoved;
         _isRunning = false;
-        
     }
 
-    public ConsoleCommandsManager GetConsoleCommandsManager() => _consoleCommandsManager;
+    public ConsoleCommandsManager GetConsoleCommandsManager()
+    {
+        if (_consoleCommandsManager != null) return _consoleCommandsManager;
+        
+        throw new Exception("Console command manager is null.");
+    }
 
     public void RefreshGameViewport(bool clearConsole = false)
     {
-        _gameRenderer.RefreshTileMapDraw(TileMapManager.TileMap, clearConsole);
+        _gameRenderer?.RefreshTileMapDraw(TileMapManager.TileMap, clearConsole);
     }
 
     public void SetSelectedTileObject(TileObject tileObject)
     {
-        CurrentSelectedTileObject = tileObject;
+        _currentSelectedTileObject = tileObject;
     }
     
     private void ConfigTileMap(TileMap? tileMap)
@@ -99,6 +109,6 @@ public class ConsoleGameLoopManager : IGameLoopManager
     
     private void ClearCurrentSelectedObject()
     {
-        CurrentSelectedTileObject = null;
+        _currentSelectedTileObject = null;
     }
 }

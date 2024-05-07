@@ -9,13 +9,13 @@ public class ChessPlayer(PlayerColor playerColor, string playerName) : Actor(pla
 
     public bool GetIsInCheck()
     {
-        var myKing = TileObjects.Find(tileObject => tileObject.GetType() == typeof(King)) as King;
-        if (myKing == null)
+        if (TileObjects.Find(tileObject => tileObject.GetType() == typeof(King)) is not King myKing)
         {
             throw new Exception($"No King piece found for {ActorName}.");
         }
 
-
+        // TODO create a ChessCheckStateHandler static class that holds both players and returns if in check state
+        
         return true;
     }
 }

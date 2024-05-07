@@ -32,7 +32,20 @@ public abstract class ChessGamePiece(ITileRenderer renderer, List<MovePattern> m
         }
     }
 
-    public override bool CheckPossibleMoveTileCallback(Tile tile) => CheckIfTileIsPossibleMoveCallback(tile);
+    public override bool CheckPossibleMoveTileCallback(Tile tile)
+    {
+        if (OwnerActor is not ChessPlayer player)
+        {
+            throw new Exception("The owner of this ChessGamePiece is not ChessPlayer.");
+        }
+
+        if (player.GetIsInCheck() && typeof(King) != GetType())
+        {
+            return false;
+        }
+        
+        return CheckIfTileIsPossibleMoveCallback(tile);
+    }
 
     protected virtual void HandleOtherChessPieceInPossibleMoveCallback(ChessGamePiece otherPiece)
     {
