@@ -85,10 +85,7 @@ public class ConsoleCommandsManager
         var firstWordInInput = splitInput?[0];
         var args = "";
 
-        if (splitInput?.Length > 1)
-        {
-            args = splitInput[1];
-        }
+        if (splitInput?.Length > 1) args = splitInput[1];
 
         foreach (var command in _availableCommands.Where(command => $"/{command.Command}" == $"{firstWordInInput}"))
         {

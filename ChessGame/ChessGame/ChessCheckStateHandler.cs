@@ -19,9 +19,9 @@ public static class ChessCheckStateHandler
     {
         ChessPlayer opponent = player.PlayerColor == PlayerColor.White ? _blackPlayer : _whitePlayer;
 
-        foreach (var chessPiece in opponent.TileObjects)
+        foreach (var tileObject in opponent.TileObjects)
         {
-            foreach (var possibleMove in (chessPiece as ChessGamePiece).Movement.GetPossibleMoves())
+            foreach (var possibleMove in (tileObject as ChessGamePiece).Movement.GetPossibleMoves())
             {
                 if (player.PlayerKing.Position == possibleMove) return true;
             }
@@ -68,10 +68,7 @@ public static class ChessCheckStateHandler
 
             foreach (var movePattern in chessPiece.Movement.MovePatterns)
             {
-                if (!movePattern.IsDirection)
-                {
-                    continue;
-                }
+                if (!movePattern.IsDirection) continue;
 
                 var possibleMoves = ObjectMovement.GetMovesByDirection(movePattern, chessPiece.Position);
 

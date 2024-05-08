@@ -2,7 +2,11 @@ using TileMapEngine.CoreEngine;
 
 namespace ConsoleRenderer.ConsoleCommands;
 
-public readonly struct ConsoleCommand(string command, string description, bool hasArgument, Predicate<CommandCallbackArguments> callback)
+public readonly struct ConsoleCommand(
+    string command, 
+    string description, 
+    bool hasArgument, 
+    Predicate<CommandCallbackArguments> callback)
 {
     public readonly string Command = command;
     public readonly bool HasArgument = hasArgument;

@@ -8,7 +8,7 @@ public class ObjectMovement(TileObject owner, List<MovePattern> movePatterns)
     {
     }
 
-    public IEnumerable<Position2D> GetPossibleMoves() //return a tile object if encountered
+    public IEnumerable<Position2D> GetPossibleMoves()
     {
         List<Position2D> possibleMoves = [];
         foreach (var movePattern in movePatterns)
