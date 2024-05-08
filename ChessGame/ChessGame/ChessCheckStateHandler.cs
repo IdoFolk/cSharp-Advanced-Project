@@ -137,4 +137,42 @@ public static class ChessCheckStateHandler
 
         return false;
     }
+
+    public static bool GetIsInCheckMate(ChessPlayer playerToCheck)
+    {
+        if (!IsInCheck(playerToCheck))
+        {
+            return false;
+        }
+
+        var tileObjectsToCheck = playerToCheck.PlayerColor == PlayerColor.White
+            ? _whitePlayer.TileObjects
+            : _blackPlayer.TileObjects;
+
+        foreach (var tileObject in tileObjectsToCheck)
+        {
+            if (tileObject is not ChessGamePiece chessGamePiece)
+            {
+                throw new Exception("This tile object is not a chess game piece");
+            }
+
+            foreach (var position in chessGamePiece.Movement.GetPossibleMoves())
+            {
+                if (TileMapManager.TileMap == null || !TileMapManager.TileMap.CheckTileExistsInPosition(position, out var tile))
+                {
+                    continue;
+                }
+                if (!chessGamePiece.CheckPossibleMoveTileCallback(tile))
+                {
+                    continue;
+                }
+                if (!IsInCheckAfterMove(playerToCheck, position))
+                {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
 }
