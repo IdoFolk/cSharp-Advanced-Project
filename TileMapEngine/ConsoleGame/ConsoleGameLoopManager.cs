@@ -8,7 +8,7 @@ namespace ConsoleRenderer;
 
 public class ConsoleGameLoopManager : IGameLoopManager
 {
-    public static event Action<Actor>? OnTurnStarted;
+    public static event Action<Actor>? OnTurnEnded;
     
     private TileObject? _currentSelectedTileObject;
     private ConsoleGameRenderer? _gameRenderer;
@@ -49,8 +49,6 @@ public class ConsoleGameLoopManager : IGameLoopManager
 
         while (_isRunning)
         {
-            OnTurnStarted?.Invoke(currentTurnActor);
-            
             _consoleCommandsManager?.HandleUserInput(currentTurnActor);
 
             if (!_shouldMoveToNextTurn)
@@ -63,10 +61,12 @@ public class ConsoleGameLoopManager : IGameLoopManager
             if (currentTurnActor == firstActor)
             {
                 currentTurnActor = secondActor;
+                OnTurnEnded?.Invoke(currentTurnActor);
                 continue;
             }
 
             currentTurnActor = firstActor;
+            OnTurnEnded?.Invoke(currentTurnActor);
         }
     }
 
