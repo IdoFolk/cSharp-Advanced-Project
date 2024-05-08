@@ -20,7 +20,7 @@ public class ChessGame
 
         ConfigPlayers();
 
-        ConsoleGameLoopManager.OnTurnStarted += HandleOnTurnStarted;
+        ConsoleGameLoopManager.OnTurnEnded += HandleOnTurnEnded;
 
         StartGameLoop();
     }
@@ -65,14 +65,14 @@ public class ChessGame
         // A while loop starts above, nothing below will run in runtime!
     }
 
-    private void HandleOnTurnStarted(Actor actor)
+    private void HandleOnTurnEnded(Actor actor)
     {
         if (actor is not ChessPlayer player)
         {
             throw new Exception($"Actor {actor} is not of type ChessPlayer.");
         }
 
-        if (player.GetIsInCheckMate())
+        if (ChessCheckStateHandler.GetIsInCheckMate(player))
         {
             EndGame(player);
         }
@@ -87,7 +87,7 @@ public class ChessGame
         
         Console.WriteLine(text);
         
-        ConsoleGameLoopManager.OnTurnStarted -= HandleOnTurnStarted;
+        ConsoleGameLoopManager.OnTurnEnded -= HandleOnTurnEnded;
         _gameLoopManager?.StopGameLoop();
     }
 }
