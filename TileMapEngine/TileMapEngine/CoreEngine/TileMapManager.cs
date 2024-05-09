@@ -2,6 +2,9 @@ using TileMapEngine.CoreEngine.Objects;
 
 namespace TileMapEngine.CoreEngine;
 
+/// <summary>
+/// The TileMapManager class is responsible for managing the tile map and tile objects in the game.
+/// </summary>
 public static class TileMapManager
 {
     public static event Action<TileObject>? OnTileObjectSelected;
@@ -13,7 +16,7 @@ public static class TileMapManager
 
     private static IGameLoopManager? _gameLoopManager;
     
-    public static void InitTileMap(TileMap? tileMap, IGameLoopManager? gameLoopManager)
+    public static void Init(TileMap? tileMap, IGameLoopManager? gameLoopManager)
     {
         TileMap = tileMap;
         CurrentHighlightedTiles = new List<Tile>();
@@ -34,8 +37,7 @@ public static class TileMapManager
         TileMap?[position2D]?.PlaceTileObject(tileObject);
     }
     
-    public static bool TrySelect(Actor playingActor, Position2D position,
-        bool highlightPossibleMoveTiles = true)
+    public static bool TrySelect(Actor playingActor, Position2D position, bool highlightPossibleMoveTiles = true)
     {
         if (SelectedTileObject != null)
         {

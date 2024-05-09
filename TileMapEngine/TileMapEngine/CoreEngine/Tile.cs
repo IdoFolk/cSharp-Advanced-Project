@@ -3,6 +3,9 @@ using TileMapEngine.CoreEngine.Objects;
 
 namespace TileMapEngine.CoreEngine;
 
+/// <summary>
+/// Represents a tile in a tile map.
+/// </summary>
 public class Tile : IComparable<Tile>
 {
     public event Action<TileObject> OnTileObjectLand;

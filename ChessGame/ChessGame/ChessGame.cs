@@ -30,7 +30,7 @@ public class ChessGame
         var tileMap = new TileMap(BoardSize, BoardSize);
 
         _gameLoopManager = new ConsoleGameLoopManager();
-        TileMapManager.InitTileMap(tileMap, _gameLoopManager);
+        TileMapManager.Init(tileMap, _gameLoopManager);
         _gameLoopManager.AssignCheckersPattern(tileMap, ConsoleColor.Cyan, ConsoleColor.DarkBlue);
     }
 
@@ -53,7 +53,7 @@ public class ChessGame
         ChessGamePiece.OnPieceEaten += (piece,otherPiece) =>
         {
             Console.WriteLine($"{piece.OwnerActor.ActorName}'s {piece.Name} was eaten by {otherPiece.Name}");
-            piece.OwnerActor.RemoveObject(piece);
+            piece.OwnerActor.RemoveTileObject(piece);
         };
     }
 

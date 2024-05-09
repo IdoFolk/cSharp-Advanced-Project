@@ -8,7 +8,13 @@ public class ObjectMovement(TileObject owner, List<MovePattern> movePatterns)
     {
     }
 
-    public IEnumerable<Position2D> GetPossibleMoves() //return a tile object if encountered
+    /// <summary>
+    /// Gets the possible moves for the TileObject.
+    /// </summary>
+    /// <returns>
+    /// An enumerable collection of Position2D representing the possible moves.
+    /// </returns>
+    public IEnumerable<Position2D> GetPossibleMoves() 
     {
         List<Position2D> possibleMoves = [];
         foreach (var movePattern in movePatterns)
@@ -22,6 +28,12 @@ public class ObjectMovement(TileObject owner, List<MovePattern> movePatterns)
         return possibleMoves.ToArray();
     }
 
+    /// <summary>
+    /// Gets the available moves by a specified direction and position.
+    /// </summary>
+    /// <param name="movePattern">The move pattern representing the direction.</param>
+    /// <param name="position">The starting position.</param>
+    /// <returns>A list of available positions based on the specified direction and starting position.</returns>
     public static List<Position2D> GetMovesByDirection(MovePattern movePattern, Position2D position)
     {
         var newPosition = position;
@@ -41,6 +53,14 @@ public class ObjectMovement(TileObject owner, List<MovePattern> movePatterns)
         return availablePositions;
     }
 
+    /// <summary>
+    /// Gets the moves for the TileObject based on the given MovePattern and position.
+    /// </summary>
+    /// <param name="movePattern">The MovePattern to be used.</param>
+    /// <param name="position">The position of the TileObject.</param>
+    /// <returns>
+    /// A Position2D representing the moves based on the MovePattern and position.
+    /// </returns>
     public static Position2D GetMovesByMovePattern(MovePattern movePattern, Position2D position)
     {
         return movePattern.Movement.Aggregate(position,

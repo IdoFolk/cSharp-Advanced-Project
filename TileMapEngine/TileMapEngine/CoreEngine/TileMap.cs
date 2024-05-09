@@ -4,6 +4,9 @@ using Renderer.Rendering;
 
 namespace TileMapEngine.CoreEngine;
 
+/// <summary>
+/// Represents a tile map containing a grid of tiles.
+/// </summary>
 public class TileMap : IEnumerable<Tile>
 {
     private readonly Tile?[,] _tiles;
@@ -64,10 +67,6 @@ public class TileMap : IEnumerable<Tile>
             renderer.Init(drawable, new Vector2(tile.Position.X, tile.Position.Y));
             tile.AssignRenderer(renderer);
         }
-    }
-
-    public void SetTileObjects()
-    {
     }
 
     #endregion

@@ -9,5 +9,5 @@ public class Actor(string actorName)
 
     public void AddTileObjects(List<TileObject> objects) => TileObjects.AddRange(objects);
 
-    public void RemoveObject(TileObject tileObject) => TileObjects.Remove(tileObject);
+    public void RemoveTileObject(TileObject tileObject) => TileObjects.Remove(tileObject);
 }
